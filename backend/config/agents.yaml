@@ -1,0 +1,41 @@
+# Agent Configuration
+# Defines thresholds, limits, and behavior for each agent
+
+agents:
+  micro_detector:
+    max_concurrent_tasks: 10
+    timeout_seconds: 30
+    thresholds:
+      predictable_pattern: 1.0  # std dev threshold for peek timing
+      static_positioning: 5.0    # seconds stationary before flagging
+      utility_timing_warning: 30  # seconds remaining before warning
+    
+  prompt_generator:
+    max_concurrent_tasks: 20
+    timeout_seconds: 10
+    default_duration_s: 6
+    max_prompt_length: 1000
+    
+  motion_generator:
+    max_concurrent_tasks: 5
+    timeout_seconds: 60
+    default_duration_s: 6
+    max_duration_s: 30
+    retry_attempts: 2
+    
+  validator:
+    max_concurrent_tasks: 20
+    timeout_seconds: 10
+    confidence_threshold: 0.6
+    min_frames_per_second: 25
+
+orchestrator:
+  max_concurrent_workflows: 5
+  default_timeout_seconds: 120
+  retry_failed_stages: true
+  max_retries: 2
+
+monitoring:
+  enable_prometheus: true
+  log_level: "INFO"
+  structlog_enabled: true

@@ -1,0 +1,90 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
+    command: uvicorn app.api:app --host 0.0.0.0 --port 8000
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/1
+      - HY_MOTION_URL=https://api.hymotion.example/generate
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    volumes:
+      - ./:/app
+    restart: unless-stopped
+
+  worker-general:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: worker-general
+    command: >
+      celery -A app.celery_app.celery worker
+      --loglevel=info
+      --concurrency=4
+      -Q general
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/1
+    depends_on:
+      - redis
+      - backend
+    volumes:
+      - ./:/app
+    restart: unless-stopped
+
+  worker-gpu:
+    build:
+      context: .
+      dockerfile: Dockerfile.gpu  # optional separate Dockerfile with CUDA libs
+    container_name: worker-gpu
+    command: >
+      celery -A app.celery_app.celery worker
+      --loglevel=info
+      --concurrency=1
+      -Q gpu
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER=redis://redis:6379/0
+      - CELERY_BACKEND=redis://redis:6379/1
+      - NVIDIA_VISIBLE_DEVICES=all
+    depends_on:
+      - redis
+      - backend
+    volumes:
+      - ./:/app
+    # If you have nvidia runtime set up; otherwise remove 'runtime'
+    deploy:
+      resources: {}
+    runtime: nvidia
+    restart: unless-stopped
+
+  flower:
+    image: mher/flower:1.0.0
+    container_name: flower
+    command: flower --broker=redis://redis:6379/0 --port=5555
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+volumes:
+  redis_data:

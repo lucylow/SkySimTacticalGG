@@ -1,0 +1,73 @@
+# FastAPI Backend + Celery Workers
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+websockets==14.1
+python-multipart==0.0.12
+pydantic==2.9.2
+pydantic-settings==2.5.2
+
+# Celery + Redis
+celery==5.4.0
+redis==5.2.0
+aioredis==2.0.1
+flower==2.0.1
+
+# HTTP Client for HY-Motion API
+httpx==0.27.2
+aiohttp==3.11.0
+requests==2.31.0
+
+# HY-Motion 1.0 dependencies
+# Note: HY-Motion 1.0 requires PyTorch and transformers
+# Install PyTorch separately based on your system (CPU/GPU):
+# CPU: pip install torch torchvision torchaudio
+# GPU: pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+torch>=2.0.0  # Will be installed separately based on system
+transformers>=4.30.0
+accelerate>=0.20.0
+diffusers>=0.21.0  # If HY-Motion uses diffusion models
+
+# Data Processing
+numpy==2.1.1
+pandas==2.2.2
+pyarrow==17.0.0
+
+# Database (optional)
+sqlalchemy==2.0.36
+alembic==1.14.0
+psycopg2-binary==2.9.10
+asyncpg==0.29.0
+
+# Monitoring & Logging
+structlog==24.4.0
+prometheus-client==0.21.0
+
+# Environment
+python-dotenv==1.0.1
+
+# AWS S3 Storage
+boto3==1.35.0
+
+# Configuration
+PyYAML==6.0.2
+jinja2==3.1.4
+
+# Type hints
+typing-extensions==4.12.2
+
+# Retries
+tenacity==9.0.0
+
+# ML & Data Science (for notebooks)
+scikit-learn==1.5.2
+shap==0.45.1
+matplotlib==3.9.2
+joblib==1.4.2
+statsmodels==0.14.2
+scipy==1.14.1
+asyncpg==0.29.0
+Pillow==10.4.0
+
+# Optional: OpenAI for LLM narrative
+openai==1.51.0
+

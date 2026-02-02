@@ -1,0 +1,254 @@
+{
+  "metadata": {
+    "source": "MOCK_GRID_COMPATIBLE",
+    "generated_at": "2026-01-02T17:00:00Z",
+    "game": "cs2",
+    "version": "1.0",
+    "description": "Synthetic esports match data for demos, AI agents, and dashboards"
+  },
+
+  "tournament": {
+    "tournament_id": "tourn_2026_major_na",
+    "name": "NA Winter Invitational 2026",
+    "organizer": "Mock Esports League",
+    "tier": "S",
+    "region": "NA",
+    "start_date": "2026-01-02",
+    "end_date": "2026-01-10"
+  },
+
+  "teams": [
+    {
+      "team_id": "team_alpha",
+      "name": "Team Alpha",
+      "region": "NA",
+      "players": [
+        { "player_id": "alpha_p1", "handle": "Apex", "role": "Entry" },
+        { "player_id": "alpha_p2", "handle": "Viper", "role": "AWP" },
+        { "player_id": "alpha_p3", "handle": "Ghost", "role": "Support" },
+        { "player_id": "alpha_p4", "handle": "Nova", "role": "Lurker" },
+        { "player_id": "alpha_p5", "handle": "Pulse", "role": "IGL" }
+      ]
+    },
+    {
+      "team_id": "team_bravo",
+      "name": "Team Bravo",
+      "region": "EU",
+      "players": [
+        { "player_id": "bravo_p1", "handle": "Rex", "role": "Entry" },
+        { "player_id": "bravo_p2", "handle": "Frost", "role": "AWP" },
+        { "player_id": "bravo_p3", "handle": "Ion", "role": "Support" },
+        { "player_id": "bravo_p4", "handle": "Shade", "role": "Lurker" },
+        { "player_id": "bravo_p5", "handle": "Atlas", "role": "IGL" }
+      ]
+    }
+  ],
+
+  "match": {
+    "match_id": "match_001",
+    "best_of": 3,
+    "start_time": "2026-01-02T17:05:00Z",
+    "teams": ["team_alpha", "team_bravo"],
+    "status": "COMPLETED",
+    "winner": "team_alpha"
+  },
+
+  "maps": [
+    {
+      "map_id": "map_1",
+      "map_name": "de_mirage",
+      "winner": "team_alpha",
+      "final_score": { "team_alpha": 16, "team_bravo": 12 },
+
+      "rounds": [
+        {
+          "round_number": 1,
+          "start_time": "2026-01-02T17:07:00Z",
+          "economy": {
+            "team_alpha": 4000,
+            "team_bravo": 4000
+          },
+          "events": [
+            {
+              "event_id": "evt_0001",
+              "event_type": "ROUND_START",
+              "timestamp": "2026-01-02T17:07:01Z"
+            },
+            {
+              "event_id": "evt_0002",
+              "event_type": "KILL",
+              "actor": "player:alpha_p1",
+              "target": "player:bravo_p3",
+              "team": "team_alpha",
+              "payload": {
+                "weapon": "Glock",
+                "headshot": true,
+                "trade": false
+              },
+              "timestamp": "2026-01-02T17:07:32Z"
+            },
+            {
+              "event_id": "evt_0003",
+              "event_type": "OBJECTIVE",
+              "team": "team_alpha",
+              "payload": {
+                "objective": "BOMB_PLANT",
+                "site": "A"
+              },
+              "timestamp": "2026-01-02T17:08:10Z"
+            },
+            {
+              "event_id": "evt_0004",
+              "event_type": "ROUND_END",
+              "payload": {
+                "winner": "team_alpha",
+                "win_condition": "BOMB_EXPLODED"
+              },
+              "timestamp": "2026-01-02T17:08:45Z"
+            }
+          ]
+        },
+        {
+          "round_number": 2,
+          "start_time": "2026-01-02T17:09:10Z",
+          "economy": {
+            "team_alpha": 9500,
+            "team_bravo": 2800
+          },
+          "events": [
+            {
+              "event_id": "evt_0005",
+              "event_type": "ROUND_START",
+              "timestamp": "2026-01-02T17:09:11Z"
+            },
+            {
+              "event_id": "evt_0006",
+              "event_type": "KILL",
+              "actor": "player:alpha_p2",
+              "target": "player:bravo_p1",
+              "team": "team_alpha",
+              "payload": {
+                "weapon": "AWP",
+                "headshot": false,
+                "trade": false
+              },
+              "timestamp": "2026-01-02T17:09:40Z"
+            },
+            {
+              "event_id": "evt_0007",
+              "event_type": "ROUND_END",
+              "payload": {
+                "winner": "team_alpha",
+                "win_condition": "ELIMINATION"
+              },
+              "timestamp": "2026-01-02T17:10:12Z"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+
+  "derived_statistics": {
+    "player_stats": {
+      "alpha_p1": {
+        "kills": 24,
+        "deaths": 16,
+        "assists": 6,
+        "opening_kills": 8,
+        "adr": 92.4
+      },
+      "alpha_p2": {
+        "kills": 21,
+        "deaths": 14,
+        "assists": 5,
+        "awp_kills": 12,
+        "adr": 88.1
+      }
+    },
+    "team_stats": {
+      "team_alpha": {
+        "rounds_won": 16,
+        "eco_round_wins": 3,
+        "clutches_won": 4
+      },
+      "team_bravo": {
+        "rounds_won": 12,
+        "eco_round_wins": 1,
+        "clutches_won": 2
+      }
+    }
+  },
+
+  "agent_insights": [
+    {
+      "signal_id": "sig_001",
+      "agent": "momentum_reasoner",
+      "type": "MOMENTUM_SHIFT",
+      "team": "team_alpha",
+      "confidence": 0.86,
+      "explanation": {
+        "rounds_won_in_row": 4,
+        "eco_rounds_won": 1,
+        "key_player": "alpha_p1"
+      },
+      "generated_at": "2026-01-02T17:25:00Z",
+      "status": "PENDING_REVIEW"
+    },
+    {
+      "signal_id": "sig_002",
+      "agent": "player_impact_agent",
+      "type": "STAR_PLAYER",
+      "player": "alpha_p2",
+      "confidence": 0.81,
+      "explanation": {
+        "awp_kill_ratio": 0.57,
+        "opening_duels_won": 6
+      },
+      "generated_at": "2026-01-02T17:28:00Z",
+      "status": "PENDING_REVIEW"
+    }
+  ],
+
+  "human_review": [
+    {
+      "review_id": "rev_001",
+      "signal_id": "sig_001",
+      "reviewer": "user_reviewer_42",
+      "decision": "APPROVED",
+      "notes": "Momentum aligns with round timeline",
+      "reviewed_at": "2026-01-02T17:30:00Z"
+    },
+    {
+      "review_id": "rev_002",
+      "signal_id": "sig_002",
+      "reviewer": "user_reviewer_42",
+      "decision": "APPROVED",
+      "notes": "Clear AWP dominance",
+      "reviewed_at": "2026-01-02T17:31:00Z"
+    }
+  ],
+
+  "audit_log": [
+    {
+      "action": "INGEST_EVENT",
+      "actor": "system",
+      "timestamp": "2026-01-02T17:07:01Z",
+      "details": "ROUND_START evt_0001"
+    },
+    {
+      "action": "AGENT_SIGNAL_CREATED",
+      "actor": "momentum_reasoner",
+      "timestamp": "2026-01-02T17:25:00Z",
+      "details": "sig_001"
+    },
+    {
+      "action": "HUMAN_APPROVAL",
+      "actor": "user_reviewer_42",
+      "timestamp": "2026-01-02T17:30:00Z",
+      "details": "sig_001 approved"
+    }
+  ]
+}
+
+

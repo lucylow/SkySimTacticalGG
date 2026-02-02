@@ -1,0 +1,4 @@
+# This directory stores trained ML models
+# Place intent_model.joblib here after training
+
+

@@ -1,0 +1,74 @@
+{
+  "dashboard": {
+    "title": "Live Match Overview",
+    "tags": ["esports", "live"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Events/sec",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(ingest_events_total[1m])",
+            "legendFormat": "{{event_type}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Kill Events per Round",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "kills_per_round",
+            "legendFormat": "Round {{round}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Round Win Distribution",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "round_win_count",
+            "legendFormat": "{{team}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 4,
+        "title": "Economy Delta per Team",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "team_economy_delta",
+            "legendFormat": "{{team}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "Ingestion Latency",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, ingest_latency_seconds_bucket)",
+            "legendFormat": "p95"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16}
+      }
+    ],
+    "refresh": "5s",
+    "schemaVersion": 27,
+    "version": 1
+  }
+}
+
+

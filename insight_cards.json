@@ -1,0 +1,105 @@
+[
+  {
+    "insight_id": "insight_a_late_smoke",
+    "title": "Late Smoke Timing — B-site Retakes",
+    "player_id": "p03",
+    "player_name": "Player03",
+    "role": "Controller",
+    "issue": "11/18 executes on B site used smoke in 'postplant' phase or >1.0s after entry, allowing opponents to reposition",
+    "impact": "+12% opponent retake success",
+    "recommendation": "Move smoke timing to 0.6–1.0s before final entry; practice 5x synchronized smoke+entry drills",
+    "confidence": 0.78,
+    "evidence_count": 11,
+    "evidence_clips": [
+      { "round_no": 12, "clip_id": "clip_12_03", "timestamp": "00:12:34" },
+      { "round_no": 19, "clip_id": "clip_19_03", "timestamp": "00:19:12" },
+      { "round_no": 34, "clip_id": "clip_34_03", "timestamp": "00:34:56" },
+      { "round_no": 41, "clip_id": "clip_41_03", "timestamp": "00:41:23" },
+      { "round_no": 52, "clip_id": "clip_52_03", "timestamp": "00:52:45" },
+      { "round_no": 58, "clip_id": "clip_58_03", "timestamp": "00:58:12" },
+      { "round_no": 67, "clip_id": "clip_67_03", "timestamp": "01:07:33" },
+      { "round_no": 73, "clip_id": "clip_73_03", "timestamp": "01:13:21" },
+      { "round_no": 81, "clip_id": "clip_81_03", "timestamp": "01:21:44" },
+      { "round_no": 89, "clip_id": "clip_89_03", "timestamp": "01:29:56" },
+      { "round_no": 95, "clip_id": "clip_95_03", "timestamp": "01:35:18" }
+    ],
+    "actions": [
+      { "type": "play_evidence", "label": "Play Evidence" },
+      {
+        "type": "add_drill",
+        "label": "Add to Practice: Smoke Timing (5x)",
+        "drill_name": "Smoke Timing Drill",
+        "reps": 5,
+        "duration_min": 5
+      },
+      { "type": "mark_implemented", "label": "Mark Implemented" }
+    ]
+  },
+  {
+    "insight_id": "insight_b_peek_latency",
+    "title": "Reaction / Peek Latency on Entry Frags",
+    "player_id": "p01",
+    "player_name": "Player01",
+    "role": "Duelist",
+    "issue": "First-shot latency after enemy reveal averages 320 ms (vs expected ~180ms for top duelists)",
+    "impact": "Player01 dies first in 42% of contested peeks; expected entry frag uplift ≈ +3% if latency reduced",
+    "recommendation": "Add 3x 2-minute pre-aim and reaction drills in warmup; run 'sound-cue drills' in practice to reduce latency by ~100ms",
+    "confidence": 0.71,
+    "evidence_count": 9,
+    "evidence_clips": [
+      { "round_no": 3, "clip_id": "clip_03_01", "timestamp": "00:03:12" },
+      { "round_no": 7, "clip_id": "clip_07_01", "timestamp": "00:07:45" },
+      { "round_no": 18, "clip_id": "clip_18_01", "timestamp": "00:18:23" },
+      { "round_no": 25, "clip_id": "clip_25_01", "timestamp": "00:25:56" },
+      { "round_no": 33, "clip_id": "clip_33_01", "timestamp": "00:33:34" },
+      { "round_no": 47, "clip_id": "clip_47_01", "timestamp": "00:47:12" },
+      { "round_no": 59, "clip_id": "clip_59_01", "timestamp": "00:59:45" },
+      { "round_no": 72, "clip_id": "clip_72_01", "timestamp": "01:12:23" },
+      { "round_no": 88, "clip_id": "clip_88_01", "timestamp": "01:28:56" }
+    ],
+    "actions": [
+      { "type": "play_clip", "label": "Play Clip" },
+      {
+        "type": "assign_drill",
+        "label": "Assign Drill: Reaction Warmups",
+        "drill_name": "Reaction Warmups",
+        "reps": 3,
+        "duration_min": 2
+      },
+      { "type": "share_player", "label": "Share with Player" }
+    ]
+  },
+  {
+    "insight_id": "insight_c_rotation_spread",
+    "title": "Rotation Arrival Spread Exceeds 3s",
+    "player_id": null,
+    "player_name": null,
+    "role": null,
+    "scope": "team",
+    "issue": "For mid-round rotates, arrival stddev = 3.6s leading to failed retake windows",
+    "impact": "In target situations, coordination failures reduce retake success by approx -9%",
+    "recommendation": "Standardize 'taxi' role and practice a 30s 'sprint-to-site' drill; define one rotation call and set arrival windows",
+    "confidence": 0.84,
+    "evidence_count": 7,
+    "evidence_clips": [
+      { "round_no": 5, "clip_id": "clip_05_team", "timestamp": "00:05:23" },
+      { "round_no": 14, "clip_id": "clip_14_team", "timestamp": "00:14:45" },
+      { "round_no": 27, "clip_id": "clip_27_team", "timestamp": "00:27:12" },
+      { "round_no": 45, "clip_id": "clip_45_team", "timestamp": "00:45:34" },
+      { "round_no": 66, "clip_id": "clip_66_team", "timestamp": "01:06:56" },
+      { "round_no": 78, "clip_id": "clip_78_team", "timestamp": "01:18:23" },
+      { "round_no": 91, "clip_id": "clip_91_team", "timestamp": "01:31:45" }
+    ],
+    "actions": [
+      { "type": "show_timeline", "label": "Show Timeline" },
+      {
+        "type": "create_team_drill",
+        "label": "Create Team Drill: Rotate Sync (10 reps)",
+        "drill_name": "Rotate Sync",
+        "reps": 10,
+        "duration_min": 30
+      },
+      { "type": "export_planner", "label": "Export to Practice Planner" }
+    ]
+  }
+]

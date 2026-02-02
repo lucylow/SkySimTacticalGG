@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D Esports Replay Viewer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="hud">
+    <div id="controls">
+      <input id="scrubber" type="range" min="0" max="100" value="0" />
+      <span id="clock">00:00</span>
+      <button id="play-pause">⏸</button>
+      <button id="reset">⟲</button>
+    </div>
+    <div id="mode-switch">
+      <button class="mode-btn active" data-mode="viewer">Viewer</button>
+      <button class="mode-btn" data-mode="analyst">Analyst</button>
+      <button class="mode-btn" data-mode="coach">Coach</button>
+    </div>
+    <div id="stats-panel" class="hidden">
+      <h3>Match Stats</h3>
+      <div id="stats-content"></div>
+    </div>
+  </div>
+  <canvas id="scene"></canvas>
+  <div id="overlay">
+    <div id="ai-insights" class="hidden"></div>
+    <div id="coach-notes" class="hidden"></div>
+  </div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
+
+

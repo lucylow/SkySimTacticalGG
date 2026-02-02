@@ -1,0 +1,62 @@
+{
+  "dashboard": {
+    "title": "Replay & Audit",
+    "tags": ["replay", "audit"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Event Replay Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "replay_throughput_events_per_sec",
+            "legendFormat": "{{match_id}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "WebSocket Connections",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "websocket_connections",
+            "legendFormat": "{{endpoint}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Agent Signal Replay Alignment",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "agent_signal_replay_offset_seconds",
+            "legendFormat": "{{agent}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 4,
+        "title": "Audit Log Timeline",
+        "type": "logs",
+        "targets": [
+          {
+            "expr": "{job=\"api\"} |= \"audit\"",
+            "legendFormat": "Audit Events"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
+      }
+    ],
+    "refresh": "5s",
+    "schemaVersion": 27,
+    "version": 1
+  }
+}
+
+
