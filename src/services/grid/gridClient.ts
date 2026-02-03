@@ -1,4 +1,4 @@
-// GRID Client - Mock implementation for hackathon/demo
+// GRID Client - Sample implementation for hackathon/demo
 // In production, this would connect to real GRID API
 
 import type { RawGridEvent } from '@/types/grid';
@@ -16,7 +16,7 @@ export class GridStreamClient {
     this._isStreaming = true;
 
     // Simulate GRID stream events
-    const events = this.generateMockEvents(matchId);
+    const events = this.generateSampleEvents(matchId);
 
     for (const event of events) {
       await this.delay(1000 + Math.random() * 2000); // 1-3s between events
@@ -25,9 +25,9 @@ export class GridStreamClient {
   }
 
   /**
-   * Generate mock GRID events for demo
+   * Generate Sample GRID events for demo
    */
-  private generateMockEvents(matchId: string): RawGridEvent[] {
+  private generateSampleEvents(matchId: string): RawGridEvent[] {
     const events: RawGridEvent[] = [];
     const teams = ['teamA', 'teamB'];
     const players = {
@@ -146,3 +146,4 @@ export class GridStreamClient {
 }
 
 export const gridClient = new GridStreamClient();
+

@@ -116,10 +116,11 @@ export class TimeSformerWorstCaseSimulator {
   }
 
   private selectLurker(prediction: TimeSformerPrediction): string {
-    return 'Sova'; // Mocked
+    return 'Sova'; // Sampleed
   }
 
   private predictRotateTarget(role: ValorantRole): string {
-    return 'Site B'; // Mocked
+    return 'Site B'; // Sampleed
   }
 }
+

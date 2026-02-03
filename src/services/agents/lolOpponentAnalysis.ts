@@ -102,7 +102,7 @@ export class LoLOpponentAnalysisAgent extends BaseAgentImpl {
 
   private async generateOpponentProfile(input: AgentInput): Promise<LoLOpponentProfile> {
     // In a real implementation, this would query a champion database or use LLM
-    // Mocking based on common champions
+    // Sampleing based on common champions
     const championName = (input.match_context?.opponent_team as string) || 'Renekton';
     
     const profiles: Record<string, Partial<LoLOpponentProfile>> = {
@@ -343,3 +343,4 @@ export class LoLOpponentAnalysisAgent extends BaseAgentImpl {
     return [];
   }
 }
+

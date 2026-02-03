@@ -209,7 +209,7 @@ export const HeroSection = () => {
             className="relative"
           >
             <div className="glass-card p-6 relative overflow-hidden">
-              {/* Mock Dashboard */}
+              {/* Sample Dashboard */}
               <div className="aspect-[4/3] bg-background rounded-xl overflow-hidden relative">
                 {/* Header Bar */}
                 <div className="absolute top-0 inset-x-0 h-12 bg-muted/50 flex items-center px-4 gap-2">
@@ -293,3 +293,4 @@ export const HeroSection = () => {
     </section>
   );
 };
+

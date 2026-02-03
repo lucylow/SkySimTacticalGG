@@ -1,4 +1,4 @@
-// src/mocks/replaySessionPlayer.ts - Client-side session replay utility
+// src/Samples/replaySessionPlayer.ts - Client-side session replay utility
 import { sseReplayEvents, extendedReplayEvents } from './sseReplayEvents';
 import type { AgentEvent } from '@/types/agent';
 
@@ -163,3 +163,4 @@ export function createControllableReplay(
 
   return { play, pause, stop, getProgress, isPlaying: () => cancel !== null };
 }
+

@@ -1,12 +1,12 @@
-# Mock Data Bundle
+# Sample Data Bundle
 
-Comprehensive mock data for AI agent frontend demos.
+Comprehensive Sample data for AI agent frontend demos.
 
 ## Quick Start
 
 ```typescript
 // Import everything from central index
-import { DEMO, playReplay, samplePrompts } from '@/mocks';
+import { DEMO, playReplay, samplePrompts } from '@/Samples';
 
 // Access demo data
 console.log(DEMO.products.length); // 200 products
@@ -28,7 +28,7 @@ console.log(DEMO.sessions.length); // 5 agent sessions
 
 ### Replay Utilities (`replaySessionPlayer.ts`)
 ```typescript
-import { playReplay } from '@/mocks';
+import { playReplay } from '@/Samples';
 
 const cancel = playReplay((event) => {
   console.log(event.type, event.data);
@@ -39,14 +39,14 @@ const cancel = playReplay((event) => {
 
 ### Tool Responses (`toolResponses.ts`)
 ```typescript
-import { analyzeCatalogTool, DEMO } from '@/mocks';
+import { analyzeCatalogTool, DEMO } from '@/Samples';
 
 const result = analyzeCatalogTool(DEMO.products, { top: 3 });
 ```
 
 ### Sample Prompts (`samplePrompts.ts`)
 ```typescript
-import { samplePrompts, getRandomPrompt } from '@/mocks';
+import { samplePrompts, getRandomPrompt } from '@/Samples';
 
 const prompt = getRandomPrompt();
 console.log(prompt.label, prompt.prompt);
@@ -66,7 +66,7 @@ console.log(prompt.label, prompt.prompt);
 
 ### Session Helpers (`demoSessions.ts`)
 ```typescript
-import { getAllSessions, searchProducts, getTopProducts } from '@/mocks';
+import { getAllSessions, searchProducts, getTopProducts } from '@/Samples';
 
 const sessions = getAllSessions();
 const electronics = searchProducts('Electronics');
@@ -83,3 +83,4 @@ const topRated = getTopProducts(5);
 ## Deterministic Seed
 
 All data uses seed `demo-seed-2026` for reproducible demos.
+

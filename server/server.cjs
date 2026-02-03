@@ -33,7 +33,7 @@ io.on('connection', (socket) => {
   
   socket.on('minimap_update', (frames) => {
     // In production, we'd use the TimeSformerMinimap class here
-    // For this mock server, we simulate the analysis logic
+    // For this Sample server, we simulate the analysis logic
     const ambushRisk = Math.random();
     const rotateProb = Math.random();
     
@@ -219,7 +219,7 @@ app.post('/api/objective-decision', async (req, res) => {
   const { matchId, timestamp } = req.body;
   
   // In a real TS environment we would use ObjectiveCoachDashboard
-  // Here in JS mock server, we simulate the response
+  // Here in JS Sample server, we simulate the response
   const winProb = 0.68;
   const confidence = 0.92;
   
@@ -239,4 +239,5 @@ app.post('/api/objective-decision', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 4000;
-server.listen(PORT, () => console.log(`Mock server listening on http://localhost:${PORT}`));
+server.listen(PORT, () => console.log(`Sample server listening on http://localhost:${PORT}`));
+

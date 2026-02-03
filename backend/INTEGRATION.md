@@ -81,7 +81,7 @@ MotionViewer renders 3D animation
 
 ### 9. HY-Motion Client (`app/utils/hy_motion_client.py`)
 - HTTP client for HY-Motion API
-- Mock data fallback for development
+- Sample data fallback for development
 - Error handling and retries
 
 ## Data Flow Example
@@ -322,5 +322,6 @@ pytest tests/integration/
    - Real-time streaming analysis
    - Multi-player coordination
    - Advanced motion blending
+
 
 

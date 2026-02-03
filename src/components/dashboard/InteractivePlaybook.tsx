@@ -56,8 +56,8 @@ export const InteractivePlaybook: React.FC<InteractivePlaybookProps> = ({ entrie
   const [selectedEntries, setSelectedEntries] = useState<Set<string>>(new Set());
   const [lessonPlanNotes, setLessonPlanNotes] = useState('');
 
-  // Mock data if none provided
-  const mockEntries: PlaybookEntry[] =
+  // Sample data if none provided
+  const SampleEntries: PlaybookEntry[] =
     entries.length > 0
       ? entries
       : [
@@ -99,7 +99,7 @@ export const InteractivePlaybook: React.FC<InteractivePlaybookProps> = ({ entrie
           },
         ];
 
-  const filteredEntries = mockEntries.filter((entry) => {
+  const filteredEntries = SampleEntries.filter((entry) => {
     const matchesSearch =
       entry.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       entry.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -406,3 +406,4 @@ export const InteractivePlaybook: React.FC<InteractivePlaybookProps> = ({ entrie
     </div>
   );
 };
+

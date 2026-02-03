@@ -1,31 +1,31 @@
 # Quick Start Guide
 
-## Generate Mock Data
+## Generate Sample Data
 
 ### Single Match Archive
 ```bash
-cd mock-data
-python3 utils/generate_mock_data.py --format json --output single_match.json
+cd sample-data
+python3 utils/generate_Sample_data.py --format json --output single_match.json
 ```
 
 ### Multiple Tournaments
 ```bash
-python3 utils/generate_mock_data.py --format json --multi --output multi_tournament.json
+python3 utils/generate_Sample_data.py --format json --multi --output multi_tournament.json
 ```
 
 ### Export to CSV
 ```bash
-python3 utils/generate_mock_data.py --format csv --output-dir exports
+python3 utils/generate_Sample_data.py --format csv --output-dir exports
 ```
 
 ### Export to Redis Streams
 ```bash
-python3 utils/generate_mock_data.py --format redis --output redis_commands.txt
+python3 utils/generate_Sample_data.py --format redis --output redis_commands.txt
 ```
 
 ### Generate All Formats
 ```bash
-python3 utils/generate_mock_data.py --format all --output archive.json --output-dir exports
+python3 utils/generate_Sample_data.py --format all --output archive.json --output-dir exports
 ```
 
 ## Replay Match Data
@@ -65,7 +65,7 @@ python3 utils/replay_simulator.py \
 
 ### 1. Frontend Demo
 ```javascript
-import matchArchive from './mock-data/single_match.json';
+import matchArchive from './sample-data/single_match.json';
 
 // Extract events
 const events = matchArchive.maps.flatMap(map => 
@@ -93,7 +93,7 @@ python3 utils/replay_simulator.py \
 ### 3. Analytics Export
 ```bash
 # Generate CSV files
-python3 utils/generate_mock_data.py --format csv --output-dir exports
+python3 utils/generate_Sample_data.py --format csv --output-dir exports
 
 # Load in Python
 import pandas as pd
@@ -126,7 +126,7 @@ Each event contains:
 
 ## File Locations
 
-- **Base JSON**: `mock_esports_match_archive.json`
+- **Base JSON**: `Sample_esports_match_archive.json`
 - **Generated data**: `exports/` directory
 - **Utilities**: `utils/` directory
 - **Documentation**: `README.md`
@@ -159,5 +159,6 @@ pip install redis pandas pyarrow
 # Make scripts executable
 chmod +x utils/*.py
 ```
+
 
 

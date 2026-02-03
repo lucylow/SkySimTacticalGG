@@ -1,5 +1,5 @@
 // server/lol_generator.js
-// League of Legends mock data generator (production-grade semantics)
+// League of Legends Sample data generator (production-grade semantics)
 //
 // Generates:
 // - Matches with champions, roles, lanes

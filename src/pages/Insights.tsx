@@ -20,7 +20,7 @@ import { backendApi } from '@/services/backendApi';
 import { createInsightEngine } from '@/services/insightEngine';
 import type { Insight } from '@/types';
 import type { PersonalizedInsight, PlayerInsightReport } from '@/types/insights';
-import { mockPlayers } from '@/data/mockData';
+import { SamplePlayers } from '@/data/SampleData';
 
 export const Insights: React.FC = () => {
   const [insights, setInsights] = useState<Insight[]>([]);
@@ -34,8 +34,8 @@ export const Insights: React.FC = () => {
 
   useEffect(() => {
     loadInsights();
-    if (mockPlayers.length > 0 && mockPlayers[0]) {
-      setSelectedPlayerId(mockPlayers[0].id);
+    if (SamplePlayers.length > 0 && SamplePlayers[0]) {
+      setSelectedPlayerId(SamplePlayers[0].id);
     }
   }, []);
 
@@ -88,7 +88,7 @@ export const Insights: React.FC = () => {
     
     setGeneratingPersonalized(true);
     try {
-      const player = mockPlayers.find(p => p.id === selectedPlayerId);
+      const player = SamplePlayers.find(p => p.id === selectedPlayerId);
       if (!player) return;
 
       // Get recent matches
@@ -276,7 +276,7 @@ export const Insights: React.FC = () => {
                       <SelectValue placeholder="Select a player" />
                     </SelectTrigger>
                     <SelectContent>
-                      {mockPlayers.map((player) => (
+                      {SamplePlayers.map((player) => (
                         <SelectItem key={player.id} value={player.id}>
                           {player.name}
                         </SelectItem>
@@ -391,3 +391,4 @@ export const Insights: React.FC = () => {
     </motion.div>
   );
 };
+

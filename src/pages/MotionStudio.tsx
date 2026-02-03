@@ -30,8 +30,8 @@ export const MotionStudio: React.FC = () => {
   const [motionKeyframes, setMotionKeyframes] = useState<MotionKeyframe[]>([]);
   const [_currentGridData, setCurrentGridData] = useState<GridDataPacket | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [valorantMock, setValorantMock] = useState<GridDataPacket | null>(null);
-  const [lolMock, setLolMock] = useState<GridDataPacket | null>(null);
+  const [valorantSample, setValorantSample] = useState<GridDataPacket | null>(null);
+  const [lolSample, setLolSample] = useState<GridDataPacket | null>(null);
 
   const availableMotions = [
     { id: 'demo', name: 'Round 5 - A Execute', duration: '12s', type: 'Execute', game: 'VALORANT' },
@@ -46,15 +46,15 @@ export const MotionStudio: React.FC = () => {
 
   const filteredMotions = availableMotions.filter(m => m.game === selectedGame);
 
-  // Preload mock data for both games so the page always shows examples
+  // Preload Sample data for both games so the page always shows examples
   useEffect(() => {
     try {
       const v = getLatestMatchSnapshot('VALORANT');
       const l = getLatestMatchSnapshot('LEAGUE_OF_LEGENDS');
-      setValorantMock(v);
-      setLolMock(l);
+      setValorantSample(v);
+      setLolSample(l);
     } catch (e) {
-      // no-op: this is mock-only
+      // no-op: this is Sample-only
     }
   }, []);
 
@@ -161,10 +161,10 @@ export const MotionStudio: React.FC = () => {
         </Card>
       </div>
 
-      {/* Mock data preview to ensure both games are visible even without running prediction */}
+      {/* Sample data preview to ensure both games are visible even without running prediction */}
       <Card className="glass-card">
         <CardHeader>
-          <CardTitle className="text-lg">Mock Data Preview</CardTitle>
+          <CardTitle className="text-lg">Sample Data Preview</CardTitle>
           <CardDescription>Sample GRID snapshots for both games</CardDescription>
         </CardHeader>
         <CardContent>
@@ -172,37 +172,37 @@ export const MotionStudio: React.FC = () => {
             <div className="rounded-md border p-3">
               <div className="mb-2 flex items-center justify-between">
                 <div className="font-semibold">VALORANT</div>
-                <Badge variant="outline">Mock</Badge>
+                <Badge variant="outline">Sample</Badge>
               </div>
-              {valorantMock ? (
+              {valorantSample ? (
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div><span className="font-medium">Agent:</span> {(valorantMock.player as PlayerState).agent}</div>
-                  <div><span className="font-medium">Team:</span> {(valorantMock.player as PlayerState).team}</div>
-                  <div><span className="font-medium">Health:</span> {(valorantMock.player as PlayerState).health}</div>
-                  <div><span className="font-medium">Weapon:</span> {(valorantMock.inventory as InventoryState)?.primary_weapon}</div>
-                  <div><span className="font-medium">Spike:</span> {(valorantMock.match_context as MatchContext).spike_status}</div>
-                  <div><span className="font-medium">Phase:</span> {(valorantMock.match_context as MatchContext).round_phase}</div>
+                  <div><span className="font-medium">Agent:</span> {(valorantSample.player as PlayerState).agent}</div>
+                  <div><span className="font-medium">Team:</span> {(valorantSample.player as PlayerState).team}</div>
+                  <div><span className="font-medium">Health:</span> {(valorantSample.player as PlayerState).health}</div>
+                  <div><span className="font-medium">Weapon:</span> {(valorantSample.inventory as InventoryState)?.primary_weapon}</div>
+                  <div><span className="font-medium">Spike:</span> {(valorantSample.match_context as MatchContext).spike_status}</div>
+                  <div><span className="font-medium">Phase:</span> {(valorantSample.match_context as MatchContext).round_phase}</div>
                 </div>
               ) : (
-                <div className="text-xs text-muted-foreground">Loading mock data…</div>
+                <div className="text-xs text-muted-foreground">Loading Sample data…</div>
               )}
             </div>
             <div className="rounded-md border p-3">
               <div className="mb-2 flex items-center justify-between">
                 <div className="font-semibold">League of Legends</div>
-                <Badge variant="outline">Mock</Badge>
+                <Badge variant="outline">Sample</Badge>
               </div>
-              {lolMock ? (
+              {lolSample ? (
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div><span className="font-medium">Champion:</span> {(lolMock.player as LoLPlayerState).champion}</div>
-                  <div><span className="font-medium">Level:</span> {(lolMock.player as LoLPlayerState).level}</div>
-                  <div><span className="font-medium">Health:</span> {(lolMock.player as LoLPlayerState).health}</div>
-                  <div><span className="font-medium">Gold:</span> {(lolMock.inventory as LoLInventoryState)?.gold}</div>
-                  <div><span className="font-medium">Baron Alive:</span> {((lolMock.match_context as LoLMatchContext).objectives.baron_alive ? 'Yes' : 'No')}</div>
-                  <div><span className="font-medium">Dragon Count:</span> {(lolMock.match_context as LoLMatchContext).objectives.dragon_count}</div>
+                  <div><span className="font-medium">Champion:</span> {(lolSample.player as LoLPlayerState).champion}</div>
+                  <div><span className="font-medium">Level:</span> {(lolSample.player as LoLPlayerState).level}</div>
+                  <div><span className="font-medium">Health:</span> {(lolSample.player as LoLPlayerState).health}</div>
+                  <div><span className="font-medium">Gold:</span> {(lolSample.inventory as LoLInventoryState)?.gold}</div>
+                  <div><span className="font-medium">Baron Alive:</span> {((lolSample.match_context as LoLMatchContext).objectives.baron_alive ? 'Yes' : 'No')}</div>
+                  <div><span className="font-medium">Dragon Count:</span> {(lolSample.match_context as LoLMatchContext).objectives.dragon_count}</div>
                 </div>
               ) : (
-                <div className="text-xs text-muted-foreground">Loading mock data…</div>
+                <div className="text-xs text-muted-foreground">Loading Sample data…</div>
               )}
             </div>
           </div>
@@ -396,3 +396,4 @@ export const MotionStudio: React.FC = () => {
     </motion.div>
   );
 };
+

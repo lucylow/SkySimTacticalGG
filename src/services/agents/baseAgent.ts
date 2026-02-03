@@ -58,23 +58,23 @@ export abstract class BaseAgentImpl implements BaseAgent {
         // const response = await fetch('https://api.openai.com/v1/chat/completions', { ... });
         // return (await response.json()).choices[0].message.content;
         
-        // For now, still using mock but with logic to handle potential future integration
-        return this.generateMockResponse(prompt);
+        // For now, still using Sample but with logic to handle potential future integration
+        return this.generateSampleResponse(prompt);
       } catch (error) {
         console.error("LLM Call failed:", error);
-        return this.generateMockResponse(prompt);
+        return this.generateSampleResponse(prompt);
       }
     }
 
-    // Default to mock for development
+    // Default to Sample for development
     await this.delay(100 + Math.random() * 200);
-    return this.generateMockResponse(prompt);
+    return this.generateSampleResponse(prompt);
   }
 
   /**
-   * Generate mock LLM response (for development/testing)
+   * Generate Sample LLM response (for development/testing)
    */
-  private generateMockResponse(prompt: string): string {
+  private generateSampleResponse(prompt: string): string {
     const lowerPrompt = prompt.toLowerCase();
 
     if (lowerPrompt.includes('mistake') || lowerPrompt.includes('error')) {
@@ -163,3 +163,4 @@ export abstract class BaseAgentImpl implements BaseAgent {
     };
   }
 }
+

@@ -1,6 +1,6 @@
-// server/valorant_specific_mock.js
-// Valorant-specific mock data generator (rich rounds, economy, map-aware frames, features)
-// Usage: node server/valorant_specific_mock.js
+// server/valorant_specific_Sample.js
+// Valorant-specific Sample data generator (rich rounds, economy, map-aware frames, features)
+// Usage: node server/valorant_specific_Sample.js
 // Outputs: server/data/valorant_specific_matches.json (index) and per-match JSON files
 // No external deps required.
 
@@ -281,14 +281,14 @@ function generateValorantMatch({ matchId = null, map = null, rounds = 24 } = {})
 
   const match = {
     id,
-    title: `Valorant Mock ${id.slice(-6)}`,
+    title: `Valorant Sample ${id.slice(-6)}`,
     map: mapName,
     startedAt,
     roundsPlayed: rounds,
     players: players.map(p => ({ id: p.id, name: p.name, agent: p.agent, baseSkill: p.baseSkill, mmr: p.mmr })),
     rounds: roundsArr,
     finalScore: { attackers: attackersWins, defenders: defendersWins },
-    metadata: { version: 'mock-1.0', generatedAt: nowSec() }
+    metadata: { version: 'Sample-1.0', generatedAt: nowSec() }
   };
 
   return match;
@@ -447,3 +447,4 @@ if (argv[1] === __filename) {
 }
 
 export { generateValorantMatch, generateFramesForMatch, extractPlayerRoundFeatures, produceMatches };
+

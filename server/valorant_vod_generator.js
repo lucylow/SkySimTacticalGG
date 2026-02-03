@@ -1,5 +1,5 @@
 // server/valorant_vod_generator.js
-// GRID-style Valorant VOD / video analysis mock data
+// GRID-style Valorant VOD / video analysis Sample data
 // Frame-level (20Hz) telemetry suitable for VOD overlays & ML
 
 import fs from "fs";
@@ -186,7 +186,7 @@ function generateVODMatch() {
   }
   return {
     matchId:`vod-${ri(10000,99999)}`,
-    source:"GRID_MOCK",
+    source:"GRID_Sample",
     tickRate:TICK_RATE,
     rounds
   };
@@ -199,7 +199,8 @@ if (process.argv[1] === __filename) {
     path.join(OUT,"valorant_vod_match.json"),
     JSON.stringify(match,null,2)
   );
-  console.log("Valorant VOD mock written");
+  console.log("Valorant VOD Sample written");
 }
 
 export { generateVODMatch };
+

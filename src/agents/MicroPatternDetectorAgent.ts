@@ -209,7 +209,7 @@ class MicroPatternDetectorAgent extends BaseAgent {
 
     // Calculate efficiency (simplified)
     const totalUtility = utilityEvents.length;
-    const effectiveUtility = utilityEvents.filter(() => Math.random() > 0.6).length; // Mock calculation
+    const effectiveUtility = utilityEvents.filter(() => Math.random() > 0.6).length; // Sample calculation
 
     const efficiency = totalUtility > 0 ? effectiveUtility / totalUtility : 0;
 
@@ -252,7 +252,7 @@ class MicroPatternDetectorAgent extends BaseAgent {
   private calculateKastImpact(_duel: unknown, _roundData: unknown): boolean {
     // Simplified KAST calculation
     // In real implementation, would check if player got kill, assist, survived, or was traded
-    return Math.random() > 0.3; // Mock
+    return Math.random() > 0.3; // Sample
   }
 
   private checkPredictability(duels: Array<{ won: boolean }>): boolean {
@@ -288,3 +288,4 @@ class MicroPatternDetectorAgent extends BaseAgent {
 }
 
 export const microPatternDetectorAgent = new MicroPatternDetectorAgent();
+

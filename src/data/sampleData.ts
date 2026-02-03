@@ -1,4 +1,4 @@
-// Comprehensive Mock Data for SkySim Tactical GG
+// Comprehensive Sample Data for SkySim Tactical GG
 import type { Player, Match, Team, Round, Insight, DashboardData, MotionData } from '@/types';
 import type { LoLPlayer, ValorantPlayer, EsportsTeam, EsportsMatch } from '@/types/esports';
 
@@ -6,7 +6,7 @@ import type { LoLPlayer, ValorantPlayer, EsportsTeam, EsportsMatch } from '@/typ
 const avatarColors = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'] as const;
 
 // --- VALORANT DATA ---
-export const mockValorantPlayers: ValorantPlayer[] = [
+export const SampleValorantPlayers: ValorantPlayer[] = [
   { 
     id: 'vp1', 
     name: 'OXY', 
@@ -34,7 +34,7 @@ export const mockValorantPlayers: ValorantPlayer[] = [
 ];
 
 // --- LEAGUE OF LEGENDS DATA ---
-export const mockLoLPlayers: LoLPlayer[] = [
+export const SampleLoLPlayers: LoLPlayer[] = [
   {
     id: 'lp1',
     name: 'Faker',
@@ -74,17 +74,17 @@ export const mockLoLPlayers: LoLPlayer[] = [
   }
 ];
 
-export const mockLoLTeams: EsportsTeam[] = [
-  { id: 'lt1', name: 'T1', logo: '🔴', game: 'lol', players: mockLoLPlayers },
+export const SampleLoLTeams: EsportsTeam[] = [
+  { id: 'lt1', name: 'T1', logo: '🔴', game: 'lol', players: SampleLoLPlayers },
   { id: 'lt2', name: 'Gen.G', logo: '🟡', game: 'lol', players: [] }
 ];
 
-export const mockLoLMatches: EsportsMatch[] = [
+export const SampleLoLMatches: EsportsMatch[] = [
   {
     id: 'lm1',
     game: 'lol',
-    team_a: mockLoLTeams[0]!,
-    team_b: mockLoLTeams[1]!,
+    team_a: SampleLoLTeams[0]!,
+    team_b: SampleLoLTeams[1]!,
     score: [2, 1],
     winner: 'T1',
     patch: '14.2',
@@ -92,8 +92,8 @@ export const mockLoLMatches: EsportsMatch[] = [
   }
 ];
 
-// Keeping existing mock data for backward compatibility
-export const mockPlayers: Player[] = mockValorantPlayers.map(p => ({
+// Keeping existing Sample data for backward compatibility
+export const SamplePlayers: Player[] = SampleValorantPlayers.map(p => ({
   id: p.id,
   name: p.name,
   team_id: p.team_id,
@@ -109,8 +109,8 @@ export const mockPlayers: Player[] = mockValorantPlayers.map(p => ({
   }
 }));
 
-export const mockTeams: Team[] = [
-  { id: 't1', name: 'Team Alpha', logo: '🔷', players: mockPlayers },
+export const SampleTeams: Team[] = [
+  { id: 't1', name: 'Team Alpha', logo: '🔷', players: SamplePlayers },
   { id: 't2', name: 'Team Beta', logo: '🔶', players: [] },
 ];
 
@@ -130,11 +130,11 @@ const generateRounds = (count: number, teamAWins: number): Round[] => {
   return rounds;
 };
 
-export const mockMatches: Match[] = [
+export const SampleMatches: Match[] = [
   {
     id: 'match_001',
-    team_a: mockTeams[0]!,
-    team_b: mockTeams[1]!,
+    team_a: SampleTeams[0]!,
+    team_b: SampleTeams[1]!,
     map: 'Bind',
     score: [13, 9],
     duration: 42,
@@ -144,7 +144,7 @@ export const mockMatches: Match[] = [
   }
 ];
 
-export const mockInsights: Insight[] = [
+export const SampleInsights: Insight[] = [
   {
     id: 'i1',
     type: 'warning',
@@ -156,21 +156,21 @@ export const mockInsights: Insight[] = [
   }
 ];
 
-export const mockDashboardData: DashboardData = {
+export const SampleDashboardData: DashboardData = {
   live_matches: [],
-  recent_matches: mockMatches,
+  recent_matches: SampleMatches,
   team_stats: {
     win_rate: 67,
     avg_round_time: 85,
     map_performance: [{ map: 'Bind', wins: 12, losses: 3 }],
   },
-  insights: mockInsights,
+  insights: SampleInsights,
   role_distribution: [{ name: 'Duelist', value: 25 }],
   last_update: new Date().toISOString(),
 };
 
 // Motion Data for 3D visualization
-export const mockMotionData: MotionData = {
+export const SampleMotionData: MotionData = {
   id: 'motion_001',
   frames: [
     { timestamp: 0, joints: [{ name: 'root', position: [0, 0, 0], rotation: [0, 0, 0, 1] }] },
@@ -182,7 +182,7 @@ export const mockMotionData: MotionData = {
 };
 
 // Performance Trends
-export const mockPerformanceTrends = {
+export const SamplePerformanceTrends = {
   weekly: [
     { date: 'Mon', kd: 1.2, adr: 145, winRate: 60 },
     { date: 'Tue', kd: 1.35, adr: 158, winRate: 70 },
@@ -201,7 +201,7 @@ export const mockPerformanceTrends = {
 };
 
 // Coaching Suggestions for Live Coach
-export const mockCoachingSuggestions = [
+export const SampleCoachingSuggestions = [
   {
     id: 'cs1',
     type: 'tactical',
@@ -227,3 +227,4 @@ export const mockCoachingSuggestions = [
     confidence: 0.72,
   },
 ];
+

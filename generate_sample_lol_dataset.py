@@ -1,5 +1,5 @@
 # generate_sample_lol_dataset.py
-# Writes mock_lol_events.jsonl with synthetic League of Legends events.
+# Writes Sample_lol_events.jsonl with synthetic League of Legends events.
 # Usage: python generate_sample_lol_dataset.py
 
 import json
@@ -75,7 +75,7 @@ def sample_events_for_player(player, match_id):
 
 
 def generate_match(idx):
-    match_id = f"mock_lol_match_{idx:03d}"
+    match_id = f"Sample_lol_match_{idx:03d}"
     blue = gen_players("BLUE")
     red = gen_players("RED")
     players = blue + red
@@ -134,10 +134,11 @@ def generate_match(idx):
     }
 
 
-OUT = "mock_lol_events.jsonl"
+OUT = "Sample_lol_events.jsonl"
 with open(OUT, "w", encoding="utf-8") as fh:
     for i in range(1, NUM_MATCHES + 1):
         match = generate_match(i)
         fh.write(json.dumps(match) + "\n")
 
 print(f"Wrote {OUT} with {NUM_MATCHES} matches.")
+

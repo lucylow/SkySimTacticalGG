@@ -5,7 +5,7 @@ This document describes the complete GRID esports data integration system implem
 ## Overview
 
 This implementation provides a complete, hackathon-ready GRID integration that demonstrates:
-- Real-time event ingestion from GRID (mock for demo)
+- Real-time event ingestion from GRID (Sample for demo)
 - Canonical event normalization (game-agnostic)
 - Match state reconstruction
 - AI agent reasoning (momentum, star players, economy)
@@ -15,7 +15,7 @@ This implementation provides a complete, hackathon-ready GRID integration that d
 ## Architecture
 
 ```
-GRID API (Mock)
+GRID API (Sample)
     │
     ▼
 GridClient → Raw Events
@@ -35,7 +35,7 @@ EventBus (In-Memory)
 ### Services
 
 #### `gridClient.ts`
-- Mock GRID stream client
+- Sample GRID stream client
 - Generates realistic esports events (matches, rounds, kills, etc.)
 - In production, would connect to real GRID WebSocket API
 
@@ -172,7 +172,7 @@ This is a frontend-only implementation suitable for:
 - Development
 
 For production, you would:
-1. Replace mock GRID client with real GRID API integration
+1. Replace Sample GRID client with real GRID API integration
 2. Use Redis/Kafka for event bus (instead of in-memory)
 3. Add backend service for ingestion (FastAPI/Node.js)
 4. Add database persistence
@@ -209,5 +209,6 @@ Potential enhancements:
 - Add metrics and analytics
 - Add multi-match support
 - Add historical match analysis
+
 
 

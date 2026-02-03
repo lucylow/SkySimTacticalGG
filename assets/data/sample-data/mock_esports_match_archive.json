@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "source": "MOCK_GRID_COMPATIBLE",
+    "source": "Sample_GRID_COMPATIBLE",
     "generated_at": "2026-01-02T17:00:00Z",
     "game": "cs2",
     "version": "1.0",
@@ -10,7 +10,7 @@
   "tournament": {
     "tournament_id": "tourn_2026_major_na",
     "name": "NA Winter Invitational 2026",
-    "organizer": "Mock Esports League",
+    "organizer": "Sample Esports League",
     "tier": "S",
     "region": "NA",
     "start_date": "2026-01-02",
@@ -250,5 +250,6 @@
     }
   ]
 }
+
 
 

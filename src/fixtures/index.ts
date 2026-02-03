@@ -1,4 +1,4 @@
-// src/mocks/index.ts - Central export for all mock data
+// src/Samples/index.ts - Central export for all Sample data
 
 // Core generators and data
 export { DEMO, generateProducts, generateUsers, generateAgentSession, generateDemoPayload } from './generator';
@@ -56,22 +56,23 @@ export {
   getRecentSessions,
 } from './demoSessions';
 
-// Backend API mocks (GRID, HY-Motion, Micro-Macro Analytics)
+// Backend API Samples (GRID, HY-Motion, Micro-Macro Analytics)
 export {
-  mockMatchMetadata,
-  mockRoundData,
-  mockPlayerRoundStats,
-  mockStrategicPatterns,
-  mockPlayerMistakes,
-  mockMotionSequences,
-  mockMicroMacroConnection,
-  mockTeamPattern,
-  mockCoachingInsights,
-  mockActionItems,
-  mockDevelopmentPlan,
-  mockComprehensiveAnalysis,
-  mockMicroAnalysis,
-  mockMacroAnalysis,
-  mockHealthCheck,
-  mockAPIInfo,
-} from './backendMocks';
+  SampleMatchMetadata,
+  SampleRoundData,
+  SamplePlayerRoundStats,
+  SampleStrategicPatterns,
+  SamplePlayerMistakes,
+  SampleMotionSequences,
+  SampleMicroMacroConnection,
+  SampleTeamPattern,
+  SampleCoachingInsights,
+  SampleActionItems,
+  SampleDevelopmentPlan,
+  SampleComprehensiveAnalysis,
+  SampleMicroAnalysis,
+  SampleMacroAnalysis,
+  SampleHealthCheck,
+  SampleAPIInfo,
+} from './backendSamples';
+

@@ -166,7 +166,7 @@ Edit `config/agents.yaml` to adjust agent thresholds, timeouts, and behavior.
 
 See `.env.example` for all available options. Key variables:
 
-- `HY_MOTION_URL`: HY-Motion API endpoint (or mock for development)
+- `HY_MOTION_URL`: HY-Motion API endpoint (or Sample for development)
 - `CELERY_BROKER_URL`: Redis broker URL
 - `CORS_ORIGINS`: Allowed CORS origins
 - `RIOT_API_KEY`: Riot Games API key (optional, for League of Legends/Valorant data)
@@ -181,7 +181,7 @@ See `.env.example` for all available options. Key variables:
 
 ## Development Notes
 
-- For hackathon MVP, HY-Motion client returns mock data if URL is not set
+- For hackathon MVP, HY-Motion client returns Sample data if URL is not set
 - Message bus uses in-memory pub/sub by default (set `USE_REDIS_PUBSUB=true` for Redis)
 - All agent logic uses heuristics from the architecture doc
 - Motion frames are returned in SMPL format (24 joints, quaternion rotations)
@@ -193,3 +193,4 @@ See `.env.example` for all available options. Key variables:
 3. Implement Three.js frontend component (see frontend integration)
 4. Add ML-based prediction models (replace heuristics)
 5. Scale with multiple Celery workers
+

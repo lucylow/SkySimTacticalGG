@@ -12,7 +12,7 @@ import type {
   PlayerInsightReport 
 } from '@/types/insights';
 import { backendApi } from './backendApi';
-import { mockPlayers } from '@/data/mockData';
+import { SamplePlayers } from '@/data/SampleData';
 
 export interface PlayerMatchData {
   playerId: string;
@@ -122,8 +122,8 @@ class PersonalizedInsightEngine {
     const allMistakes = await backendApi.getPlayerMistakes(playerId);
     mistakes.push(...allMistakes.filter(m => matchIds.includes(m.match_id)));
     
-    // Get player name from mock data
-    const player = mockPlayers.find(p => p.id === playerId);
+    // Get player name from Sample data
+    const player = SamplePlayers.find(p => p.id === playerId);
     if (player) {
       playerName = player.name;
     }
@@ -572,4 +572,5 @@ export function createInsightEngine(_teamId: string): PersonalizedInsightEngine 
 }
 
 export const personalizedInsightEngine = new PersonalizedInsightEngine();
+
 

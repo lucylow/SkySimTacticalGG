@@ -11,7 +11,7 @@ describe('LolObjectiveEngine', () => {
     // Allies nearby: 4
     // Enemies: 2
     // Your ultimates up: 4; enemy ultimates up: 2
-    // Smite: your jungler up; enemy smite down (mocking as smiteReady=true vs enemySmiteReady=false)
+    // Smite: your jungler up; enemy smite down (Sampleing as smiteReady=true vs enemySmiteReady=false)
     // Vision in pit: 3 friendly, 0 enemy (issue says no enemy control wards)
     // Minion waves: top and mid pushing (sidelanePressure=true)
     const state: ObjectiveState = {
@@ -134,3 +134,4 @@ describe('LolObjectiveEngine', () => {
     expect(decision.winProbDelta).toBeGreaterThan(10);
   });
 });
+

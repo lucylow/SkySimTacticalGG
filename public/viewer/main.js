@@ -158,8 +158,8 @@ function showAIInsight(signal) {
   setTimeout(() => panel.classList.add("hidden"), 5000);
 }
 
-// Load mock events if WebSocket fails
-fetch("/mock/events.json")
+// Load Sample events if WebSocket fails
+fetch("/Sample/events.json")
   .then(r => r.json())
   .catch(() => null)
   .then(events => {
@@ -167,5 +167,6 @@ fetch("/mock/events.json")
       replay.load(events);
     }
   });
+
 
 

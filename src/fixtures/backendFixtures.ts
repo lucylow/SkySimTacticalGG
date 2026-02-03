@@ -1,4 +1,4 @@
-// Mock data matching the Python FastAPI backend schema
+// Sample data matching the Python FastAPI backend schema
 import type {
   MatchMetadata,
   RoundData,
@@ -19,11 +19,11 @@ import type {
   MacroReview,
   MacroReviewEvent,
 } from '@/types/backend';
-import { mockPlayers } from '@/data/mockData';
+import { SamplePlayers } from '@/data/SampleData';
 
-// ============= Mock GRID Match Data =============
+// ============= Sample GRID Match Data =============
 
-export const mockMatchMetadata: MatchMetadata[] = [
+export const SampleMatchMetadata: MatchMetadata[] = [
   {
     id: 'grid_match_001',
     game: 'valorant',
@@ -47,7 +47,7 @@ export const mockMatchMetadata: MatchMetadata[] = [
   },
 ];
 
-export const mockRoundData: RoundData[] = Array.from({ length: 24 }, (_, i) => ({
+export const SampleRoundData: RoundData[] = Array.from({ length: 24 }, (_, i) => ({
   id: `round_${i + 1}`,
   match_id: 'grid_match_001',
   round_number: i + 1,
@@ -63,8 +63,8 @@ export const mockRoundData: RoundData[] = Array.from({ length: 24 }, (_, i) => (
   },
 }));
 
-export const mockPlayerRoundStats: PlayerRoundStat[] = mockPlayers.flatMap(player =>
-  mockRoundData.map(round => ({
+export const SamplePlayerRoundStats: PlayerRoundStat[] = SamplePlayers.flatMap(player =>
+  SampleRoundData.map(round => ({
     id: `prs_${round.id}_${player.id}`,
     round_id: round.id,
     player_id: player.id,
@@ -83,9 +83,9 @@ export const mockPlayerRoundStats: PlayerRoundStat[] = mockPlayers.flatMap(playe
   }))
 );
 
-// ============= Mock Strategic Patterns =============
+// ============= Sample Strategic Patterns =============
 
-export const mockStrategicPatterns: StrategicPattern[] = [
+export const SampleStrategicPatterns: StrategicPattern[] = [
   {
     id: 'pattern_001',
     team_id: 't1',
@@ -138,9 +138,9 @@ export const mockStrategicPatterns: StrategicPattern[] = [
   },
 ];
 
-// ============= Mock Player Mistakes =============
+// ============= Sample Player Mistakes =============
 
-export const mockPlayerMistakes: PlayerMistake[] = [
+export const SamplePlayerMistakes: PlayerMistake[] = [
   {
     id: 'mistake_001',
     player_id: 'p1',
@@ -206,9 +206,9 @@ export const mockPlayerMistakes: PlayerMistake[] = [
   },
 ];
 
-// ============= Mock Motion Sequences =============
+// ============= Sample Motion Sequences =============
 
-export const mockMotionSequences: MotionSequence[] = [
+export const SampleMotionSequences: MotionSequence[] = [
   {
     id: 'motion_mistake_001',
     prompt_used: 'A professional esports player (Jett) overextending into an open area without utility support, getting caught in a crossfire',
@@ -237,9 +237,9 @@ export const mockMotionSequences: MotionSequence[] = [
   },
 ];
 
-// ============= Mock Micro-Macro Connections =============
+// ============= Sample Micro-Macro Connections =============
 
-export const mockMicroMacroConnection: MicroMacroConnection = {
+export const SampleMicroMacroConnection: MicroMacroConnection = {
   player_id: 'p1',
   timeframe_minutes: 10,
   total_mistakes: 3,
@@ -264,9 +264,9 @@ export const mockMicroMacroConnection: MicroMacroConnection = {
   ],
 };
 
-// ============= Mock Team Patterns =============
+// ============= Sample Team Patterns =============
 
-export const mockTeamPattern: TeamPattern = {
+export const SampleTeamPattern: TeamPattern = {
   team_id: 't1',
   total_patterns_identified: 12,
   patterns: [
@@ -308,9 +308,9 @@ export const mockTeamPattern: TeamPattern = {
   ],
 };
 
-// ============= Mock Coaching Insights =============
+// ============= Sample Coaching Insights =============
 
-export const mockCoachingInsights: CoachingInsight[] = [
+export const SampleCoachingInsights: CoachingInsight[] = [
   {
     id: 'insight_001',
     title: 'Entry Fragger Positioning Breakdown',
@@ -376,9 +376,9 @@ export const mockCoachingInsights: CoachingInsight[] = [
   },
 ];
 
-// ============= Mock Action Items =============
+// ============= Sample Action Items =============
 
-export const mockActionItems: ActionItem[] = [
+export const SampleActionItems: ActionItem[] = [
   {
     insight_id: 'insight_001',
     title: 'Entry Fragger Positioning Breakdown',
@@ -442,9 +442,9 @@ export const mockActionItems: ActionItem[] = [
   },
 ];
 
-// ============= Mock Development Plan =============
+// ============= Sample Development Plan =============
 
-export const mockDevelopmentPlan: DevelopmentPlan = {
+export const SampleDevelopmentPlan: DevelopmentPlan = {
   player_id: 'p1',
   timeframe_days: 30,
   generated_at: new Date().toISOString(),
@@ -530,12 +530,12 @@ export const mockDevelopmentPlan: DevelopmentPlan = {
   ],
 };
 
-// ============= Mock API Responses =============
+// ============= Sample API Responses =============
 
-export const mockMicroAnalysis: MicroAnalysis = {
+export const SampleMicroAnalysis: MicroAnalysis = {
   team_id: 't1',
   match_id: 'grid_match_001',
-  player_performances: mockPlayers.map(p => ({
+  player_performances: SamplePlayers.map(p => ({
     player_id: p.id,
     player_name: p.name,
     role: p.role,
@@ -549,7 +549,7 @@ export const mockMicroAnalysis: MicroAnalysis = {
       'Triple kill entry in round 15',
     ].slice(0, Math.floor(Math.random() * 3)),
   })),
-  mistakes_detected: mockPlayerMistakes,
+  mistakes_detected: SamplePlayerMistakes,
   standout_moments: [
     {
       player_id: 'p1',
@@ -568,7 +568,7 @@ export const mockMicroAnalysis: MicroAnalysis = {
   ],
 };
 
-export const mockMacroAnalysis: MacroAnalysis = {
+export const SampleMacroAnalysis: MacroAnalysis = {
   team_id: 't1',
   match_id: 'grid_match_001',
   strategy_effectiveness: {
@@ -585,31 +585,31 @@ export const mockMacroAnalysis: MacroAnalysis = {
   },
   economy_management_score: 0.78,
   adaptation_score: 0.72,
-  patterns_identified: mockStrategicPatterns,
+  patterns_identified: SampleStrategicPatterns,
 };
 
-export const mockComprehensiveAnalysis: ComprehensiveAnalysisResponse = {
+export const SampleComprehensiveAnalysis: ComprehensiveAnalysisResponse = {
   match_id: 'grid_match_001',
   analysis_completed: new Date().toISOString(),
-  micro_analysis: mockMicroAnalysis,
-  macro_analysis: mockMacroAnalysis,
-  micro_macro_connections: mockMicroMacroConnection,
+  micro_analysis: SampleMicroAnalysis,
+  macro_analysis: SampleMacroAnalysis,
+  micro_macro_connections: SampleMicroMacroConnection,
   coaching_insights: {
     generated_at: new Date().toISOString(),
     team_id: 't1',
     match_id: 'grid_match_001',
     summary: 'Team Alpha showed strong mechanical performance but coordination issues in high-pressure situations led to preventable round losses. Focus on entry coordination and utility economy.',
-    key_insights: mockCoachingInsights,
-    action_items: mockActionItems,
+    key_insights: SampleCoachingInsights,
+    action_items: SampleActionItems,
     visualizations: [
       { type: 'heatmap', data_source: 'player_positions', config: { map: 'Bind' } },
       { type: 'timeline', data_source: 'round_events', config: { highlight_mistakes: true } },
     ],
   },
-  actionable_items: mockActionItems,
+  actionable_items: SampleActionItems,
 };
 
-export const mockHealthCheck: HealthCheck = {
+export const SampleHealthCheck: HealthCheck = {
   status: 'healthy',
   timestamp: new Date().toISOString(),
   services: {
@@ -620,7 +620,7 @@ export const mockHealthCheck: HealthCheck = {
   },
 };
 
-export const mockAPIInfo: APIInfo = {
+export const SampleAPIInfo: APIInfo = {
   message: 'SkySim Tactical GG API',
   version: '1.0.0',
   endpoints: {
@@ -634,9 +634,9 @@ export const mockAPIInfo: APIInfo = {
   },
 };
 
-// ============= Mock Macro Review =============
+// ============= Sample Macro Review =============
 
-export const mockMacroReviewEvents: MacroReviewEvent[] = [
+export const SampleMacroReviewEvents: MacroReviewEvent[] = [
   {
     type: 'PISTOL_ROUND_IMPACT',
     round_number: 1,
@@ -649,7 +649,7 @@ export const mockMacroReviewEvents: MacroReviewEvent[] = [
     visualization_type: 'economic_flow',
     round_ids: [1, 2, 3, 4, 5],
     motion_prompt: 'Show team\'s economic disadvantage positions versus enemy economic advantage positions in rounds 1-5.',
-    motion_visualization: mockMotionSequences[0],
+    motion_visualization: SampleMotionSequences[0],
   },
   {
     type: 'CRITICAL_ECONOMIC_DECISION',
@@ -663,7 +663,7 @@ export const mockMacroReviewEvents: MacroReviewEvent[] = [
     visualization_type: 'economic_flow',
     round_ids: [5, 6, 7, 8],
     motion_prompt: 'Show team\'s expensive buy positions versus enemy economic advantage positions.',
-    motion_visualization: mockMotionSequences[0],
+    motion_visualization: SampleMotionSequences[0],
   },
   {
     type: 'FAILED_EXECUTE',
@@ -677,7 +677,7 @@ export const mockMacroReviewEvents: MacroReviewEvent[] = [
     visualization_type: 'team_execute',
     round_ids: [12],
     motion_prompt: 'Show team\'s failed A-site execute with staggered entry timing.',
-    motion_visualization: mockMotionSequences[0],
+    motion_visualization: SampleMotionSequences[0],
   },
   {
     type: 'MOMENTUM_SHIFT',
@@ -691,7 +691,7 @@ export const mockMacroReviewEvents: MacroReviewEvent[] = [
     visualization_type: 'clutch',
     round_ids: [15],
     motion_prompt: 'Show OXY\'s 1v3 clutch sequence with positioning and decision-making.',
-    motion_visualization: mockMotionSequences[1] || mockMotionSequences[0],
+    motion_visualization: SampleMotionSequences[1] || SampleMotionSequences[0],
   },
   {
     type: 'MAP_CONTROL_LOSS',
@@ -705,11 +705,11 @@ export const mockMacroReviewEvents: MacroReviewEvent[] = [
     visualization_type: 'map_control',
     round_ids: [18, 19, 20],
     motion_prompt: 'Show team\'s defensive positioning and enemy\'s map control advantage.',
-    motion_visualization: mockMotionSequences[0],
+    motion_visualization: SampleMotionSequences[0],
   },
 ];
 
-export const mockMacroReview: MacroReview = {
+export const SampleMacroReview: MacroReview = {
   match_id: 'grid_match_001',
   generated_at: new Date().toISOString(),
   summary: 'Team Alpha showed strong mechanical performance but coordination issues in high-pressure situations led to preventable round losses. The match was defined by early economic struggles and mid-game momentum shifts.',
@@ -724,24 +724,25 @@ export const mockMacroReview: MacroReview = {
     {
       phase: 'Early Game (Rounds 1-6)',
       focus: 'Establishing Momentum',
-      items: mockMacroReviewEvents.filter(e => e.round_number <= 6).sort((a, b) => b.impact_score - a.impact_score),
+      items: SampleMacroReviewEvents.filter(e => e.round_number <= 6).sort((a, b) => b.impact_score - a.impact_score),
       time_allocation: '15 minutes',
       coaching_question: 'How did our early round decisions set the tone for the match?',
     },
     {
       phase: 'Mid Game (Rounds 7-15)',
       focus: 'Economic Management & Map Control',
-      items: mockMacroReviewEvents.filter(e => e.round_number > 6 && e.round_number <= 15).sort((a, b) => b.impact_score - a.impact_score),
+      items: SampleMacroReviewEvents.filter(e => e.round_number > 6 && e.round_number <= 15).sort((a, b) => b.impact_score - a.impact_score),
       time_allocation: '25 minutes',
       coaching_question: 'Where did we lose/gain control of the game\'s economy and map control?',
     },
     {
       phase: 'Late Game (Rounds 16-24)',
       focus: 'Closing Out & Adaptation',
-      items: mockMacroReviewEvents.filter(e => e.round_number > 15).sort((a, b) => b.impact_score - a.impact_score),
+      items: SampleMacroReviewEvents.filter(e => e.round_number > 15).sort((a, b) => b.impact_score - a.impact_score),
       time_allocation: '20 minutes',
       coaching_question: 'How did we adapt (or fail to adapt) to enemy strategies in the final rounds?',
     },
   ],
-  action_items: mockActionItems.slice(0, 3),
+  action_items: SampleActionItems.slice(0, 3),
 };
+

@@ -83,13 +83,13 @@ Based on the implemented improvements:
 
 1. Run automated accessibility tests (axe, WAVE)
 2. Test with screen readers (NVDA, VoiceOver)
-3. Create mobile mockups (2-3 screens)
+3. Create mobile Sampleups (2-3 screens)
 4. Record 30-45s demo video
 
 ### Medium-term (2 weeks)
 
 1. Conduct 5 unmoderated user tests
-2. Create annotated mockups (desktop + mobile)
+2. Create annotated Sampleups (desktop + mobile)
 3. Document user test results
 4. Implement any critical fixes from testing
 
@@ -159,3 +159,4 @@ const handleAction = () => {
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 - [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
 - [Design Tokens](https://www.designtokens.org/)
+

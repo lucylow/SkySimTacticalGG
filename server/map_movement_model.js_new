@@ -1,5 +1,5 @@
 // server/map_movement_model.js
-// Map-aware movement + event generator for Valorant mock replays.
+// Map-aware movement + event generator for Valorant Sample replays.
 //
 // Exports: generateValorantReplayFramesWithMap(match, opts)
 // Usage: const gen = require('./map_movement_model'); frames = gen.generateValorantReplayFramesWithMap(match, { ticks: 600 });
@@ -494,3 +494,4 @@ function cumulativePathLengthsSimple(waypoints) {
 module.exports = {
   generateValorantReplayFramesWithMap
 };
+

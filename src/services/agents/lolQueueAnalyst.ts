@@ -93,7 +93,8 @@ export class LoLQueueAnalystAgent extends BaseAgentImpl {
           'TP usage efficiency: 72%+'
         ]
       },
-      recommendation: 'SOLO' // Simplified logic for mock
+      recommendation: 'SOLO' // Simplified logic for Sample
     };
   }
 }
+

@@ -2,7 +2,7 @@
 export interface AppConfig {
   apiBaseUrl: string;
   wsBaseUrl: string;
-  enableMockData: boolean;
+  enableSampleData: boolean;
   enableDevTools: boolean;
   logLevel: 'debug' | 'info' | 'warn' | 'error';
 }
@@ -60,11 +60,11 @@ function getWsBaseUrl(): string {
 export const config: AppConfig = {
   apiBaseUrl: getApiBaseUrl(),
   wsBaseUrl: getWsBaseUrl(),
-  // Default to mock mode when critical envs are missing (e.g., no Supabase URL),
-  // unless explicitly disabled with VITE_ENABLE_MOCK_DATA="false"
-  enableMockData: (
-    import.meta.env.VITE_ENABLE_MOCK_DATA === 'true' ||
-    (!import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_ENABLE_MOCK_DATA !== 'false')
+  // Default to Sample mode when critical envs are missing (e.g., no Supabase URL),
+  // unless explicitly disabled with VITE_ENABLE_Sample_DATA="false"
+  enableSampleData: (
+    import.meta.env.VITE_ENABLE_Sample_DATA === 'true' ||
+    (!import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_ENABLE_Sample_DATA !== 'false')
   ),
   enableDevTools: import.meta.env.DEV || import.meta.env.VITE_ENABLE_DEV_TOOLS === 'true',
   logLevel: (import.meta.env.VITE_LOG_LEVEL as AppConfig['logLevel']) || 'info',
@@ -78,8 +78,8 @@ export function validateConfig(): void {
     console.warn('API base URL not configured. Using default.');
   }
 
-  if (config.enableMockData) {
-    console.info('Mock data mode enabled. API calls will use mock data.');
+  if (config.enableSampleData) {
+    console.info('Sample data mode enabled. API calls will use Sample data.');
   }
 }
 
@@ -87,5 +87,6 @@ export function validateConfig(): void {
 if (typeof window !== 'undefined') {
   validateConfig();
 }
+
 
 

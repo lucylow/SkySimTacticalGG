@@ -2,7 +2,7 @@ import React from 'react';
 import { Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAgent } from '@/context/AgentContext';
-import { availableTools } from '@/services/mockAgentStream';
+import { availableTools } from '@/services/SampleAgentStream';
 
 export const Toolbox: React.FC = () => {
   const { isRunning } = useAgent();
@@ -43,3 +43,4 @@ export const Toolbox: React.FC = () => {
     </div>
   );
 };
+

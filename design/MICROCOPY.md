@@ -339,7 +339,7 @@ This document contains all user-facing text (microcopy) for the application. Use
 
 ## Footer
 
-**Text**: "Mock AI Agent • Streaming SSE simulation • No backend required"
+**Text**: "Sample AI Agent • Streaming SSE simulation • No backend required"
 
 ## Best Practices
 
@@ -350,3 +350,4 @@ This document contains all user-facing text (microcopy) for the application. Use
 5. **Match Tone**: Professional but approachable
 6. **Consistent Terminology**: Use the same words for the same concepts
 7. **Include Context**: "Unable to save" → "Unable to save changes. Check your connection."
+

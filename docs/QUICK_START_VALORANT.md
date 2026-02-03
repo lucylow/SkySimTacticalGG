@@ -4,11 +4,11 @@
 
 This package includes **three complete deliverables** as requested:
 
-### 1. Mock Dataset Generator
+### 1. Sample Dataset Generator
 
-- **File**: `generate_mock_valorant_dataset.py`
-- **Output**: `mock_valorant_rounds.jsonl` (100 rounds, 10 players)
-- **Usage**: `python generate_mock_valorant_dataset.py`
+- **File**: `generate_Sample_valorant_dataset.py`
+- **Output**: `Sample_valorant_rounds.jsonl` (100 rounds, 10 players)
+- **Usage**: `python generate_Sample_valorant_dataset.py`
 
 ### 2. ML Pipeline (Feature Extraction → Training → Explainability)
 
@@ -45,8 +45,8 @@ run_pipeline.bat
 # 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Generate mock data
-python generate_mock_valorant_dataset.py
+# 2. Generate Sample data
+python generate_Sample_valorant_dataset.py
 
 # 3. Extract features
 python extract_features.py
@@ -62,7 +62,7 @@ python explain_shap.py
 
 ```
 .
-├── generate_mock_valorant_dataset.py  # Mock data generator
+├── generate_Sample_valorant_dataset.py  # Sample data generator
 ├── extract_features.py                 # Feature extraction
 ├── train_model.py                      # LightGBM training
 ├── explain_shap.py                      # SHAP explainability
@@ -77,7 +77,7 @@ python explain_shap.py
 ## 🎯 Next Steps
 
 1. **Test the Pipeline**: Run `./run_pipeline.sh` to generate all outputs
-2. **Review Insight Cards**: Open `insight_cards.md` for UI mockups
+2. **Review Insight Cards**: Open `insight_cards.md` for UI Sampleups
 3. **Integrate JSON**: Use `insight_cards.json` in your React/UI components
 4. **Customize Features**: Expand `extract_features.py` with richer signals
 5. **Build UI**: Use the insight card structure to create coach-facing components
@@ -86,7 +86,7 @@ python explain_shap.py
 
 After running the pipeline, you'll have:
 
-- **mock_valorant_rounds.jsonl**: 100 rounds of synthetic match data
+- **Sample_valorant_rounds.jsonl**: 100 rounds of synthetic match data
 - **features.csv**: ~1000 rows (10 players × 100 rounds) with engineered features
 - **lgb_model.pkl**: Trained LightGBM model (AUC ~0.7-0.9 on validation)
 - **Console output**: SHAP explanations showing top contributing features
@@ -108,7 +108,7 @@ See `insight_cards.md` for a complete 45-second video/GIF storyboard showing:
 
 ### Add More Events
 
-Edit `generate_mock_valorant_dataset.py` → `sample_events_for_player()` function
+Edit `generate_Sample_valorant_dataset.py` → `sample_events_for_player()` function
 
 ### Add More Features
 
@@ -134,3 +134,4 @@ See `README.md` for:
 ---
 
 **Ready to go!** Run the pipeline and start building your Valorant AI Assistant Coach UI. 🎮
+

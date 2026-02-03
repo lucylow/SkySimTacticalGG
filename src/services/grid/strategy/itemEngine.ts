@@ -1,7 +1,7 @@
-import { GridMockData, BuildRecommendation } from './types';
+import { GridSampleData, BuildRecommendation } from './types';
 
 export class ItemEngine {
-  recommendBuild(gridData: GridMockData, champion: string): BuildRecommendation {
+  recommendBuild(gridData: GridSampleData, champion: string): BuildRecommendation {
     const { enemyChamp } = gridData.layer1;
 
     if (champion === 'Aatrox' && enemyChamp === 'Renekton') {
@@ -21,3 +21,4 @@ export class ItemEngine {
     };
   }
 }
+

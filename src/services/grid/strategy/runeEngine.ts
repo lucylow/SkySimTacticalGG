@@ -1,7 +1,7 @@
-import { GridMockData, RuneRecommendation } from './types';
+import { GridSampleData, RuneRecommendation } from './types';
 
 export class RuneEngine {
-  recommendRunes(gridData: GridMockData, position: string): RuneRecommendation {
+  recommendRunes(gridData: GridSampleData, position: string): RuneRecommendation {
     const { myChamp, enemyChamp } = gridData.layer1;
 
     if (myChamp === 'Aatrox' && enemyChamp === 'Renekton') {
@@ -20,3 +20,4 @@ export class RuneEngine {
     };
   }
 }
+

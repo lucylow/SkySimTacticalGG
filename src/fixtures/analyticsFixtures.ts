@@ -1,4 +1,4 @@
-// src/mocks/analyticsFixtures.ts - Precomputed metrics for dashboard demos
+// src/Samples/analyticsFixtures.ts - Precomputed metrics for dashboard demos
 
 export const analyticsSnapshot = {
   daily: [
@@ -97,3 +97,4 @@ export const agentUsageMetrics = {
     { date: "2026-01-12", sessions: 215, tokens: 156789 },
   ],
 };
+

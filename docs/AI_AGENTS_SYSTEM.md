@@ -245,7 +245,7 @@ const agent = new MicroMistakeDetectorAgent({
 });
 ```
 
-**Note**: In the current implementation, LLM calls are mocked for development. To enable real LLM calls, update the `callLLM` method in `baseAgent.ts` with actual API calls.
+**Note**: In the current implementation, LLM calls are Sampleed for development. To enable real LLM calls, update the `callLLM` method in `baseAgent.ts` with actual API calls.
 
 ## Data Flow
 
@@ -269,7 +269,7 @@ The agent system integrates with:
 ## Future Enhancements
 
 1. **Vector Database Integration**: Store playbooks and past analyses for context
-2. **Real LLM API Calls**: Replace mock implementations with actual API calls
+2. **Real LLM API Calls**: Replace Sample implementations with actual API calls
 3. **Agent Memory**: Persistent memory across sessions
 4. **Fine-tuning**: Train agents on proprietary esports data
 5. **Streaming Responses**: Real-time streaming of agent insights
@@ -295,7 +295,7 @@ const agentRegistry = new Map<AgentRole, any>([
 ```
 
 ### LLM Errors
-Check API key configuration and network connectivity. In development, agents use mock responses.
+Check API key configuration and network connectivity. In development, agents use Sample responses.
 
 ### Performance Issues
 - Use parallel coordination for independent agents
@@ -305,5 +305,6 @@ Check API key configuration and network connectivity. In development, agents use
 ## Examples
 
 See the `MultiAgentDashboard` component for a complete example of using the agent system in a React application.
+
 
 

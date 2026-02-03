@@ -177,7 +177,7 @@ This automatically:
 1. Start observability stack: `docker-compose -f docker-compose.observability.yml up`
 2. Start backend: `uvicorn app.api:app --reload`
 3. Open 3D viewer: `public/viewer/index.html`
-4. Ingest events (via GRID integration or mock)
+4. Ingest events (via GRID integration or Sample)
 5. Watch:
    - Grafana dashboards update in real-time
    - 3D viewer shows live replay
@@ -210,5 +210,6 @@ CORS_ORIGINS=http://localhost:5173,http://localhost:3000
 - ML models are optional - system falls back to rule-based agents if models not found.
 - Signal gating is always enabled for safety.
 - Counterfactuals are explicitly labeled and never streamed live.
+
 
 

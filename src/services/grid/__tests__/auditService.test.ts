@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { auditService } from '../auditService';
 import { supabase } from '@/integrations/supabase/client';
 
-// Mock supabase client
-vi.mock('@/integrations/supabase/client', () => ({
+// Sample supabase client
+vi.Sample('@/integrations/supabase/client', () => ({
   supabase: {
     from: vi.fn(() => ({
       insert: vi.fn(() => Promise.resolve({ error: null })),
@@ -13,12 +13,12 @@ vi.mock('@/integrations/supabase/client', () => ({
 
 describe('auditService', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.clearAllSamples();
   });
 
   it('should log an action successfully', async () => {
     const insertSpy = vi.fn(() => Promise.resolve({ error: null }));
-    (supabase.from as any).mockReturnValue({ insert: insertSpy });
+    (supabase.from as any).SampleReturnValue({ insert: insertSpy });
 
     await auditService.log({
       provider: 'grid',
@@ -41,7 +41,7 @@ describe('auditService', () => {
 
   it('should log summary success', async () => {
     const insertSpy = vi.fn(() => Promise.resolve({ error: null }));
-    (supabase.from as any).mockReturnValue({ insert: insertSpy });
+    (supabase.from as any).SampleReturnValue({ insert: insertSpy });
 
     await auditService.logSummarySuccess('match-123');
 
@@ -54,7 +54,7 @@ describe('auditService', () => {
 
   it('should log summary failure', async () => {
     const insertSpy = vi.fn(() => Promise.resolve({ error: null }));
-    (supabase.from as any).mockReturnValue({ insert: insertSpy });
+    (supabase.from as any).SampleReturnValue({ insert: insertSpy });
 
     await auditService.logSummaryFailure('match-123', 'Some error');
 
@@ -66,9 +66,9 @@ describe('auditService', () => {
   });
 
   it('should handle insert errors gracefully', async () => {
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleErrorSpy = vi.spyOn(console, 'error').SampleImplementation(() => {});
     const insertSpy = vi.fn(() => Promise.resolve({ error: { message: 'DB Error' } }));
-    (supabase.from as any).mockReturnValue({ insert: insertSpy });
+    (supabase.from as any).SampleReturnValue({ insert: insertSpy });
 
     await auditService.log({
       provider: 'grid',
@@ -82,6 +82,7 @@ describe('auditService', () => {
       expect.stringContaining('[AUDIT ERROR]'),
       expect.anything()
     );
-    consoleErrorSpy.mockRestore();
+    consoleErrorSpy.SampleRestore();
   });
 });
+

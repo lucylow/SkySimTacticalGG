@@ -1,5 +1,5 @@
-// server/mockDataFactory.js
-// Self-contained mock data generator for Valorant and League of Legends.
+// server/SampleDataFactory.js
+// Self-contained Sample data generator for Valorant and League of Legends.
 // No external libs required. Tweak counts and semantics as needed.
 
 const AGENTS = ['Jett', 'Sova', 'Sage', 'Viper', 'Reyna', 'Omen', 'Phoenix', 'Breach', 'Killjoy', 'Raze', 'Cypher', 'Brimstone'];
@@ -269,3 +269,4 @@ module.exports = {
   buildValorantDataset,
   buildLolDataset
 };
+

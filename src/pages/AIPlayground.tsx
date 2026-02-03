@@ -12,14 +12,14 @@ import { EventsLog } from '@/components/agent/EventsLog';
 import { OnboardingTour, aiPlaygroundTourSteps } from '@/components/ui/onboarding-tour';
 import { useUndoToast } from '@/components/ui/undo-toast';
 import { ValorantOpponentAnalysisView } from '@/components/valorant/ValorantOpponentAnalysisView';
-import lolOpponentData from '@/mock-data/lolOpponentData.json';
+import lolOpponentData from '@/sample-data/lolOpponentData.json';
 
 const PlaygroundContent: React.FC = () => {
   const { messages, timeline, eventsLog, setMessages, setTimeline, setEventsLog, clearMessages, isRunning } = useAgent();
   const { showUndoToast } = useUndoToast();
 
-  // Minimal mock data to showcase Valorant opponent analysis
-  const mockValorantAnalysis = {
+  // Minimal Sample data to showcase Valorant opponent analysis
+  const SampleValorantAnalysis = {
     opponent_profile: {
       likelyOpener: 'Heavy A lobby pressure into split A execute',
       economy_habits: ['Force second round after plant', 'Low investment on bonus'],
@@ -147,7 +147,7 @@ const PlaygroundContent: React.FC = () => {
             <CardContent className="p-4">
               <div className="mb-3 text-sm font-semibold">1. VALORANT</div>
               <div className="min-w-0">
-                <ValorantOpponentAnalysisView analysis={mockValorantAnalysis} />
+                <ValorantOpponentAnalysisView analysis={SampleValorantAnalysis} />
               </div>
             </CardContent>
           </Card>
@@ -200,3 +200,4 @@ const AIPlayground: React.FC = () => {
 };
 
 export default AIPlayground;
+

@@ -88,7 +88,7 @@ This document contains three ready-to-show demo insight cards for the UI, plus a
 
 ### Storyboard (45s total)
 
-**0–3s:** Intro frame — app hero with match summary (map Ascent, Match mock_match_001).
+**0–3s:** Intro frame — app hero with match summary (map Ascent, Match Sample_match_001).
 
 **3–10s:** Click Round 12 → open round-level view showing mini heatmaps and "Top Insights (3)" header.
 
@@ -143,3 +143,4 @@ Each insight card can be represented as JSON for easy integration:
   ]
 }
 ```
+

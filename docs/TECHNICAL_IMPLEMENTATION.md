@@ -169,7 +169,7 @@ If using JetBrains Junie for code generation:
 - **Structured logging** on backend (server-side) for replayability
 - **Health endpoints:** `/health` for service status
 - **WebSocket logging** for real-time event debugging
-- **Mock data** for deterministic demos (`mock-data/`)
+- **Sample data** for deterministic demos (`sample-data/`)
 
 ---
 
@@ -185,7 +185,7 @@ If using JetBrains Junie for code generation:
 
 ## Known Limitations & TODOs
 
-- **Security:** Mock server for dev only; production requires proper auth & rate limiting
+- **Security:** Sample server for dev only; production requires proper auth & rate limiting
 - **Persistence:** Currently uses JSON seed files for demo; PostgreSQL for production
 - **Scaling:** WebSocket connections need robust connection management for production
 - **Type Safety:** Some legacy code may need gradual migration to strict TypeScript
@@ -262,3 +262,4 @@ docker-compose up    # Start all services (API, Redis, PostgreSQL, Celery)
 3. Set up production deployment pipeline
 4. Add performance monitoring (e.g., Sentry, DataDog)
 5. Document API with OpenAPI/Swagger
+

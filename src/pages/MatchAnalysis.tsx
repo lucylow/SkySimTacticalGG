@@ -80,9 +80,9 @@ export const MatchAnalysis: React.FC = () => {
     }
   };
 
-  // Mock round data for demo
+  // Sample round data for demo
   const winTypes = ['elimination', 'defuse', 'time', 'plant'] as const;
-  const mockRounds = Array.from({ length: 10 }, (_, i) => ({
+  const SampleRounds = Array.from({ length: 10 }, (_, i) => ({
     round_number: i + 1,
     winner: i % 3 === 0 ? 'Team Beta' : 'Team Alpha',
     win_type: winTypes[i % 4],
@@ -228,7 +228,7 @@ export const MatchAnalysis: React.FC = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {mockRounds.map((round) => (
+                        {SampleRounds.map((round) => (
                           <TableRow key={round.round_number}>
                             <TableCell className="font-medium">
                               {round.round_number}
@@ -333,3 +333,4 @@ export const MatchAnalysis: React.FC = () => {
     </motion.div>
   );
 };
+

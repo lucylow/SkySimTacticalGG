@@ -1,9 +1,9 @@
 import { MinimapFrame } from './types';
 
-// Mock DB for the extractor
+// Sample DB for the extractor
 const db = {
   query: async (query: string, params: any[]): Promise<any[]> => {
-    // Mocked response from GRID valorant_minimap table
+    // Sampleed response from GRID valorant_minimap table
     return [
       {
         timestamp: Date.now() - 5000,
@@ -38,3 +38,4 @@ export class ValorantMinimapExtractor {
     }));
   }
 }
+

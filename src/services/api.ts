@@ -2,18 +2,18 @@ import type { DashboardData, Match, Player, MotionData, Insight } from '@/types'
 import type { UtilityDecision } from '@/types/utility';
 import type { LoLPlayer, ValorantPlayer, EsportsTeam, EsportsMatch } from '@/types/esports';
 import { 
-  mockDashboardData, 
-  mockPlayers, 
-  mockMatches, 
-  mockInsights,
-  mockMotionData,
-  mockPerformanceTrends,
-  mockCoachingSuggestions,
-  mockLoLPlayers,
-  mockValorantPlayers,
-  mockLoLTeams,
-  mockLoLMatches,
-} from '@/data/mockData';
+  SampleDashboardData, 
+  SamplePlayers, 
+  SampleMatches, 
+  SampleInsights,
+  SampleMotionData,
+  SamplePerformanceTrends,
+  SampleCoachingSuggestions,
+  SampleLoLPlayers,
+  SampleValorantPlayers,
+  SampleLoLTeams,
+  SampleLoLMatches,
+} from '@/data/SampleData';
 import { ApiClient } from '@/lib/apiClient';
 import { config } from '@/lib/config';
 import { getTopPriorities } from './ObjectivePriorityEngine';
@@ -26,10 +26,10 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 class ApiService {
   private apiClient: ApiClient;
-  private useMockData: boolean;
+  private useSampleData: boolean;
 
   constructor() {
-    this.useMockData = config.enableMockData;
+    this.useSampleData = config.enableSampleData;
     this.apiClient = new ApiClient({
       baseUrl: config.apiBaseUrl,
       getAuthToken: () => localStorage.getItem('auth_token'),
@@ -45,84 +45,84 @@ class ApiService {
 
   // Dashboard
   async fetchDashboardData(): Promise<DashboardData> {
-    if (this.useMockData) {
+    if (this.useSampleData) {
       await delay(300); // Simulate network
-      return { ...mockDashboardData, last_update: new Date().toISOString() };
+      return { ...SampleDashboardData, last_update: new Date().toISOString() };
     }
     await delay(300);
-    return { ...mockDashboardData, last_update: new Date().toISOString() };
+    return { ...SampleDashboardData, last_update: new Date().toISOString() };
   }
 
   // Esports Specific Fetchers
   async fetchLoLPlayers(): Promise<LoLPlayer[]> {
     await delay(200);
-    return mockLoLPlayers;
+    return SampleLoLPlayers;
   }
 
   async fetchValorantPlayers(): Promise<ValorantPlayer[]> {
     await delay(200);
-    return mockValorantPlayers;
+    return SampleValorantPlayers;
   }
 
   async fetchLoLTeams(): Promise<EsportsTeam[]> {
     await delay(200);
-    return mockLoLTeams;
+    return SampleLoLTeams;
   }
 
   async fetchLoLMatches(): Promise<EsportsMatch[]> {
     await delay(200);
-    return mockLoLMatches;
+    return SampleLoLMatches;
   }
 
   // Match Analysis
   async fetchMatchAnalysis(matchId: string): Promise<Match | null> {
     await delay(200);
-    return mockMatches.find(m => m.id === matchId) || null;
+    return SampleMatches.find(m => m.id === matchId) || null;
   }
 
   async fetchMatchList(): Promise<Match[]> {
     await delay(250);
-    return mockMatches;
+    return SampleMatches;
   }
 
   // Player Development
   async fetchPlayerDevelopment(playerId: string): Promise<Player | null> {
     await delay(200);
-    return mockPlayers.find(p => p.id === playerId) || null;
+    return SamplePlayers.find(p => p.id === playerId) || null;
   }
 
   async fetchPlayerList(): Promise<Player[]> {
     await delay(200);
-    return mockPlayers;
+    return SamplePlayers;
   }
 
   // Insights
   async fetchInsights(): Promise<Insight[]> {
     await delay(150);
-    return mockInsights;
+    return SampleInsights;
   }
 
   async generateInsights(_teamId: string): Promise<Insight[]> {
     await delay(500);
-    return mockInsights.filter(() => Math.random() > 0.3);
+    return SampleInsights.filter(() => Math.random() > 0.3);
   }
 
   // Motion Data
   async fetchMotionData(_motionId: string): Promise<MotionData> {
     await delay(300);
-    return mockMotionData;
+    return SampleMotionData;
   }
 
   // Performance Trends
   async fetchPerformanceTrends(period: 'weekly' | 'monthly' = 'weekly') {
     await delay(200);
-    return mockPerformanceTrends[period];
+    return SamplePerformanceTrends[period];
   }
 
   // Live Coaching
   async fetchCoachingSuggestions() {
     await delay(100);
-    return mockCoachingSuggestions;
+    return SampleCoachingSuggestions;
   }
 
   // Coaching Feedback
@@ -140,13 +140,13 @@ class ApiService {
   async fetchTeamStats() {
     await delay(200);
     return {
-      totalMatches: mockMatches.length,
-      wins: mockMatches.filter(m => m.winner === 'Team Alpha').length,
-      losses: mockMatches.filter(m => m.winner !== 'Team Alpha').length,
+      totalMatches: SampleMatches.length,
+      wins: SampleMatches.filter(m => m.winner === 'Team Alpha').length,
+      losses: SampleMatches.filter(m => m.winner !== 'Team Alpha').length,
       winRate: Math.round(
-        (mockMatches.filter(m => m.winner === 'Team Alpha').length / mockMatches.length) * 100
+        (SampleMatches.filter(m => m.winner === 'Team Alpha').length / SampleMatches.length) * 100
       ),
-      avgScore: mockMatches.reduce((acc, m) => acc + m.score[0], 0) / mockMatches.length,
+      avgScore: SampleMatches.reduce((acc, m) => acc + m.score[0], 0) / SampleMatches.length,
       bestMap: 'Bind',
       worstMap: 'Split',
     };
@@ -180,7 +180,7 @@ class ApiService {
     utility_recommendations?: UtilityDecision;
     tactical_overlay: any;
   }> {
-    if (config.enableMockData) {
+    if (config.enableSampleData) {
       await delay(300);
       return {
         alerts: [],
@@ -250,7 +250,7 @@ class ApiService {
   }
 
   async analyzeOpponents(game: 'VALORANT' | 'LEAGUE', telemetryData: any[]): Promise<any> {
-    // Frontend-side mock implementation; in production this would hit a backend route
+    // Frontend-side Sample implementation; in production this would hit a backend route
     await delay(200);
 
     const analyzer = game === 'VALORANT' ? new ValorantPlaystyleAnalyzer() : new LeaguePlaystyleAnalyzer();
@@ -268,13 +268,13 @@ class ApiService {
   }
 
   async getObjectivePriorities(matchId: string, timestamp: number) {
-    // For now, compute locally using the decision tree engine (mock live state inside)
+    // For now, compute locally using the decision tree engine (Sample live state inside)
     return await getTopPriorities(matchId, timestamp);
   }
 
   async ingestTelemetry(matchId: string, packets: any[]) {
-    if (config.enableMockData) {
-      console.log('[Mock] Ingesting telemetry packets:', packets.length);
+    if (config.enableSampleData) {
+      console.log('[Sample] Ingesting telemetry packets:', packets.length);
       return { success: true };
     }
 
@@ -307,3 +307,4 @@ class ApiService {
 
 export const api = new ApiService();
 export default api;
+

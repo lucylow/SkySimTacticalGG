@@ -155,9 +155,9 @@ CORS_ORIGINS=http://localhost:5173,http://localhost:3000
 - Check CORS settings in `.env`
 - Verify WebSocket URL matches your frontend origin
 
-### HY-Motion returns mock data
+### HY-Motion returns Sample data
 - Set `HY_MOTION_URL` to your actual HY-Motion API endpoint
-- Or use mock data for development (default behavior)
+- Or use Sample data for development (default behavior)
 
 ## Next Steps
 
@@ -165,5 +165,6 @@ CORS_ORIGINS=http://localhost:5173,http://localhost:3000
 2. **Add S3 Storage**: Implement motion frame storage in `orchestrator.py`
 3. **Scale Workers**: Add more Celery workers in `docker-compose.yml`
 4. **Add Monitoring**: Set up Prometheus + Grafana for metrics
+
 
 

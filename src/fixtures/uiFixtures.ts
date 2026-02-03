@@ -1,4 +1,4 @@
-// src/mocks/uiFixtures.ts - UI fixture examples for demos
+// src/Samples/uiFixtures.ts - UI fixture examples for demos
 
 export const microcopySuggestions = [
   { id: "m1", location: "hero", text: "Get the gear pros trust — fast shipping, no fuss." },
@@ -84,3 +84,4 @@ export const keyboardShortcuts = [
   { key: "⌘+Shift+R", action: "Replay last session" },
   { key: "⌘+S", action: "Save to memory" },
 ];
+

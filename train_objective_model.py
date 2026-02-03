@@ -60,6 +60,7 @@ def train_objective_model(data_path):
     return model, shap_values
 
 if __name__ == "__main__":
-    # Example usage with mock data path
+    # Example usage with Sample data path
     # train_objective_model('objective_data.csv')
     print("Objective model training script ready.")
+

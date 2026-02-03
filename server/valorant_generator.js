@@ -1,5 +1,5 @@
 // server/valorant_generator.js
-// Enhanced Valorant mock generator with map-aware movement, multi-shot engagement,
+// Enhanced Valorant Sample generator with map-aware movement, multi-shot engagement,
 // facing vectors / peek model, per-player-round feature extraction, and CSV export.
 //
 // Usage (manual):
@@ -420,7 +420,7 @@ function generateValorantMatch({ rounds=24, mapName=null } = {}) {
 
   const match = {
     id: mkId('val-match'),
-    title: `Valorant Mock ${Math.floor(randFloat(1000,9999))}`,
+    title: `Valorant Sample ${Math.floor(randFloat(1000,9999))}`,
     map: map,
     startedAt: t0,
     roundsPlayed: rounds,
@@ -545,10 +545,11 @@ export function produceDataset({count=5, rounds=26, ticksPerRound=160, writeCSV=
 // ---------------- If run as script ----------------
 import { argv } from 'process';
 if (argv[1] === __filename) {
-  console.log('Generating enhanced Valorant mock dataset (map-aware, multi-shot, facing/peek, CSV) ...');
+  console.log('Generating enhanced Valorant Sample dataset (map-aware, multi-shot, facing/peek, CSV) ...');
   produceDataset({ count: 4, rounds: 26, ticksPerRound: 160, writeCSV: true });
   console.log('Done. Files in server/data/');
 }
 
 // Export for server usage
 export { generateValorantMatch, generateReplayFramesForMatch, extractFeaturesForMatch };
+

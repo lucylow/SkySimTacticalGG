@@ -179,7 +179,7 @@ export class WorstCaseSimulatorAgent extends BaseAgentImpl {
   public generateTrainingSession(role: Role): TrainingSession {
     const triggers = FAILURE_TRIGGERS[role] || [];
     const drills = triggers.map((trigger, i) => {
-      // Mocked state for simulation
+      // Sampleed state for simulation
       const state = {
         role,
         failureTrigger: trigger,
@@ -215,3 +215,4 @@ export class WorstCaseSimulatorAgent extends BaseAgentImpl {
     return [];
   }
 }
+

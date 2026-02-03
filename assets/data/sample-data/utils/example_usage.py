@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Example usage of mock data utilities.
+Example usage of Sample data utilities.
 
 This script demonstrates how to:
-1. Generate mock data
+1. Generate Sample data
 2. Export to different formats
 3. Replay events
 """
@@ -14,11 +14,11 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from generate_mock_data import generate_match_archive, export_to_csv, export_to_redis_streams
+from generate_Sample_data import generate_match_archive, export_to_csv, export_to_redis_streams
 from datetime import datetime
 
 def main():
-    print("=== Mock Data Generation Example ===\n")
+    print("=== Sample Data Generation Example ===\n")
     
     # Generate a single match archive
     print("1. Generating match archive...")
@@ -74,5 +74,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 

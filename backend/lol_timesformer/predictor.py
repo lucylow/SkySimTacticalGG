@@ -47,7 +47,7 @@ class TimeSformerPredictor:
                 
                 predictions = torch.softmax(logits, dim=-1)
             
-            # Parse predictions (mocked mapping to classes)
+            # Parse predictions (Sampleed mapping to classes)
             # In a real model, these indices would correspond to specific output neurons
             gank_prob = float(predictions[0, 1]) if predictions.shape[1] > 1 else 0.1
             rotate_prob = float(predictions[0, 3]) if predictions.shape[1] > 3 else 0.05
@@ -65,3 +65,4 @@ class TimeSformerPredictor:
         except Exception as e:
             # print(f"Prediction error: {e}")
             return LoLPrediction((0.5, 0.5), 0.1, {'dragon': 60, 'baron': 180}, 0.1, {})
+

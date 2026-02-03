@@ -220,7 +220,8 @@ import { AgentDashboard } from '@/components/agents/AgentDashboard';
 - All agents are currently frontend-only implementations
 - For production, agents should run on a backend server
 - The system is designed to be easily migrated to a backend architecture
-- Current implementation uses mock data and simplified algorithms
+- Current implementation uses Sample data and simplified algorithms
 - Real implementations would require more sophisticated analysis
+
 
 

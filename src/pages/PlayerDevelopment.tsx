@@ -271,8 +271,8 @@ export const PlayerDevelopment: React.FC = () => {
   };
 
   const loadPlayerMistakes = async (playerId: string) => {
-    // Mock mistakes - in production, would come from SkySim Tactical GG analysis
-    const mockMistakes: Mistake[] = [
+    // Sample mistakes - in production, would come from SkySim Tactical GG analysis
+    const SampleMistakes: Mistake[] = [
       {
         id: 'm1',
         player_id: playerId,
@@ -301,7 +301,7 @@ export const PlayerDevelopment: React.FC = () => {
         recommendation: 'React faster to teammate deaths and attempt trades',
       },
     ];
-    setPlayerMistakes(mockMistakes);
+    setPlayerMistakes(SampleMistakes);
   };
 
   return (
@@ -702,3 +702,4 @@ export const PlayerDevelopment: React.FC = () => {
     </motion.div>
   );
 };
+

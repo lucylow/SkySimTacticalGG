@@ -16,8 +16,8 @@ export default defineConfig({
         'src/test/',
         '**/*.d.ts',
         '**/*.config.*',
-        '**/mockData.ts',
-        '**/mocks/**',
+        '**/SampleData.ts',
+        '**/Samples/**',
       ],
     },
   },
@@ -27,4 +27,5 @@ export default defineConfig({
     },
   },
 });
+
 

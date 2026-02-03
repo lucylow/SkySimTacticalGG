@@ -1,11 +1,11 @@
-import { GridMockData, CompArchetype } from './types';
+import { GridSampleData, CompArchetype } from './types';
 import { WinConditionEngine } from './winConditionEngine';
 import { RuneEngine } from './runeEngine';
 import { ItemEngine } from './itemEngine';
 import { StrategyEngine } from './strategyEngine';
 
 // SIMULATED GRID DATA - Match ID: "grid_lol_20260202_cloud9_vs_t1"
-const GRID_MOCK_DATA: GridMockData = {
+const GRID_Sample_DATA: GridSampleData = {
   layer1: {
     myChamp: "Aatrox",
     enemyChamp: "Renekton",
@@ -39,7 +39,7 @@ const GRID_MOCK_DATA: GridMockData = {
   }
 };
 
-async function simulateStrategyTranslation(gridData: typeof GRID_MOCK_DATA) {
+async function simulateStrategyTranslation(gridData: typeof GRID_Sample_DATA) {
   console.log('🔥 GRID LoL Strategy Translation - LIVE SIMULATION');
   console.log('⏰ Match Time:', (gridData.layer2.matchTime / 60).toFixed(1) + 'min');
   console.log('💰 Gold Lead:', gridData.layer2.goldDiff);
@@ -83,7 +83,7 @@ async function simulateStrategyTranslation(gridData: typeof GRID_MOCK_DATA) {
 }
 
 // RUN FULL SIMULATION
-simulateStrategyTranslation(GRID_MOCK_DATA).then(result => {
+simulateStrategyTranslation(GRID_Sample_DATA).then(result => {
   console.log('\n🎮 STRATEGY CONFIDENCE BREAKDOWN:');
   console.log(`WinCon Match: ${(result.winCon.confidence * 100).toFixed(0)}%`);
   console.log(`Build Optimization: 92% (Divine Sunderer vs Renekton)`);
@@ -95,3 +95,4 @@ simulateStrategyTranslation(GRID_MOCK_DATA).then(result => {
   console.log('3. Secure baron 4v4+');
   console.log('4. Bot inhib path with baron buff');
 });
+

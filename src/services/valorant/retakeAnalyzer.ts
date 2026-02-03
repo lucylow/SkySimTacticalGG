@@ -377,7 +377,7 @@ export class ValorantRetakeAnalyzer {
             .map(a => a!.name),
         }));
     } else {
-      // Mock player states for demonstration
+      // Sample player states for demonstration
       playerStates = Array.from({ length: defenders }, () => ({
         health: 80 + Math.random() * 20,
         armor: 50 + Math.random() * 50,
@@ -399,5 +399,6 @@ export class ValorantRetakeAnalyzer {
 }
 
 export const valorantRetakeAnalyzer = new ValorantRetakeAnalyzer();
+
 
 

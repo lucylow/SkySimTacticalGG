@@ -31,12 +31,12 @@ export default function LolMatches() {
         if (data && data.length > 0) {
           setMatches(data);
         } else {
-          // Fallback to mock API service
-          const mock = await api.fetchLoLMatches();
-          const mapped = mock.map((m: any) => ({
+          // Fallback to Sample API service
+          const Sample = await api.fetchLoLMatches();
+          const mapped = Sample.map((m: any) => ({
             id: m.id,
-            title: m.title ?? 'Mock LoL Match',
-            region: (m.region as string) ?? 'mock',
+            title: m.title ?? 'Sample LoL Match',
+            region: (m.region as string) ?? 'Sample',
             patch: (m.patch as string) ?? null,
             match_ts: m.startTime ? new Date(m.startTime).toISOString() : null,
           }));
@@ -44,16 +44,16 @@ export default function LolMatches() {
         }
       } catch (e: any) {
         try {
-          const mock = await api.fetchLoLMatches();
-          const mapped = mock.map((m: any) => ({
+          const Sample = await api.fetchLoLMatches();
+          const mapped = Sample.map((m: any) => ({
             id: m.id,
-            title: m.title ?? 'Mock LoL Match',
-            region: (m.region as string) ?? 'mock',
+            title: m.title ?? 'Sample LoL Match',
+            region: (m.region as string) ?? 'Sample',
             patch: (m.patch as string) ?? null,
             match_ts: m.startTime ? new Date(m.startTime).toISOString() : null,
           }));
           setMatches(mapped);
-        } catch (mockErr: any) {
+        } catch (SampleErr: any) {
           setError(e?.message || 'Failed to load LoL matches');
         }
       } finally {
@@ -125,7 +125,7 @@ export default function LolMatches() {
                         {m.match_ts ? new Date(m.match_ts).toLocaleString() : 'No date'}
                       </p>
                     </div>
-                    <span className="text-sm text-muted-foreground capitalize">{m.region || 'mock'}</span>
+                    <span className="text-sm text-muted-foreground capitalize">{m.region || 'Sample'}</span>
                   </div>
                 </CardContent>
               </Link>
@@ -136,3 +136,4 @@ export default function LolMatches() {
     </div>
   );
 }
+

@@ -1,5 +1,5 @@
 // server/lol_vod_generator.js
-// GRID-style League of Legends VOD / video analysis mock data
+// GRID-style League of Legends VOD / video analysis Sample data
 // Frame-level telemetry (10Hz) for replay + ML
 
 import fs from "fs";
@@ -225,7 +225,7 @@ function simulateGameFrames(durationMin=32) {
 function generateLoLVOD() {
   return {
     matchId:`lol-vod-${ri(10000,99999)}`,
-    source:"GRID_MOCK",
+    source:"GRID_Sample",
     tickRate:TICK_RATE,
     map:"SummonersRift",
     frames: simulateGameFrames(ri(28,36))
@@ -240,7 +240,8 @@ if (isMain) {
     path.join(OUT, "lol_vod_match.json"),
     JSON.stringify(vod, null, 2)
   );
-  console.log("LoL VOD mock written");
+  console.log("LoL VOD Sample written");
 }
 
 export { generateLoLVOD };
+

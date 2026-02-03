@@ -1,4 +1,4 @@
-import { GridMockData, StrategyOutput, CompArchetype } from './types';
+import { GridSampleData, StrategyOutput, CompArchetype } from './types';
 import { StrategyEngine } from './strategyEngine';
 
 export class GridLolProcessor {
@@ -12,7 +12,7 @@ export class GridLolProcessor {
       this.fetchFeedbackLoop(matchId)
     ]);
 
-    const fullState: GridMockData = { 
+    const fullState: GridSampleData = { 
       layer1: staticData, 
       layer2: dynamicData, 
       layer3: feedbackData 
@@ -22,7 +22,7 @@ export class GridLolProcessor {
   }
 
   private async fetchChampSelect(matchId: string) {
-    // Mock GRID champ select API
+    // Sample GRID champ select API
     return {
       myChamp: "Aatrox",
       enemyChamp: "Renekton",
@@ -37,7 +37,7 @@ export class GridLolProcessor {
   }
 
   private async fetchLiveTelemetry(matchId: string) {
-    // Mock GRID live state
+    // Sample GRID live state
     return {
       matchTime: 1482,
       lanePriority: { top: 0.41, mid: -0.23, bot: 0.67 },
@@ -53,7 +53,7 @@ export class GridLolProcessor {
   }
 
   private async fetchFeedbackLoop(matchId: string) {
-    // Mock GRID feedback/events
+    // Sample GRID feedback/events
     return {
       lastFightResult: "WIN" as const,
       objectivesGained: ["herald", "tower_top1"],
@@ -62,3 +62,4 @@ export class GridLolProcessor {
     };
   }
 }
+

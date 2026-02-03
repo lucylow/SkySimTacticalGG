@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """
-Mock Esports Data Generator
+Sample Esports Data Generator
 
-Generates comprehensive mock esports data in multiple formats:
+Generates comprehensive Sample esports data in multiple formats:
 - JSON (single match archive, multi-tournament)
 - CSV (events, player stats, agent signals, reviews)
 - Redis Stream commands
 - Replay simulator support
 
 Usage:
-    python generate_mock_data.py --format json --output single_match.json
-    python generate_mock_data.py --format csv --output-dir ./exports
-    python generate_mock_data.py --format redis --output redis_commands.txt
+    python generate_Sample_data.py --format json --output single_match.json
+    python generate_Sample_data.py --format csv --output-dir ./exports
+    python generate_Sample_data.py --format redis --output redis_commands.txt
 """
 
 import json
@@ -330,7 +330,7 @@ def generate_match_archive(match_id: str, tournament_id: str,
     
     archive = {
         "metadata": {
-            "source": "MOCK_GRID_COMPATIBLE",
+            "source": "Sample_GRID_COMPATIBLE",
             "generated_at": datetime.utcnow().isoformat() + "Z",
             "game": "cs2",
             "version": "1.0",
@@ -339,7 +339,7 @@ def generate_match_archive(match_id: str, tournament_id: str,
         "tournament": {
             "tournament_id": tournament_id,
             "name": tournament_id.replace("_", " ").title(),
-            "organizer": "Mock Esports League",
+            "organizer": "Sample Esports League",
             "tier": "S",
             "region": team_alpha_region,
             "start_date": start_time.date().isoformat(),
@@ -517,7 +517,7 @@ def export_to_redis_streams(archive: Dict[str, Any], output_file: Path):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate mock esports data")
+    parser = argparse.ArgumentParser(description="Generate Sample esports data")
     parser.add_argument("--format", choices=["json", "csv", "redis", "all"], default="json",
                        help="Output format")
     parser.add_argument("--output", type=str, help="Output file (for JSON)")
@@ -547,7 +547,7 @@ def main():
             )
             
             if args.format in ["json", "all"]:
-                output_file = Path(args.output or f"mock_data_{match_id}.json")
+                output_file = Path(args.output or f"Sample_data_{match_id}.json")
                 with open(output_file, 'w') as f:
                     json.dump(archive, f, indent=2)
                 print(f"Generated {output_file}")
@@ -568,7 +568,7 @@ def main():
         )
         
         if args.format in ["json", "all"]:
-            output_file = Path(args.output or "mock_esports_match_archive.json")
+            output_file = Path(args.output or "Sample_esports_match_archive.json")
             with open(output_file, 'w') as f:
                 json.dump(archive, f, indent=2)
             print(f"Generated {output_file}")
@@ -584,4 +584,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

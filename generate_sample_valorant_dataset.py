@@ -1,6 +1,6 @@
-# generate_mock_valorant_dataset.py
-# Python 3.8+. Writes mock_valorant_rounds.jsonl to current directory.
-# Usage: python generate_mock_valorant_dataset.py
+# generate_Sample_valorant_dataset.py
+# Python 3.8+. Writes Sample_valorant_rounds.jsonl to current directory.
+# Usage: python generate_Sample_valorant_dataset.py
 
 import json
 import random
@@ -90,7 +90,7 @@ def compute_round_summary(round_no, player_events):
         "winner": random.choice(["attack","defend"])
     }
 
-OUT_FILE = "mock_valorant_rounds.jsonl"
+OUT_FILE = "Sample_valorant_rounds.jsonl"
 with open(OUT_FILE, "w", encoding="utf-8") as fh:
     for r in range(1, NUM_ROUNDS+1):
         # per-player events for the round
@@ -99,7 +99,7 @@ with open(OUT_FILE, "w", encoding="utf-8") as fh:
             player_events[pl["player_id"]] = sample_events_for_player(r, pl)
         summary = compute_round_summary(r, player_events)
         round_obj = {
-            "match_id": f"mock_match_001",
+            "match_id": f"Sample_match_001",
             "round_no": r,
             "map": MAP_NAME,
             "players": PLAYERS,
@@ -109,4 +109,5 @@ with open(OUT_FILE, "w", encoding="utf-8") as fh:
         fh.write(json.dumps(round_obj) + "\n")
 
 print(f"Wrote {OUT_FILE} with {NUM_ROUNDS} rounds and {len(PLAYERS)} players.")
+
 

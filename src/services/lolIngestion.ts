@@ -20,7 +20,7 @@ export class LolIngestionService {
       // Log start of ingestion
       await this.logAudit('fetch_match_list', puuid, 'ok', `Starting ingestion for ${puuid} in ${region}`);
 
-      // Mock fetching match IDs (in production, call Riot API)
+      // Sample fetching match IDs (in production, call Riot API)
       const matchIds = Array.from({ length: maxGames }, (_, i) => `${region}_${12345678 + i}`);
 
       for (const matchId of matchIds) {
@@ -48,7 +48,7 @@ export class LolIngestionService {
 
     if (existingMatch) return;
 
-    // 2. Mock match data (in production, fetch from Riot API)
+    // 2. Sample match data (in production, fetch from Riot API)
     const matchData = {
       provider_match_id: providerMatchId,
       region,
@@ -107,3 +107,4 @@ export class LolIngestionService {
     throw new Error('Max attempts reached');
   }
 }
+

@@ -1,4 +1,4 @@
-// src/types/mock.ts
+// src/types/Sample.ts
 
 export type ValorantPlayer = {
   id: string;
@@ -76,3 +76,4 @@ export type LolMatch = {
   timeline: any[];
   replayFrames?: any[];
 };
+

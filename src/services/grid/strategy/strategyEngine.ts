@@ -1,4 +1,4 @@
-import { GridMockData, StrategyOutput } from './types';
+import { GridSampleData, StrategyOutput } from './types';
 import { WinConditionEngine } from './winConditionEngine';
 import { RuneEngine } from './runeEngine';
 import { ItemEngine } from './itemEngine';
@@ -8,7 +8,7 @@ export class StrategyEngine {
   private runeEngine = new RuneEngine();
   private itemEngine = new ItemEngine();
 
-  generateStrategy(gridData: GridMockData): StrategyOutput {
+  generateStrategy(gridData: GridSampleData): StrategyOutput {
     const winCon = this.winConEngine.detectWinCondition(gridData);
     const runes = this.runeEngine.recommendRunes(gridData, 'TOP');
     const build = this.itemEngine.recommendBuild(gridData, gridData.layer1.myChamp);
@@ -50,3 +50,4 @@ export class StrategyEngine {
     };
   }
 }
+

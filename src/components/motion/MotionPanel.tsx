@@ -130,9 +130,9 @@ export function MotionPanel({ matchId, round, gridSnapshot, roundMeta }: MotionP
   const fetchMotionData = async (motionUrl: string) => {
     try {
       // In production, this would fetch from S3 or storage service
-      // For now, if it's a mock URL, we'll generate mock data
-      if (motionUrl.startsWith("mock://")) {
-        // Generate mock motion data
+      // For now, if it's a Sample URL, we'll generate Sample data
+      if (motionUrl.startsWith("Sample://")) {
+        // Generate Sample motion data
         const fps = 30;
         const duration_s = 6;
         const numFrames = duration_s * fps;
@@ -166,8 +166,8 @@ export function MotionPanel({ matchId, round, gridSnapshot, roundMeta }: MotionP
       setMotionData(data);
     } catch (error) {
       console.error("Error fetching motion data:", error);
-      // Fallback to mock data on error
-      fetchMotionData("mock://fallback");
+      // Fallback to Sample data on error
+      fetchMotionData("Sample://fallback");
     }
   };
 
@@ -344,4 +344,5 @@ export function MotionPanel({ matchId, round, gridSnapshot, roundMeta }: MotionP
     </Card>
   );
 }
+
 

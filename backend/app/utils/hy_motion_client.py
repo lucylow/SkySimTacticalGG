@@ -78,9 +78,9 @@ class HYMotionClient:
                 }
             }
         except Exception as e:
-            # Fallback to mock for development if main client fails
+            # Fallback to Sample for development if main client fails
             if self._base_url == "https://api.hymotion.example/generate":
-                return self._generate_mock_motion(prompt, duration_s)
+                return self._generate_Sample_motion(prompt, duration_s)
             raise
     
     def _parse_motion_frames(
@@ -140,13 +140,13 @@ class HYMotionClient:
             for i in range(num_frames)
         ]
     
-    def _generate_mock_motion(
+    def _generate_Sample_motion(
         self,
         prompt: str,
         duration_s: int
     ) -> Dict[str, Any]:
         """
-        Generate mock motion data for development/testing.
+        Generate Sample motion data for development/testing.
         """
         fps = 30
         num_frames = duration_s * fps
@@ -167,15 +167,16 @@ class HYMotionClient:
             "predictedActionLabel": "peek",
             "duration_s": duration_s,
             "fps": fps,
-            "storage_url": f"mock://motion_{hash(prompt)}_{duration_s}.json",
+            "storage_url": f"Sample://motion_{hash(prompt)}_{duration_s}.json",
             "metadata": {
                 "prompt": prompt,
                 "generated_at": "2024-01-01T00:00:00Z",
-                "model": "HY-Motion-1.0-mock"
+                "model": "HY-Motion-1.0-Sample"
             }
         }
 
 # Global client instance for backward compatibility
 hy_motion_client = HYMotionClient()
+
 
 

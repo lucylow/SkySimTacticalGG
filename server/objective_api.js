@@ -1,7 +1,7 @@
 const fastify = require('fastify')({ logger: true });
 const { LolObjectiveEngine } = require('../src/services/LolObjectiveEngine');
 
-// Mock database client
+// Sample database client
 const db = {
   async getLatestState(matchId, timestamp) {
     // In a real app, this would query the SQL functions defined in objective_features.sql
@@ -67,3 +67,4 @@ const start = async () => {
 
 // start(); // Uncomment to run
 module.exports = fastify;
+

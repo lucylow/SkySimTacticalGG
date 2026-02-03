@@ -97,7 +97,7 @@ The `BackendApiService` (`src/services/backendApi.ts`) includes a `generateMotio
 
 - Calls the HY-Motion-1.0 API endpoint
 - Converts the response to the expected format
-- Falls back to mock data if the API is unavailable
+- Falls back to Sample data if the API is unavailable
 
 ## Usage Example
 
@@ -180,7 +180,7 @@ The current integration primarily works with NPY format, which is converted to f
 
 - The HY-Motion-1.0 model requires significant GPU resources (~26GB VRAM for full model, ~24GB for lite version)
 - Motion generation typically takes 5-30 seconds depending on duration and hardware
-- The integration includes error handling and fallback to mock data for development
+- The integration includes error handling and fallback to Sample data for development
 - WebSocket support is available for tracking generation progress (for async endpoint)
 
 ## Future Enhancements
@@ -190,3 +190,4 @@ The current integration primarily works with NPY format, which is converted to f
 - Caching and storage of generated motions in S3
 - Batch generation support
 - Integration with tactical prompt engine for automatic prompt generation from GRID data
+

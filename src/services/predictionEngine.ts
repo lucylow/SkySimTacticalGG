@@ -400,13 +400,13 @@ export class HypotheticalPredictor {
     actualRounds: RoundData[]
   ): HistoricalScenario[] {
     // In production, this would query a database of historical matches
-    // For now, generate mock similar scenarios
+    // For now, generate Sample similar scenarios
     const scenarios: HistoricalScenario[] = [];
 
     const targetRound = actualRounds[modification.round_number - 1];
     if (!targetRound) return scenarios;
 
-    // Generate mock scenarios based on round type
+    // Generate Sample scenarios based on round type
     for (let i = 0; i < 20; i++) {
       scenarios.push({
         round_type: targetRound.round_type,
@@ -531,4 +531,5 @@ export class HypotheticalPredictor {
 }
 
 export const predictionEngine = new HypotheticalPredictor();
+
 

@@ -1,6 +1,6 @@
 export type CompArchetype = 'front2back' | 'engage' | 'poke' | 'split' | 'wombocombo';
 
-export interface GridMockData {
+export interface GridSampleData {
   layer1: {
     myChamp: string;
     enemyChamp: string;
@@ -57,3 +57,4 @@ export interface StrategyOutput {
 }
 
 export type AdaptationSignals = string[];
+

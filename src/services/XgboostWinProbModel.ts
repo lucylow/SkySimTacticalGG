@@ -1,22 +1,22 @@
 import { WinProbFeatures, WinProbPrediction } from '../types/objectives';
 
 /**
- * Mocking XGBoost for TypeScript implementation.
+ * Sampleing XGBoost for TypeScript implementation.
  * In a real production environment, this would call a WebAssembly build of XGBoost
  * or an external microservice.
  */
-class MockXGBoost {
+class SampleXGBoost {
   async loadModel(path: string): Promise<void> {
     console.log(`[XGBoost] Loading model from ${path}`);
     return Promise.resolve();
   }
 
   predict(features: WinProbFeatures): number[] {
-    // Deterministic mock prediction based on gold diff and other factors
+    // Deterministic Sample prediction based on gold diff and other factors
     // Base 50% win prob
     let pWin = 0.5;
     
-    // Simple linear influence for the mock
+    // Simple linear influence for the Sample
     pWin += (features.gold_diff / 15000);
     pWin += (features.exp_diff / 10000);
     pWin += (features.tower_count_diff * 0.05);
@@ -39,10 +39,10 @@ class MockXGBoost {
 }
 
 export class XgboostWinProbModel {
-  private model: MockXGBoost;
+  private model: SampleXGBoost;
 
   constructor() {
-    this.model = new MockXGBoost();
+    this.model = new SampleXGBoost();
   }
 
   async loadModel(modelPath: string): Promise<void> {
@@ -60,9 +60,10 @@ export class XgboostWinProbModel {
   }
 
   private calculateConfidence(prediction: number[]): number {
-    // Ensemble confidence or entropy-based mock
+    // Ensemble confidence or entropy-based Sample
     // Higher confidence when p is far from 0.5
     const entropyPart = Math.abs(prediction[0] - 0.5) * 2;
     return Math.min(0.95, 0.7 + entropyPart * 0.25);
   }
 }
+

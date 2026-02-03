@@ -1,4 +1,4 @@
-// src/mocks/generator.ts - Deterministic mock data generator
+// src/Samples/generator.ts - Deterministic Sample data generator
 import { faker } from "@faker-js/faker";
 import seedrandom from "seedrandom";
 
@@ -212,3 +212,4 @@ export function generateDemoPayload() {
 }
 
 export const DEMO = generateDemoPayload();
+

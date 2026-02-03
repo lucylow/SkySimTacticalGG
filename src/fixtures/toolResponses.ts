@@ -1,4 +1,4 @@
-// src/mocks/toolResponses.ts - Mock tool outputs for agent demos
+// src/Samples/toolResponses.ts - Sample tool outputs for agent demos
 import type { Product } from './generator';
 
 let toolCounter = 0;
@@ -94,3 +94,4 @@ export const toolRegistry = {
   generate_report: { fn: generateReportTool, description: "Generate detailed reports", icon: "📄" },
   compare_players: { fn: comparePlayersTool, description: "Compare player statistics", icon: "⚖️" },
 };
+

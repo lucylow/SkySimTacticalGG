@@ -1,52 +1,52 @@
-# Mock Esports Data System
+# Sample Esports Data System
 
-Comprehensive mock esports data designed to demonstrate GRID-style usage end-to-end: tournaments → matches → maps → rounds → events → derived agent insights → human review metadata.
+Comprehensive Sample esports data designed to demonstrate GRID-style usage end-to-end: tournaments → matches → maps → rounds → events → derived agent insights → human review metadata.
 
 This is **synthetic data** (safe for hacks, demos, and UI testing).
 
 ## Quick Start
 
-### 1. Generate Mock Data
+### 1. Generate Sample Data
 
 ```bash
 # Generate a single match archive (JSON)
-python mock-data/utils/generate_mock_data.py --format json --output mock-data/match_archive.json
+python sample-data/utils/generate_Sample_data.py --format json --output sample-data/match_archive.json
 
 # Generate multiple tournaments
-python mock-data/utils/generate_mock_data.py --format json --multi --output mock-data/multi_tournament.json
+python sample-data/utils/generate_Sample_data.py --format json --multi --output sample-data/multi_tournament.json
 
 # Export to CSV
-python mock-data/utils/generate_mock_data.py --format csv --output-dir mock-data/exports
+python sample-data/utils/generate_Sample_data.py --format csv --output-dir sample-data/exports
 
 # Generate Redis Stream commands
-python mock-data/utils/generate_mock_data.py --format redis --output mock-data/redis_streams.txt
+python sample-data/utils/generate_Sample_data.py --format redis --output sample-data/redis_streams.txt
 
 # Generate all formats
-python mock-data/utils/generate_mock_data.py --format all --output mock-data/archive.json --output-dir mock-data/exports
+python sample-data/utils/generate_Sample_data.py --format all --output sample-data/archive.json --output-dir sample-data/exports
 ```
 
 ### 2. Replay Match Data
 
 ```bash
 # Replay a match archive in real-time (streams to Redis)
-python mock-data/utils/replay_simulator.py \
-  --match-archive mock-data/match_archive.json \
+python sample-data/utils/replay_simulator.py \
+  --match-archive sample-data/match_archive.json \
   --speed 1.0 \
   --redis-host localhost
 
 # Fast replay (3x speed)
-python mock-data/utils/replay_simulator.py \
-  --match-archive mock-data/match_archive.json \
+python sample-data/utils/replay_simulator.py \
+  --match-archive sample-data/match_archive.json \
   --speed 3.0
 
 # Just print events (no Redis)
-python mock-data/utils/replay_simulator.py \
-  --match-archive mock-data/match_archive.json \
+python sample-data/utils/replay_simulator.py \
+  --match-archive sample-data/match_archive.json \
   --no-redis
 
 # Setup Redis consumer groups
-python mock-data/utils/replay_simulator.py \
-  --match-archive mock-data/match_archive.json \
+python sample-data/utils/replay_simulator.py \
+  --match-archive sample-data/match_archive.json \
   --setup-groups
 ```
 
@@ -57,7 +57,7 @@ python mock-data/utils/replay_simulator.py \
 ```json
 {
   "metadata": {
-    "source": "MOCK_GRID_COMPATIBLE",
+    "source": "Sample_GRID_COMPATIBLE",
     "generated_at": "2026-01-02T17:00:00Z",
     "game": "cs2",
     "version": "1.0"
@@ -129,8 +129,8 @@ python mock-data/utils/replay_simulator.py \
 Replay `rounds[*].events[*]` through your normalizer:
 
 ```bash
-python mock-data/utils/replay_simulator.py \
-  --match-archive mock-data/match_archive.json \
+python sample-data/utils/replay_simulator.py \
+  --match-archive sample-data/match_archive.json \
   --speed 1.0 \
   --stream-name events:canonical
 ```
@@ -147,8 +147,8 @@ Feed canonical events sequentially to your agents:
 
 ```bash
 # Stream events to Redis
-python mock-data/utils/replay_simulator.py \
-  --match-archive mock-data/match_archive.json \
+python sample-data/utils/replay_simulator.py \
+  --match-archive sample-data/match_archive.json \
   --stream-name events:canonical
 
 # Your agents consume from Redis and generate signals
@@ -172,7 +172,7 @@ Load the match archive JSON and build UI components:
 
 Example:
 ```javascript
-import matchArchive from './mock-data/match_archive.json';
+import matchArchive from './sample-data/match_archive.json';
 
 // Extract events
 const events = matchArchive.maps.flatMap(map => 
@@ -188,7 +188,7 @@ events.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 Export to CSV for analysis:
 
 ```bash
-python mock-data/utils/generate_mock_data.py --format csv --output-dir exports
+python sample-data/utils/generate_Sample_data.py --format csv --output-dir exports
 ```
 
 This generates:
@@ -208,21 +208,21 @@ Use with:
 Generate Redis Stream commands:
 
 ```bash
-python mock-data/utils/generate_mock_data.py --format redis --output redis_commands.txt
+python sample-data/utils/generate_Sample_data.py --format redis --output redis_commands.txt
 ```
 
 Or stream directly:
 
 ```bash
-python mock-data/utils/replay_simulator.py \
-  --match-archive mock-data/match_archive.json \
+python sample-data/utils/replay_simulator.py \
+  --match-archive sample-data/match_archive.json \
   --redis-host localhost
 ```
 
 Create consumer groups:
 ```bash
-python mock-data/utils/replay_simulator.py \
-  --match-archive mock-data/match_archive.json \
+python sample-data/utils/replay_simulator.py \
+  --match-archive sample-data/match_archive.json \
   --setup-groups
 ```
 
@@ -235,7 +235,7 @@ Consumer groups:
 ## Architecture
 
 ```
-Mock Dataset (JSON)
+Sample Dataset (JSON)
    │
    ├─► CSV Exports (Analytics)
    │
@@ -329,14 +329,14 @@ XADD events:agent:signals * \
 Real-time replay matching original event timings.
 
 ```bash
-python mock-data/utils/replay_simulator.py --speed 1.0
+python sample-data/utils/replay_simulator.py --speed 1.0
 ```
 
 ### Fast Demo (3.0x speed)
 Accelerated replay for demonstrations.
 
 ```bash
-python mock-data/utils/replay_simulator.py --speed 3.0
+python sample-data/utils/replay_simulator.py --speed 3.0
 ```
 
 ### Step Mode
@@ -384,7 +384,7 @@ All signals are:
 ## Next Steps
 
 ### Immediate Use
-1. Generate match archive: `python mock-data/utils/generate_mock_data.py --format json`
+1. Generate match archive: `python sample-data/utils/generate_Sample_data.py --format json`
 2. Load in frontend: Import JSON and build UI
 3. Test ingestion: Replay through your pipeline
 
@@ -410,6 +410,7 @@ All signals are:
 
 ## License
 
-This mock data is synthetic and safe for demos, testing, and development.
+This Sample data is synthetic and safe for demos, testing, and development.
+
 
 

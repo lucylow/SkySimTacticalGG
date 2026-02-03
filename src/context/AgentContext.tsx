@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
 import type { AgentMessage, MemoryItem, TimelineItem, AgentEvent } from '@/types/agent';
-import { simulateAgentStream } from '@/services/mockAgentStream';
+import { simulateAgentStream } from '@/services/SampleAgentStream';
 
 interface AgentState {
   messages: AgentMessage[];
@@ -124,7 +124,7 @@ export const AgentProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Track accumulated text for streaming
     const accumulatedText = { current: '' };
     
-    // Start mock stream
+    // Start Sample stream
     streamRef.current = simulateAgentStream(finalPrompt, (event) => {
       handleEvent(event, accumulatedText);
     });
@@ -185,3 +185,4 @@ export const useAgent = () => {
   }
   return context;
 };
+

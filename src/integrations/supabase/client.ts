@@ -21,16 +21,16 @@ const safeStorage: Storage | undefined = isBrowser ? window.localStorage : undef
 function assertSupabaseConfigured() {
   if (!SUPABASE_URL) {
     const msg = 'Supabase URL is not configured. Set VITE_SUPABASE_URL or VITE_SUPABASE_PROJECT_ID.';
-    if (config.enableMockData) {
-      console.info(`[Supabase] ${msg} Running in mock mode.`);
+    if (config.enableSampleData) {
+      console.info(`[Supabase] ${msg} Running in Sample mode.`);
       return;
     }
     throw new Error(msg);
   }
   if (!SUPABASE_PUBLISHABLE_KEY) {
     const msg = 'Supabase anon key is not configured. Set VITE_SUPABASE_ANON_KEY.';
-    if (config.enableMockData) {
-      console.info(`[Supabase] ${msg} Running in mock mode.`);
+    if (config.enableSampleData) {
+      console.info(`[Supabase] ${msg} Running in Sample mode.`);
       return;
     }
     throw new Error(msg);
@@ -48,5 +48,5 @@ export const supabase = SUPABASE_URL
         autoRefreshToken: !!safeStorage,
       },
     })
-  // @ts-expect-error Provide a minimal no-op client in strict mock mode to avoid import-time crashes
-  : { from: () => ({ select: () => ({ data: null, error: new Error('Supabase disabled in mock mode') }) }) } as any;
+  // @ts-expect-error Provide a minimal no-op client in strict Sample mode to avoid import-time crashes
+  : { from: () => ({ select: () => ({ data: null, error: new Error('Supabase disabled in Sample mode') }) }) } as any;

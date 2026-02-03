@@ -5,7 +5,7 @@ import csv
 from collections import defaultdict
 import math
 
-IN_FILE = "mock_valorant_rounds.jsonl"
+IN_FILE = "Sample_valorant_rounds.jsonl"
 OUT_FILE = "features.csv"
 
 
@@ -87,4 +87,5 @@ with open(IN_FILE, "r", encoding="utf-8") as fh, open(OUT_FILE, "w", newline='',
             writer.writerow(feat)
 
 print("Wrote features to", OUT_FILE)
+
 

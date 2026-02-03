@@ -192,7 +192,7 @@ export function GridDashboard() {
             This dashboard demonstrates a complete GRID esports data integration:
           </p>
           <ul className="list-disc list-inside space-y-1 ml-4">
-            <li>Raw GRID event ingestion (mock for demo)</li>
+            <li>Raw GRID event ingestion (Sample for demo)</li>
             <li>Canonical event normalization</li>
             <li>Match state reconstruction</li>
             <li>AI agent reasoning (momentum, star players, economy)</li>
@@ -208,5 +208,6 @@ export function GridDashboard() {
     </div>
   );
 }
+
 
 

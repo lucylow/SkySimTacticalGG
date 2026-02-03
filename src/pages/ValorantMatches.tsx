@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
-import { fetchValorantMatches as fetchMockValorantMatches } from '@/services/mockApi';
+import { fetchValorantMatches as fetchSampleValorantMatches } from '@/services/SampleApi';
 
 interface ValorantMatch {
   id: string;
@@ -31,15 +31,15 @@ export default function ValorantMatches() {
         if (data && data.length > 0) {
           setMatches(data);
         } else {
-          // Fallback to mock API if no data
-          const mock = await fetchMockValorantMatches().catch(() => [] as any[]);
-          if (mock && mock.length > 0) {
-            const mapped = mock.map((m: any) => ({
+          // Fallback to Sample API if no data
+          const Sample = await fetchSampleValorantMatches().catch(() => [] as any[]);
+          if (Sample && Sample.length > 0) {
+            const mapped = Sample.map((m: any) => ({
               id: m.id,
-              tournament: m.title ?? 'Mock Tournament',
-              stage: m.map ?? 'Mock',
+              tournament: m.title ?? 'Sample Tournament',
+              stage: m.map ?? 'Sample',
               start_ts: m.startedAt ? new Date(m.startedAt).toISOString() : null,
-              status: 'mock'
+              status: 'Sample'
             }));
             setMatches(mapped);
           } else {
@@ -47,18 +47,18 @@ export default function ValorantMatches() {
           }
         }
       } catch (e: any) {
-        // On error, try mock fallback
+        // On error, try Sample fallback
         try {
-          const mock = await fetchMockValorantMatches();
-          const mapped = mock.map((m: any) => ({
+          const Sample = await fetchSampleValorantMatches();
+          const mapped = Sample.map((m: any) => ({
             id: m.id,
-            tournament: m.title ?? 'Mock Tournament',
-            stage: m.map ?? 'Mock',
+            tournament: m.title ?? 'Sample Tournament',
+            stage: m.map ?? 'Sample',
             start_ts: m.startedAt ? new Date(m.startedAt).toISOString() : null,
-            status: 'mock'
+            status: 'Sample'
           }));
           setMatches(mapped);
-        } catch (mockErr: any) {
+        } catch (SampleErr: any) {
           setError(e?.message || 'Failed to load Valorant matches');
         }
       } finally {
@@ -140,3 +140,4 @@ export default function ValorantMatches() {
     </div>
   );
 }
+

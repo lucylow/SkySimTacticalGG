@@ -215,7 +215,7 @@ CORS_ORIGINS=http://localhost:5173,http://localhost:3000
 ## Demo Flow
 
 1. Start all services
-2. Ingest events (via GRID or mock)
+2. Ingest events (via GRID or Sample)
 3. Watch Grafana dashboards update
 4. Open 3D viewer - see live replay
 5. AI signals appear in viewer
@@ -280,5 +280,6 @@ public/viewer/
 - Signal gating is always enabled for safety
 - Counterfactuals are explicitly labeled and never streamed live
 - All features are production-ready and modular
+
 
 

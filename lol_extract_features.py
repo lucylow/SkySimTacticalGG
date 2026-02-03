@@ -1,12 +1,12 @@
 # lol_extract_features.py
-# Extract per-player per-match features from mock_lol_events.jsonl
+# Extract per-player per-match features from Sample_lol_events.jsonl
 # Usage: python lol_extract_features.py
 
 import json
 import csv
 from statistics import mean
 
-IN_FILE = "mock_lol_events.jsonl"
+IN_FILE = "Sample_lol_events.jsonl"
 OUT_FILE = "lol_features.csv"
 
 
@@ -56,7 +56,7 @@ with open(IN_FILE, "r", encoding="utf-8") as fh, open(OUT_FILE, "w", newline='',
             # CS and gold proxies
             cs_total = len(cs_events)
             cs_per_min = safe_div(cs_total, duration_min)
-            kda = safe_div(kills + assists, 1)  # deaths not tracked in mock, use KA as a simple proxy
+            kda = safe_div(kills + assists, 1)  # deaths not tracked in Sample, use KA as a simple proxy
 
             # Vision score proxy
             vision_actions = wards_placed + wards_cleared
@@ -90,3 +90,4 @@ with open(IN_FILE, "r", encoding="utf-8") as fh, open(OUT_FILE, "w", newline='',
             writer.writerow(feat)
 
 print(f"Wrote LoL features to {OUT_FILE}")
+

@@ -88,7 +88,7 @@ import { config } from '@/lib/config';
 // Access configuration
 config.apiBaseUrl; // API base URL
 config.wsBaseUrl; // WebSocket base URL
-config.enableMockData; // Mock data flag
+config.enableSampleData; // Sample data flag
 ```
 
 **Environment Variables:**
@@ -96,7 +96,7 @@ config.enableMockData; // Mock data flag
 - `VITE_API_URL` - API base URL (default: derived from current host)
 - `VITE_API_BASE_URL` - Alternative API base URL
 - `VITE_WS_URL` - WebSocket URL (default: derived from API URL)
-- `VITE_ENABLE_MOCK_DATA` - Enable mock data mode
+- `VITE_ENABLE_Sample_DATA` - Enable Sample data mode
 - `VITE_LOG_LEVEL` - Logging level (debug, info, warn, error)
 
 ### WebSocket Integration (`src/hooks/useWebSocket.ts`)
@@ -257,14 +257,14 @@ const { isConnected, lastMessage } = useWebSocket(url, {
 
 ## Testing
 
-The integration supports mock data mode for development:
+The integration supports Sample data mode for development:
 
 ```bash
-# Enable mock data
-VITE_ENABLE_MOCK_DATA=true npm run dev
+# Enable Sample data
+VITE_ENABLE_Sample_DATA=true npm run dev
 ```
 
-In mock mode, API calls will use mock data instead of real backend endpoints.
+In Sample mode, API calls will use Sample data instead of real backend endpoints.
 
 ## Troubleshooting
 
@@ -287,3 +287,4 @@ In mock mode, API calls will use mock data instead of real backend endpoints.
 2. Check backend WebSocket endpoint is accessible
 3. Review connection state in hook
 4. Check for firewall/proxy issues
+

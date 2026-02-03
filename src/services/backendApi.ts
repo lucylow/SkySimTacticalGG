@@ -32,24 +32,24 @@ import type {
 import type { GridDataPacket } from '@/types/grid';
 
 import {
-  mockMatchMetadata,
-  mockRoundData,
-  mockPlayerRoundStats,
-  mockStrategicPatterns,
-  mockPlayerMistakes,
-  mockMotionSequences,
-  mockMicroMacroConnection,
-  mockTeamPattern,
-  mockCoachingInsights,
-  mockActionItems,
-  mockDevelopmentPlan,
-  mockComprehensiveAnalysis,
-  mockMicroAnalysis,
-  mockMacroAnalysis,
-  mockHealthCheck,
-  mockAPIInfo,
-  mockMacroReview,
-} from '@/mocks/backendMocks';
+  SampleMatchMetadata,
+  SampleRoundData,
+  SamplePlayerRoundStats,
+  SampleStrategicPatterns,
+  SamplePlayerMistakes,
+  SampleMotionSequences,
+  SampleMicroMacroConnection,
+  SampleTeamPattern,
+  SampleCoachingInsights,
+  SampleActionItems,
+  SampleDevelopmentPlan,
+  SampleComprehensiveAnalysis,
+  SampleMicroAnalysis,
+  SampleMacroAnalysis,
+  SampleHealthCheck,
+  SampleAPIInfo,
+  SampleMacroReview,
+} from '@/Samples/backendSamples';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -67,12 +67,12 @@ class BackendApiService {
 
   async getHealth(): Promise<HealthCheck> {
     await randomDelay(50, 150);
-    return { ...mockHealthCheck, timestamp: new Date().toISOString() };
+    return { ...SampleHealthCheck, timestamp: new Date().toISOString() };
   }
 
   async getApiInfo(): Promise<APIInfo> {
     await randomDelay(50, 100);
-    return mockAPIInfo;
+    return SampleAPIInfo;
   }
 
   // ============= Match Data (GRID Integration) =============
@@ -80,41 +80,41 @@ class BackendApiService {
   async getMatches(status?: 'scheduled' | 'live' | 'completed'): Promise<MatchMetadata[]> {
     await randomDelay(150, 300);
     if (status) {
-      return mockMatchMetadata.filter((m) => m.status === status);
+      return SampleMatchMetadata.filter((m) => m.status === status);
     }
-    return mockMatchMetadata;
+    return SampleMatchMetadata;
   }
 
   async getMatch(matchId: string): Promise<MatchMetadata | null> {
     await randomDelay(100, 200);
-    return mockMatchMetadata.find((m) => m.id === matchId) || null;
+    return SampleMatchMetadata.find((m) => m.id === matchId) || null;
   }
 
   async getLiveMatch(
     matchId: string
   ): Promise<{ match: MatchMetadata; rounds: RoundData[] } | null> {
     await randomDelay(200, 400);
-    const match = mockMatchMetadata.find((m) => m.id === matchId);
+    const match = SampleMatchMetadata.find((m) => m.id === matchId);
     if (!match) return null;
     return {
       match,
-      rounds: mockRoundData.filter((r) => r.match_id === matchId),
+      rounds: SampleRoundData.filter((r) => r.match_id === matchId),
     };
   }
 
   async getRounds(matchId: string): Promise<RoundData[]> {
     await randomDelay(150, 300);
-    return mockRoundData.filter((r) => r.match_id === matchId);
+    return SampleRoundData.filter((r) => r.match_id === matchId);
   }
 
   async getRound(roundId: string): Promise<RoundData | null> {
     await randomDelay(100, 200);
-    return mockRoundData.find((r) => r.id === roundId) || null;
+    return SampleRoundData.find((r) => r.id === roundId) || null;
   }
 
   async getPlayerRoundStats(roundId: string): Promise<PlayerRoundStat[]> {
     await randomDelay(150, 300);
-    return mockPlayerRoundStats.filter((prs) => prs.round_id === roundId);
+    return SamplePlayerRoundStats.filter((prs) => prs.round_id === roundId);
   }
 
   // ============= Analysis Endpoints =============
@@ -122,7 +122,7 @@ class BackendApiService {
   async analyzeMatchComprehensive(matchId: string): Promise<ComprehensiveAnalysisResponse> {
     await randomDelay(800, 1500); // Longer delay to simulate complex analysis
     return {
-      ...mockComprehensiveAnalysis,
+      ...SampleComprehensiveAnalysis,
       match_id: matchId,
       analysis_completed: new Date().toISOString(),
     };
@@ -130,17 +130,17 @@ class BackendApiService {
 
   async getMicroAnalysis(matchId: string): Promise<MicroAnalysis> {
     await randomDelay(300, 600);
-    return { ...mockMicroAnalysis, match_id: matchId };
+    return { ...SampleMicroAnalysis, match_id: matchId };
   }
 
   async getMacroAnalysis(matchId: string): Promise<MacroAnalysis> {
     await randomDelay(300, 600);
-    return { ...mockMacroAnalysis, match_id: matchId };
+    return { ...SampleMacroAnalysis, match_id: matchId };
   }
 
   async getPlayerMistakes(playerId: string, matchId?: string): Promise<PlayerMistake[]> {
     await randomDelay(200, 400);
-    let mistakes = mockPlayerMistakes.filter((m) => m.player_id === playerId);
+    let mistakes = SamplePlayerMistakes.filter((m) => m.player_id === playerId);
     if (matchId) {
       mistakes = mistakes.filter((m) => m.match_id === matchId);
     }
@@ -154,7 +154,7 @@ class BackendApiService {
   ): Promise<MicroMacroConnection> {
     await randomDelay(400, 800);
     return {
-      ...mockMicroMacroConnection,
+      ...SampleMicroMacroConnection,
       player_id: _playerId,
       timeframe_minutes: timeframeMinutes,
     };
@@ -164,7 +164,7 @@ class BackendApiService {
 
   async getStrategicPatterns(_teamId: string, mapName?: string): Promise<StrategicPattern[]> {
     await randomDelay(250, 500);
-    let patterns = mockStrategicPatterns.filter((p) => p.team_id === _teamId);
+    let patterns = SampleStrategicPatterns.filter((p) => p.team_id === _teamId);
     if (mapName) {
       patterns = patterns.filter((p) => p.map_name === mapName);
     }
@@ -173,7 +173,7 @@ class BackendApiService {
 
   async identifyTeamPatterns(_teamId: string, _matchesLimit = 20): Promise<TeamPattern> {
     await randomDelay(600, 1200);
-    return { ...mockTeamPattern, team_id: _teamId };
+    return { ...SampleTeamPattern, team_id: _teamId };
   }
 
   // ============= Coaching Insights =============
@@ -194,22 +194,22 @@ class BackendApiService {
       generated_at: new Date().toISOString(),
       team_id: teamId,
       match_id: matchId,
-      summary: mockComprehensiveAnalysis.coaching_insights.summary,
-      key_insights: mockCoachingInsights,
-      action_items: mockActionItems,
+      summary: SampleComprehensiveAnalysis.coaching_insights.summary,
+      key_insights: SampleCoachingInsights,
+      action_items: SampleActionItems,
     };
   }
 
   async getActionItems(_teamId: string): Promise<ActionItem[]> {
     await randomDelay(200, 400);
-    return mockActionItems;
+    return SampleActionItems;
   }
 
   // ============= Motion Data (HY-Motion) =============
 
   async getMotionSequence(motionId: string): Promise<MotionSequence | null> {
     await randomDelay(300, 600);
-    return mockMotionSequences.find((m) => m.id === motionId) || null;
+    return SampleMotionSequences.find((m) => m.id === motionId) || null;
   }
 
   async generateMotionVisualization(
@@ -351,10 +351,10 @@ class BackendApiService {
     // 5. Return array of motion sequences
 
     const { generateMotionPrompt, buildSceneDescriptor } = await import('./tacticalPromptEngine');
-    const roundData = mockRoundData.find(
+    const roundData = SampleRoundData.find(
       (r) => r.match_id === matchId && r.round_number === roundNumber
     );
-    const matchData = mockMatchMetadata.find((m) => m.id === matchId);
+    const matchData = SampleMatchMetadata.find((m) => m.id === matchId);
 
     if (!roundData || !matchData) {
       return [];
@@ -362,7 +362,7 @@ class BackendApiService {
 
     // Simulate predictive motions
     const motions: MotionSequence[] = [];
-    const players = mockPlayerRoundStats
+    const players = SamplePlayerRoundStats
       .filter((prs) => prs.round_id === roundData.id && prs.team_id === teamId)
       .slice(0, 3);
 
@@ -428,13 +428,13 @@ class BackendApiService {
     correct: MotionSequence | null;
   }> {
     await randomDelay(400, 800);
-    const mistake = mockPlayerMistakes.find((m) => m.id === mistakeId);
+    const mistake = SamplePlayerMistakes.find((m) => m.id === mistakeId);
     return {
       mistake: mistake?.motion_sequence_id
-        ? mockMotionSequences.find((m) => m.id === mistake.motion_sequence_id) || null
+        ? SampleMotionSequences.find((m) => m.id === mistake.motion_sequence_id) || null
         : null,
       correct: mistake?.corrected_motion_id
-        ? mockMotionSequences.find((m) => m.id === mistake.corrected_motion_id) || null
+        ? SampleMotionSequences.find((m) => m.id === mistake.corrected_motion_id) || null
         : null,
     };
   }
@@ -457,7 +457,7 @@ class BackendApiService {
       timeframe_days: timeframeDays,
       generated_at: new Date().toISOString(),
       development_plan: {
-        ...mockDevelopmentPlan,
+        ...SampleDevelopmentPlan,
         player_id: playerId,
         timeframe_days: timeframeDays,
       },
@@ -492,7 +492,7 @@ class BackendApiService {
     const interval = setInterval(
       () => {
         const randomInsight =
-          mockCoachingInsights[Math.floor(Math.random() * mockCoachingInsights.length)];
+          SampleCoachingInsights[Math.floor(Math.random() * SampleCoachingInsights.length)];
         onInsight({
           ...randomInsight,
           id: `realtime_${Date.now()}`,
@@ -539,7 +539,7 @@ class BackendApiService {
   async generateMacroReview(matchId: string): Promise<MacroReview> {
     await randomDelay(1000, 2000); // Simulate analysis time
     return {
-      ...mockMacroReview,
+      ...SampleMacroReview,
       match_id: matchId,
       generated_at: new Date().toISOString(),
     };
@@ -548,7 +548,7 @@ class BackendApiService {
   async getMacroReview(matchId: string): Promise<MacroReview | null> {
     await randomDelay(300, 600);
     return {
-      ...mockMacroReview,
+      ...SampleMacroReview,
       match_id: matchId,
     };
   }
@@ -582,7 +582,7 @@ class BackendApiService {
   async getReviewHistory(_teamId: string, limit = 10): Promise<MacroReview[]> {
     await randomDelay(400, 800);
     return Array.from({ length: Math.min(limit, 5) }, (_, i) => ({
-      ...mockMacroReview,
+      ...SampleMacroReview,
       match_id: `grid_match_00${i + 1}`,
       generated_at: new Date(Date.now() - i * 86400000).toISOString(),
     }));
@@ -938,3 +938,4 @@ class BackendApiService {
 
 export const backendApi = new BackendApiService();
 export default backendApi;
+

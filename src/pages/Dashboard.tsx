@@ -47,7 +47,7 @@ export const Dashboard: React.FC = () => {
   }, []);
 
   const loadTacticalData = async () => {
-    const mockTacticalData = {
+    const SampleTacticalData = {
       current_phase: 'mid_round',
       team_coordination: 0.72,
       key_events: [
@@ -70,7 +70,7 @@ export const Dashboard: React.FC = () => {
       ],
       alerts: [],
     };
-    setTacticalData(mockTacticalData);
+    setTacticalData(SampleTacticalData);
   };
 
   const loadData = async () => {
@@ -261,3 +261,4 @@ export const Dashboard: React.FC = () => {
     </motion.div>
   );
 };
+

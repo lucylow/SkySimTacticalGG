@@ -1,4 +1,4 @@
-// src/mocks/demoSessions.ts - Demo session helpers
+// src/Samples/demoSessions.ts - Demo session helpers
 import { DEMO, type AgentSession } from './generator';
 
 /**
@@ -83,3 +83,4 @@ export const getRecentSessions = (limit = 5) =>
   [...DEMO.sessions]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, limit);
+

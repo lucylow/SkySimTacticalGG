@@ -143,7 +143,7 @@ Based on the implemented improvements, here's how the project scores:
 ### Priority C (2 weeks) 📋
 
 1. ⏳ Mini usability test (5 users)
-2. ⏳ Annotated mockups (desktop + mobile)
+2. ⏳ Annotated Sampleups (desktop + mobile)
 3. ⏳ Design System README (created)
 4. ⏳ Demo video (30-45s)
 
@@ -221,7 +221,7 @@ src/index.css                    # Added token streaming styles
 
 ## 📝 Next Steps (Optional Enhancements)
 
-1. **Mobile Mockups**: Create 2-3 screen flows for mobile
+1. **Mobile Sampleups**: Create 2-3 screen flows for mobile
 2. **Demo Video**: Record 30-45s walkthrough
 3. **User Testing**: Run 5 unmoderated tests
 4. **Accessibility Audit**: Run axe/WAVE and fix issues
@@ -256,3 +256,4 @@ When presenting to judges:
 **Status**: ✅ Ready for evaluation
 **Last Updated**: Implementation complete
 **Score**: 4.4/5 average (Well thought out)
+

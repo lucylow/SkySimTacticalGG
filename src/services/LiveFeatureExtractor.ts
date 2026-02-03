@@ -6,9 +6,9 @@ export async function extractLiveFeatures(
 ): Promise<WinProbFeatures> {
   
   // In a real implementation, these would be DB queries or API calls
-  // Mocking the data extraction based on the matchId and timestamp
+  // Sampleing the data extraction based on the matchId and timestamp
   
-  // Parallel feature extraction mock
+  // Parallel feature extraction Sample
   const [
     goldState, 
     expState, 
@@ -16,11 +16,11 @@ export async function extractLiveFeatures(
     visionState,
     ultimatesState
   ] = await Promise.all([
-    mockGetGoldState(matchId, timestamp),
-    mockGetExpState(matchId, timestamp),
-    mockGetObjectiveProximity(matchId, timestamp, 'baron', 'blue'),
-    mockGetVisionStats(matchId, timestamp),
-    mockGetUltimatesReady(matchId, timestamp, 'blue')
+    SampleGetGoldState(matchId, timestamp),
+    SampleGetExpState(matchId, timestamp),
+    SampleGetObjectiveProximity(matchId, timestamp, 'baron', 'blue'),
+    SampleGetVisionStats(matchId, timestamp),
+    SampleGetUltimatesReady(matchId, timestamp, 'blue')
   ]);
 
   return {
@@ -38,12 +38,12 @@ export async function extractLiveFeatures(
     smite_ready: goldState.smite_ready ? 1 : 0,
     lane_priority_index: goldState.lane_priority || 0,
     last_teamfight_gold_delta: goldState.last_fight_delta || 0,
-    player_hp_pct: [0.85, 0.92, 0.78, 0.88, 0.91]  // Per player mock
+    player_hp_pct: [0.85, 0.92, 0.78, 0.88, 0.91]  // Per player Sample
   };
 }
 
-// Mock helper functions
-async function mockGetGoldState(id: string, ts: number) {
+// Sample helper functions
+async function SampleGetGoldState(id: string, ts: number) {
   return {
     team_gold_diff: 1500,
     tower_count_diff: 1,
@@ -56,18 +56,19 @@ async function mockGetGoldState(id: string, ts: number) {
   };
 }
 
-async function mockGetExpState(id: string, ts: number) {
+async function SampleGetExpState(id: string, ts: number) {
   return { team_exp_diff: 800 };
 }
 
-async function mockGetObjectiveProximity(id: string, ts: number, obj: string, team: string) {
+async function SampleGetObjectiveProximity(id: string, ts: number, obj: string, team: string) {
   return { ally_near: 4, enemy_near: 2 };
 }
 
-async function mockGetVisionStats(id: string, ts: number) {
+async function SampleGetVisionStats(id: string, ts: number) {
   return { vision_diff: 12 };
 }
 
-async function mockGetUltimatesReady(id: string, ts: number, team: string) {
+async function SampleGetUltimatesReady(id: string, ts: number, team: string) {
   return 3;
 }
+

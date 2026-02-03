@@ -7,7 +7,7 @@ import { Shield, Zap, Target, Coins, TrendingUp, Map as MapIcon, Users, AlertTri
 import type { UtilityDashboardData } from '@/types/utility';
 import ProLineupsViewer from '@/components/dashboard/ProLineupsViewer';
 
-const mockData: UtilityDashboardData = {
+const SampleData: UtilityDashboardData = {
   valorant: {
     coreKpis: [
       { name: 'Util Hit Rate', immortalPlus: '68%', radiant: '74%', pro: '82%', soloQueue: '47%' },
@@ -305,7 +305,7 @@ export const UtilityDashboard: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {mockData.valorant.coreKpis.map((m) => (
+                  {SampleData.valorant.coreKpis.map((m) => (
                     <TableRow key={m.name}>
                       <TableCell className="font-medium">{m.name}</TableCell>
                       <TableCell className="text-muted-foreground">{m.soloQueue}</TableCell>
@@ -320,7 +320,7 @@ export const UtilityDashboard: React.FC = () => {
           </Card>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {mockData.valorant.roleBenchmarks.map((role) => (
+            {SampleData.valorant.roleBenchmarks.map((role) => (
               <Card key={role.role} className="glass-card">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
@@ -343,7 +343,7 @@ export const UtilityDashboard: React.FC = () => {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            {mockData.valorant.mapDashboards.map((map) => (
+            {SampleData.valorant.mapDashboards.map((map) => (
               <Card key={map.mapName} className="glass-card border-l-4 border-l-primary">
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center gap-2">
@@ -381,7 +381,7 @@ export const UtilityDashboard: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-8">
-                    {mockData.valorant.mistakes?.topMistakes.map((mistake) => (
+                    {SampleData.valorant.mistakes?.topMistakes.map((mistake) => (
                       <div key={mistake.id} className="space-y-3 pb-6 border-b border-white/5 last:border-0">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
@@ -461,7 +461,7 @@ export const UtilityDashboard: React.FC = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  {mockData.valorant.mistakes?.checklist.map((item, i) => (
+                  {SampleData.valorant.mistakes?.checklist.map((item, i) => (
                     <div key={i} className="flex items-center gap-2 p-2 rounded bg-secondary/10 hover:bg-secondary/20 transition-colors">
                       <div className="h-4 w-4 rounded-sm border border-primary/50 flex-shrink-0" />
                       <span className="text-xs font-medium">{item}</span>
@@ -482,7 +482,7 @@ export const UtilityDashboard: React.FC = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {mockData.valorant.mistakes?.drills.map((drill, i) => (
+                  {SampleData.valorant.mistakes?.drills.map((drill, i) => (
                     <div key={i} className="flex gap-3">
                       <span className="text-[10px] font-bold text-accent min-w-[32px]">{drill.time}</span>
                       <span className="text-xs">{drill.task}</span>
@@ -508,7 +508,7 @@ export const UtilityDashboard: React.FC = () => {
                   </div>
                   <div className="space-y-2">
                     <p className="text-[10px] text-muted-foreground uppercase font-bold">Gap Causes:</p>
-                    {mockData.valorant.mistakes?.stats.gapCauses.map((cause) => (
+                    {SampleData.valorant.mistakes?.stats.gapCauses.map((cause) => (
                       <div key={cause.label} className="flex justify-between text-xs">
                         <span>{cause.label}</span>
                         <span className="font-bold text-destructive">{cause.value}</span>
@@ -523,7 +523,7 @@ export const UtilityDashboard: React.FC = () => {
                   <CardTitle className="text-xs font-bold uppercase">Role-Specific Traps</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  {mockData.valorant.mistakes?.roleTraps.map((trap) => (
+                  {SampleData.valorant.mistakes?.roleTraps.map((trap) => (
                     <div key={trap.role} className="text-[11px]">
                       <span className="font-bold text-primary">{trap.role}:</span>{' '}
                       <span className="text-destructive italic">{trap.trap}</span>
@@ -563,7 +563,7 @@ export const UtilityDashboard: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {mockData.lol.summonerSpellEfficiency.map((m) => (
+                  {SampleData.lol.summonerSpellEfficiency.map((m) => (
                     <TableRow key={m.name}>
                       <TableCell className="font-medium">{m.name}</TableCell>
                       <TableCell className="text-muted-foreground">{m.soloQueue}</TableCell>
@@ -578,7 +578,7 @@ export const UtilityDashboard: React.FC = () => {
           </Card>
 
           <div className="grid gap-4 md:grid-cols-3">
-            {mockData.lol.objectiveSuccess.map((obj) => (
+            {SampleData.lol.objectiveSuccess.map((obj) => (
               <Card key={obj.name} className="glass-card">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-xs font-bold uppercase text-muted-foreground">
@@ -617,7 +617,7 @@ export const UtilityDashboard: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {mockData.lol.timingComparison?.map((m) => (
+                  {SampleData.lol.timingComparison?.map((m) => (
                     <TableRow key={m.utility}>
                       <TableCell className="font-medium">{m.utility}</TableCell>
                       <TableCell className="text-destructive font-semibold">{m.soloQueue}</TableCell>
@@ -636,7 +636,7 @@ export const UtilityDashboard: React.FC = () => {
           </Card>
 
           <div className="grid gap-4 md:grid-cols-2">
-            {mockData.lol.roleBenchmarks.map((role) => (
+            {SampleData.lol.roleBenchmarks.map((role) => (
               <Card key={role.role} className="glass-card">
                 <CardHeader>
                   <CardTitle className="text-sm font-bold uppercase">{role.role} MASTERY</CardTitle>
@@ -665,7 +665,7 @@ export const UtilityDashboard: React.FC = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {mockData.economy.valorant.map((e) => (
+                {SampleData.economy.valorant.map((e) => (
                   <div key={e.label} className="flex justify-between items-center p-3 bg-primary/5 rounded-lg">
                     <span className="text-sm font-medium">{e.label}</span>
                     <span className="text-lg font-bold text-primary">{e.value}</span>
@@ -682,7 +682,7 @@ export const UtilityDashboard: React.FC = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {mockData.economy.lol.map((e) => (
+                {SampleData.economy.lol.map((e) => (
                   <div key={e.label} className="flex justify-between items-center p-3 bg-accent/5 rounded-lg">
                     <span className="text-sm font-medium">{e.label}</span>
                     <span className="text-lg font-bold text-accent">{e.value}</span>
@@ -703,7 +703,7 @@ export const UtilityDashboard: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="grid gap-6 md:grid-cols-3">
-                {mockData.gapAnalysis.map((gap) => (
+                {SampleData.gapAnalysis.map((gap) => (
                   <div key={gap.metric} className="p-4 rounded-xl bg-secondary/20 space-y-3">
                     <h4 className="font-bold text-sm text-muted-foreground uppercase">{gap.metric}</h4>
                     <div className="flex justify-between items-end">
@@ -733,7 +733,7 @@ export const UtilityDashboard: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {mockData.trainingTargets.map((target) => (
+              {SampleData.trainingTargets.map((target) => (
                 <div key={target.metric} className="space-y-6">
                   <div className="flex items-center justify-center gap-12 py-4">
                     <div className="text-center">
@@ -769,3 +769,4 @@ export const UtilityDashboard: React.FC = () => {
     </div>
   );
 };
+

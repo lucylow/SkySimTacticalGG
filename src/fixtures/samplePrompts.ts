@@ -1,4 +1,4 @@
-// src/mocks/samplePrompts.ts - Curated prompts for demo scenarios
+// src/Samples/samplePrompts.ts - Curated prompts for demo scenarios
 
 export type SamplePrompt = {
   id: string;
@@ -86,3 +86,4 @@ export const getPromptsByCategory = (category: SamplePrompt["category"]) =>
 
 export const getRandomPrompt = () => 
   samplePrompts[Math.floor(Math.random() * samplePrompts.length)];
+

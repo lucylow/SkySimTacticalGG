@@ -55,7 +55,7 @@ class DataFetcherAgent extends BaseAgent {
       // Fetch player data if player_id provided
       if (player_id) {
         // In a real implementation, this would fetch from GRID API
-        // For now, we'll use mock data structure
+        // For now, we'll use Sample data structure
         fetchedData.player = {
           id: player_id,
         };
@@ -131,3 +131,4 @@ class DataFetcherAgent extends BaseAgent {
 }
 
 export const dataFetcherAgent = new DataFetcherAgent();
+

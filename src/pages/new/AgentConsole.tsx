@@ -22,7 +22,7 @@ function useAgentStream(url: string | null) {
   // Placeholder - in production this would connect to SSE
   if (url && !connected) {
     setConnected(true);
-    // Mock event for demo
+    // Sample event for demo
     setTimeout(() => {
       setEvents([{ type: 'status', data: { message: 'Agent initialized' } }]);
     }, 500);
@@ -84,3 +84,4 @@ export function AgentConsole() {
 }
 
 export default AgentConsole;
+

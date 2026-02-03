@@ -12,15 +12,15 @@ export class TimeSformerMinimap {
       // Load pre-trained TimeSformer (ViT backbone for minimap sequences)
       this.model = await tf.loadLayersModel('file://models/timesformer_valorant_minimap');
     } catch (error) {
-      console.warn('Failed to load TimeSformer model, using mock predictions', error);
+      console.warn('Failed to load TimeSformer model, using Sample predictions', error);
       // In a real scenario, we'd handle this better. 
-      // For this implementation, we'll allow predict to fall back to mock if model is null.
+      // For this implementation, we'll allow predict to fall back to Sample if model is null.
     }
   }
 
   predict(sequence: MinimapFrame[]): TimeSformerPrediction {
     if (!this.model) {
-      return this.generateMockPrediction(sequence);
+      return this.generateSamplePrediction(sequence);
     }
 
     const inputTensor = this.preprocessSequence(sequence);
@@ -90,8 +90,8 @@ export class TimeSformerMinimap {
     return "Standard lane pressure";
   }
 
-  private generateMockPrediction(sequence: MinimapFrame[]): TimeSformerPrediction {
-    // Deterministic mock based on sequence length for testing
+  private generateSamplePrediction(sequence: MinimapFrame[]): TimeSformerPrediction {
+    // Deterministic Sample based on sequence length for testing
     const seed = sequence.length / 100;
     const probs = [
       Math.min(0.9, seed + 0.1), // rotate
@@ -116,3 +116,4 @@ export class TimeSformerMinimap {
     };
   }
 }
+

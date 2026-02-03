@@ -1,8 +1,8 @@
 """
-Feature engineering for Valorant / League of Legends mock matches.
+Feature engineering for Valorant / League of Legends Sample matches.
 
 Input:
-  - match: Python dict loaded from match JSON (structure produced by the mock generator).
+  - match: Python dict loaded from match JSON (structure produced by the Sample generator).
     Expected keys (Valorant): match['id'], match['players'] (list with 'id' and 'baseSkill'),
       match['rounds'] (list): each round contains:
         - roundNumber (int)
@@ -615,3 +615,4 @@ if __name__ == '__main__':
     else:
         print('No example match JSON found at:', example_path)
         print('Run the match generator first (economy_and_curves.js) to create sample JSONs.')
+

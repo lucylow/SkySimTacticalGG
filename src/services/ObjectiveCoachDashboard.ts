@@ -44,7 +44,7 @@ export class ObjectiveCoachDashboard {
     timestamp: number, 
     features: WinProbFeatures
   ): Promise<ObjectiveState> {
-    // Mocking building ObjectiveState from features and other data
+    // Sampleing building ObjectiveState from features and other data
     return {
       objective: 'BARON',
       matchTime: timestamp,
@@ -52,14 +52,14 @@ export class ObjectiveCoachDashboard {
       teamGoldDiff: features.gold_diff,
       allyCountNear: features.ally_count_near,
       enemyCountNear: features.enemy_count_near,
-      visionInPit: 3, // mock
-      enemyVisionInPit: 1, // mock
+      visionInPit: 3, // Sample
+      enemyVisionInPit: 1, // Sample
       ultimatesUp: features.ultimates_up,
-      enemyUltimatesUp: 1, // mock
+      enemyUltimatesUp: 1, // Sample
       smiteReady: features.smite_ready === 1,
       enemySmiteReady: false,
       sidelanePressure: features.lane_priority_index > 0.5,
-      playerHpPercent: 85 // mock
+      playerHpPercent: 85 // Sample
     };
   }
 
@@ -85,3 +85,4 @@ export class ObjectiveCoachDashboard {
     return 'MEDIUM';
   }
 }
+

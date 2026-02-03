@@ -1,6 +1,6 @@
-// src/services/mockApi.ts
+// src/services/SampleApi.ts
 import axios from 'axios';
-import type { ValorantMatch, LolMatch } from '../types/mock';
+import type { ValorantMatch, LolMatch } from '../types/Sample';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
@@ -38,3 +38,4 @@ export async function fetchLolMatch(matchId: string): Promise<LolMatch> {
 export function lolReplayStreamUrl(matchId: string, speed = 1.0) {
   return `${API}/replay/lol/${matchId}/stream?speed=${speed}`;
 }
+

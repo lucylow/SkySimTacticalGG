@@ -1,4 +1,4 @@
-// Mock Agent Stream - Simulates SSE streaming responses
+// Sample Agent Stream - Simulates SSE streaming responses
 import type { AgentEvent } from '@/types/agent';
 
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -11,7 +11,7 @@ export function simulateAgentStream(
 
   const run = async () => {
     // Meta event
-    onEvent({ type: 'meta', data: { model: 'mock-agent-v1', prompt } });
+    onEvent({ type: 'meta', data: { model: 'Sample-agent-v1', prompt } });
 
     // Analyze prompt for context
     const isAnalysis = prompt.toLowerCase().includes('analy');
@@ -175,7 +175,7 @@ export function simulateAgentStream(
   };
 }
 
-// Mock tools available
+// Sample tools available
 export const availableTools: { name: string; description: string; icon: string }[] = [
   { name: 'search_database', description: 'Search player and match data', icon: '🔍' },
   { name: 'analyze_patterns', description: 'Deep pattern analysis', icon: '📊' },
@@ -183,3 +183,4 @@ export const availableTools: { name: string; description: string; icon: string }
   { name: 'generate_report', description: 'Generate detailed reports', icon: '📄' },
   { name: 'compare_players', description: 'Compare player statistics', icon: '⚖️' },
 ];
+

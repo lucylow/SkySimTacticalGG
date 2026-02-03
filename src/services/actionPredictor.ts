@@ -231,7 +231,7 @@ function predictLoLAction(
 }
 
 /**
- * Generates mock motion keyframes based on predicted action
+ * Generates Sample motion keyframes based on predicted action
  * In production, this would call HY-Motion 1.0 API
  */
 export function generateMotionKeyframes(
@@ -247,7 +247,7 @@ export function generateMotionKeyframes(
     const t = i / frameCount;
     const timestamp = (i / fps);
 
-    // Mock joint rotations (24 joints for SMPL model)
+    // Sample joint rotations (24 joints for SMPL model)
     const joints: Array<{ x: number; y: number; z: number; w: number }> = [];
     for (let j = 0; j < 24; j++) {
       // Generate simple rotation based on action type
@@ -435,4 +435,5 @@ export function getLatestMatchSnapshot(game: GameType = 'VALORANT'): GridDataPac
     };
   }
 }
+
 

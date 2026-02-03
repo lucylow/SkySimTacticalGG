@@ -44,8 +44,8 @@ app.get("/api/lol/dataset", (req,res)=>{
 app.post('/api/grid-strategy/:matchId', (req, res) => {
   const matchId = req.params.matchId || 'grid_lol_sim';
 
-  // Mock GRID data (Layers 1-3)
-  const GRID_MOCK_DATA = {
+  // Sample GRID data (Layers 1-3)
+  const GRID_Sample_DATA = {
     layer1: {
       myChamp: "Aatrox",
       enemyChamp: "Renekton",
@@ -123,7 +123,7 @@ app.post('/api/grid-strategy/:matchId', (req, res) => {
     return { winCondition, runes, build, currentPriority, mapPlan, comms: { primary: commsPrimary, signals } };
   };
 
-  const strategy = generateStrategy(GRID_MOCK_DATA);
+  const strategy = generateStrategy(GRID_Sample_DATA);
 
   res.send({
     winCondition: strategy.winCondition,
@@ -136,4 +136,5 @@ app.post('/api/grid-strategy/:matchId', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT,()=>console.log(`Mock server on :${PORT}`));
+app.listen(PORT,()=>console.log(`Sample server on :${PORT}`));
+

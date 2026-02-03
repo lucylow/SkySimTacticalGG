@@ -1,11 +1,11 @@
-// src/mocks/sseReplayEvents.ts - Pre-recorded SSE events for demo streaming
+// src/Samples/sseReplayEvents.ts - Pre-recorded SSE events for demo streaming
 import type { AgentEvent } from '@/types/agent';
 
 let eventCounter = 0;
 const genEventId = () => `evt-${++eventCounter}-${Date.now().toString(36)}`;
 
 export const sseReplayEvents: AgentEvent[] = [
-  { type: "meta", data: { runId: genEventId(), model: "mock-llm-0.1", ts: new Date().toISOString() } },
+  { type: "meta", data: { runId: genEventId(), model: "Sample-llm-0.1", ts: new Date().toISOString() } },
 
   { type: "token", data: { text: "Sure," } },
   { type: "token", data: { text: " I can analyze the catalog." } },
@@ -36,7 +36,7 @@ export const sseReplayEvents: AgentEvent[] = [
 
 // Extended replay with more tool interactions
 export const extendedReplayEvents: AgentEvent[] = [
-  { type: "meta", data: { runId: genEventId(), model: "mock-agent-v2", ts: new Date().toISOString() } },
+  { type: "meta", data: { runId: genEventId(), model: "Sample-agent-v2", ts: new Date().toISOString() } },
 
   { type: "token", data: { text: "I'll perform a comprehensive analysis of your esports team performance." } },
 
@@ -70,3 +70,4 @@ export const extendedReplayEvents: AgentEvent[] = [
 
   { type: "done", data: { summary: "Performance analysis complete with training recommendations" } },
 ];
+

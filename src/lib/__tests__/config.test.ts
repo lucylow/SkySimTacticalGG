@@ -3,13 +3,13 @@ import { config, validateConfig } from '../config';
 
 describe('config', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.clearAllSamples();
   });
 
   it('should have required config properties', () => {
     expect(config).toHaveProperty('apiBaseUrl');
     expect(config).toHaveProperty('wsBaseUrl');
-    expect(config).toHaveProperty('enableMockData');
+    expect(config).toHaveProperty('enableSampleData');
     expect(config).toHaveProperty('enableDevTools');
     expect(config).toHaveProperty('logLevel');
   });
@@ -20,15 +20,16 @@ describe('config', () => {
   });
 
   it('should validate config without errors', () => {
-    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    const consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
+    const consoleWarnSpy = vi.spyOn(console, 'warn').SampleImplementation(() => {});
+    const consoleInfoSpy = vi.spyOn(console, 'info').SampleImplementation(() => {});
 
     validateConfig();
 
     // Should not throw
     expect(() => validateConfig()).not.toThrow();
 
-    consoleWarnSpy.mockRestore();
-    consoleInfoSpy.mockRestore();
+    consoleWarnSpy.SampleRestore();
+    consoleInfoSpy.SampleRestore();
   });
 });
+

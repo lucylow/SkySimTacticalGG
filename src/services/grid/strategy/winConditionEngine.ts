@@ -1,7 +1,7 @@
-import { GridMockData, WinCondition } from './types';
+import { GridSampleData, WinCondition } from './types';
 
 export class WinConditionEngine {
-  detectWinCondition(gridData: GridMockData): WinCondition {
+  detectWinCondition(gridData: GridSampleData): WinCondition {
     const { teamComp, enemyComp } = gridData.layer1;
     const { goldDiff } = gridData.layer2;
 
@@ -23,3 +23,4 @@ export class WinConditionEngine {
     };
   }
 }
+

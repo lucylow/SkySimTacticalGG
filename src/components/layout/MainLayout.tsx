@@ -31,7 +31,7 @@ import {
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-const mockNotifications = [
+const SampleNotifications = [
   { id: '1', type: 'warning', title: 'Eco Round Win Rate Low', time: '2 min ago', read: false },
   { id: '2', type: 'success', title: 'OXY achieved 5 clutches today', time: '15 min ago', read: false },
   { id: '3', type: 'info', title: 'Match analysis ready: vs Team Beta', time: '1 hour ago', read: false },
@@ -71,7 +71,7 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [notifications, setNotifications] = useState(mockNotifications);
+  const [notifications, setNotifications] = useState(SampleNotifications);
   const location = useLocation();
 
   const unreadCount = notifications.filter(n => !n.read).length;
@@ -366,3 +366,4 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     </div>
   );
 };
+

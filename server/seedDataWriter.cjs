@@ -1,7 +1,7 @@
 // server/seedDataWriter.js
 const fs = require('fs');
 const path = require('path');
-const factory = require('./mockDataFactory.cjs');
+const factory = require('./SampleDataFactory.cjs');
 
 const OUT_DIR = path.join(__dirname, 'data');
 if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
@@ -19,3 +19,4 @@ fs.writeFileSync(path.join(OUT_DIR, 'lol.json'), JSON.stringify(lolData, null, 2
 console.log('lol.json written.');
 
 console.log('Seeding complete.');
+

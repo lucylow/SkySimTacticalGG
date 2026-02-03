@@ -5,13 +5,13 @@ REM Execute the complete ML pipeline: generate data → extract features → tra
 echo === SkySim Tactical GG - ML Pipeline ===
 echo.
 
-echo Step 1/4: Generating mock dataset...
-python generate_mock_valorant_dataset.py
+echo Step 1/4: Generating Sample dataset...
+python generate_Sample_valorant_dataset.py
 if errorlevel 1 (
-    echo Error: Failed to generate mock dataset
+    echo Error: Failed to generate Sample dataset
     exit /b 1
 )
-echo ✓ Generated mock_valorant_rounds.jsonl
+echo ✓ Generated Sample_valorant_rounds.jsonl
 echo.
 
 echo Step 2/4: Extracting features...
@@ -44,7 +44,7 @@ echo.
 echo === Pipeline Complete ===
 echo.
 echo Generated files:
-echo   - mock_valorant_rounds.jsonl (mock match data)
+echo   - Sample_valorant_rounds.jsonl (Sample match data)
 echo   - features.csv (extracted features)
 echo   - lgb_model.pkl (trained model)
 echo.
@@ -52,4 +52,5 @@ echo Next steps:
 echo   - Review insight_cards.md for demo UI components
 echo   - Use insight_cards.json for UI integration
 echo   - Check README.md for detailed documentation
+
 
