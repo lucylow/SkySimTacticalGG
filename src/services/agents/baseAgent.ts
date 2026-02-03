@@ -45,13 +45,28 @@ export abstract class BaseAgentImpl implements BaseAgent {
 
   /**
    * Call LLM for reasoning and decision-making
-   * In production, this would call OpenAI/Anthropic/etc APIs
    */
   protected async callLLM(
     prompt: string,
-    _systemMessage?: string
+    systemMessage: string = "You are a specialized esports AI assistant."
   ): Promise<string> {
-    // Mock LLM call for now - in production, replace with actual API call
+    // If API key is available, use it (In a real Edge/Node environment)
+    if (this.llmConfig.api_key) {
+      try {
+        // This is a placeholder for actual Fetch call to OpenAI/Anthropic
+        // Example: 
+        // const response = await fetch('https://api.openai.com/v1/chat/completions', { ... });
+        // return (await response.json()).choices[0].message.content;
+        
+        // For now, still using mock but with logic to handle potential future integration
+        return this.generateMockResponse(prompt);
+      } catch (error) {
+        console.error("LLM Call failed:", error);
+        return this.generateMockResponse(prompt);
+      }
+    }
+
+    // Default to mock for development
     await this.delay(100 + Math.random() * 200);
     return this.generateMockResponse(prompt);
   }

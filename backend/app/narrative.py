@@ -123,17 +123,41 @@ Avoid predictions or betting language.
 """
 
     def _summarize_events(self, events: List[Dict]) -> str:
-        """Summarize events for prompt."""
+        """Summarize events for prompt with more context."""
         summary = []
-        for e in events[:20]:  # Limit to first 20
-            summary.append(f"{e.get('event_type', 'UNKNOWN')} at round {e.get('round', 0)}")
+        for e in events[:50]:  # Increased limit
+            etype = e.get('event_type', 'UNKNOWN')
+            round_no = e.get('round', 0)
+            player = e.get('player_id', 'Unknown Player')
+            target = e.get('target_id')
+            
+            if etype == "KILL":
+                msg = f"Round {round_no}: {player} killed {target}"
+            elif etype == "ABILITY_CAST":
+                ability = e.get('ability', 'ability')
+                msg = f"Round {round_no}: {player} used {ability}"
+            elif etype == "BOMB_PLANTED":
+                msg = f"Round {round_no}: Bomb planted by {player}"
+            else:
+                msg = f"Round {round_no}: {etype} by {player}"
+            
+            summary.append(msg)
         return "; ".join(summary)
     
     def _summarize_insights(self, insights: List[Dict]) -> str:
-        """Summarize insights for prompt."""
+        """Summarize insights for prompt with more detail."""
         if not insights:
             return "No AI insights"
-        return "; ".join([f"{i.get('type')} (confidence: {i.get('confidence', 0):.2f})" for i in insights])
+        
+        summary = []
+        for i in insights:
+            itype = i.get('type')
+            conf = i.get('confidence', 0)
+            entities = ", ".join(i.get('entities', []))
+            explanation = i.get('explanation', '')
+            summary.append(f"{itype} involving {entities} (confidence: {conf:.2f}): {explanation}")
+            
+        return "; ".join(summary)
 
 
 # Global service instance

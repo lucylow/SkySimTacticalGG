@@ -25,7 +25,13 @@ with open(IN_FILE, "r", encoding="utf-8") as fh, open(OUT_FILE, "w", newline='',
             n_ability = sum(1 for e in evs if e["event_type"]=="ability_cast")
             late_smoke_flag = any(e.get("ability")=="smoke" and e.get("phase")=="postplant" for e in evs)
             n_deaths = sum(1 for e in evs if e["event_type"]=="death")
+            n_kills = sum(1 for e in evs if e["event_type"]=="kill") # Added kill count
             n_trades = sum(1 for e in evs if e["event_type"]=="trade_attempt")
+            
+            # More advanced features
+            kd_ratio = n_kills / max(1, n_deaths)
+            accuracy = n_kills / max(1, n_shoot) # Rough proxy for accuracy
+            
             # derived normalizations (per round)
             feat = {
                 "match_id": round_obj["match_id"],
@@ -37,7 +43,10 @@ with open(IN_FILE, "r", encoding="utf-8") as fh, open(OUT_FILE, "w", newline='',
                 "n_ability": n_ability,
                 "late_smoke": int(late_smoke_flag),
                 "n_deaths": n_deaths,
+                "n_kills": n_kills,
                 "n_trades": n_trades,
+                "kd_ratio": kd_ratio,
+                "accuracy": accuracy,
                 "round_total_deaths": summary["total_deaths"],
                 "round_late_smokes": summary["late_smokes"],
                 # label example: was player dead this round?

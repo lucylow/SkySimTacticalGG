@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -30,6 +30,8 @@ export const MotionStudio: React.FC = () => {
   const [motionKeyframes, setMotionKeyframes] = useState<MotionKeyframe[]>([]);
   const [_currentGridData, setCurrentGridData] = useState<GridDataPacket | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [valorantMock, setValorantMock] = useState<GridDataPacket | null>(null);
+  const [lolMock, setLolMock] = useState<GridDataPacket | null>(null);
 
   const availableMotions = [
     { id: 'demo', name: 'Round 5 - A Execute', duration: '12s', type: 'Execute', game: 'VALORANT' },
@@ -39,6 +41,18 @@ export const MotionStudio: React.FC = () => {
   ];
 
   const filteredMotions = availableMotions.filter(m => m.game === selectedGame);
+
+  // Preload mock data for both games so the page always shows examples
+  useEffect(() => {
+    try {
+      const v = getLatestMatchSnapshot('VALORANT');
+      const l = getLatestMatchSnapshot('LEAGUE_OF_LEGENDS');
+      setValorantMock(v);
+      setLolMock(l);
+    } catch (e) {
+      // no-op: this is mock-only
+    }
+  }, []);
 
   const handleGenerateGhost = () => {
     setIsGenerating(true);
@@ -111,6 +125,54 @@ export const MotionStudio: React.FC = () => {
           </Button>
         </div>
       </div>
+
+      {/* Mock data preview to ensure both games are visible even without running prediction */}
+      <Card className="glass-card">
+        <CardHeader>
+          <CardTitle className="text-lg">Mock Data Preview</CardTitle>
+          <CardDescription>Sample GRID snapshots for both games</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="rounded-md border p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <div className="font-semibold">VALORANT</div>
+                <Badge variant="outline">Mock</Badge>
+              </div>
+              {valorantMock ? (
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div><span className="font-medium">Agent:</span> {(valorantMock.player as PlayerState).agent}</div>
+                  <div><span className="font-medium">Team:</span> {(valorantMock.player as PlayerState).team}</div>
+                  <div><span className="font-medium">Health:</span> {(valorantMock.player as PlayerState).health}</div>
+                  <div><span className="font-medium">Weapon:</span> {(valorantMock.inventory as InventoryState)?.primary_weapon}</div>
+                  <div><span className="font-medium">Spike:</span> {(valorantMock.match_context as MatchContext).spike_status}</div>
+                  <div><span className="font-medium">Phase:</span> {(valorantMock.match_context as MatchContext).round_phase}</div>
+                </div>
+              ) : (
+                <div className="text-xs text-muted-foreground">Loading mock data…</div>
+              )}
+            </div>
+            <div className="rounded-md border p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <div className="font-semibold">League of Legends</div>
+                <Badge variant="outline">Mock</Badge>
+              </div>
+              {lolMock ? (
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div><span className="font-medium">Champion:</span> {(lolMock.player as LoLPlayerState).champion}</div>
+                  <div><span className="font-medium">Level:</span> {(lolMock.player as LoLPlayerState).level}</div>
+                  <div><span className="font-medium">Health:</span> {(lolMock.player as LoLPlayerState).health}</div>
+                  <div><span className="font-medium">Gold:</span> {(lolMock.inventory as LoLInventoryState)?.gold}</div>
+                  <div><span className="font-medium">Baron Alive:</span> {((lolMock.match_context as LoLMatchContext).objectives.baron_alive ? 'Yes' : 'No')}</div>
+                  <div><span className="font-medium">Dragon Count:</span> {(lolMock.match_context as LoLMatchContext).objectives.dragon_count}</div>
+                </div>
+              ) : (
+                <div className="text-xs text-muted-foreground">Loading mock data…</div>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-4">
         {/* Motion List */}

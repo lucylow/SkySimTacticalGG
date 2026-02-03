@@ -16,6 +16,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import type { GameType } from '@/types/grid';
 import { useWebSocket } from '@/hooks/useWebSocket';
 
 interface LiveMessage {
@@ -29,6 +31,7 @@ export const LiveCoach: React.FC = () => {
   const [isLive, setIsLive] = useState(false);
   const [messages, setMessages] = useState<LiveMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
+  const [selectedGame, setSelectedGame] = useState<GameType>('VALORANT');
 
   const { isConnected, lastMessage, sendMessage } = useWebSocket(
     'wss://demo.skysimtactical.gg/ws',
@@ -52,16 +55,28 @@ export const LiveCoach: React.FC = () => {
     }
   }, [lastMessage]);
 
-  // Simulate live messages for demo
+  // Simulate live messages for demo (supports VALORANT and LEAGUE_OF_LEGENDS)
   useEffect(() => {
     if (!isLive) return;
 
-    const demoMessages: LiveMessage[] = [
-      { id: '', type: 'alert', content: 'Round 5: OXY exposed during rotate - suggest smoke cover', timestamp: new Date() },
-      { id: '', type: 'insight', content: 'Team economy advantage detected - force buy recommended', timestamp: new Date() },
-      { id: '', type: 'info', content: 'Enemy AWP spotted A site - consider flash execution', timestamp: new Date() },
-      { id: '', type: 'alert', content: 'Pattern detected: Enemy always stacks B on eco rounds', timestamp: new Date() },
+    // Reset feed when toggling live or switching games
+    setMessages([]);
+
+    const valorantMessages: LiveMessage[] = [
+      { id: '', type: 'alert', content: 'VALORANT • Round 5: OXY exposed during rotate — suggest smoke cover', timestamp: new Date() },
+      { id: '', type: 'insight', content: 'VALORANT • Team economy advantage detected — force buy recommended', timestamp: new Date() },
+      { id: '', type: 'info', content: 'VALORANT • Enemy AWP spotted A site — consider flash execution', timestamp: new Date() },
+      { id: '', type: 'alert', content: 'VALORANT • Pattern: Enemy stacks B on eco rounds — fake B, hit A fast', timestamp: new Date() },
     ];
+
+    const lolMessages: LiveMessage[] = [
+      { id: '', type: 'alert', content: 'LoL • 15:20 Dragon setup — enemy grouping river, secure pit vision now', timestamp: new Date() },
+      { id: '', type: 'insight', content: 'LoL • Bot prio detected — rotate support for early dragon start', timestamp: new Date() },
+      { id: '', type: 'info', content: 'LoL • Herald available — top push + jungler path top to secure', timestamp: new Date() },
+      { id: '', type: 'alert', content: 'LoL • Enemy jungler shown top — start dragon immediately', timestamp: new Date() },
+    ];
+
+    const demoMessages: LiveMessage[] = selectedGame === 'VALORANT' ? valorantMessages : lolMessages;
 
     let index = 0;
     const interval = setInterval(() => {
@@ -83,7 +98,7 @@ export const LiveCoach: React.FC = () => {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [isLive]);
+  }, [isLive, selectedGame]);
 
   const handleSendMessage = () => {
     if (!inputMessage.trim()) return;
@@ -103,9 +118,9 @@ export const LiveCoach: React.FC = () => {
   const toggleLive = () => {
     setIsLive(!isLive);
     if (!isLive) {
-      sendMessage({ type: 'subscribe', channel: 'live_insights' });
+      sendMessage({ type: 'subscribe', channel: `live_insights_${selectedGame}` });
     } else {
-      sendMessage({ type: 'unsubscribe', channel: 'live_insights' });
+      sendMessage({ type: 'unsubscribe', channel: `live_insights_${selectedGame}` });
     }
   };
 
@@ -126,9 +141,21 @@ export const LiveCoach: React.FC = () => {
           </Button>
           <div>
             <h1 className="text-2xl font-bold">Live Coach</h1>
-            <p className="text-muted-foreground">
-              Real-time match insights and recommendations
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-muted-foreground">Real-time insights for</p>
+              <Tabs 
+                value={selectedGame}
+                onValueChange={(v) => {
+                  setSelectedGame(v as GameType);
+                }}
+                className="w-[280px]"
+              >
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="VALORANT">VALORANT</TabsTrigger>
+                  <TabsTrigger value="LEAGUE_OF_LEGENDS">LoL</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
           </div>
         </div>
 

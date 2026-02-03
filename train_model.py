@@ -11,7 +11,7 @@ MODEL_OUT = "lgb_model.pkl"
 
 df = pd.read_csv(FEATURE_CSV)
 # features and label
-X = df[["n_events","n_shoot","mean_latency","n_ability","late_smoke","n_trades","round_total_deaths","round_late_smokes"]].fillna(0)
+X = df[["n_events","n_shoot","mean_latency","n_ability","late_smoke","n_trades","n_kills","kd_ratio","accuracy","round_total_deaths","round_late_smokes"]].fillna(0)
 y = df["label_dead"]
 
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)

@@ -22,9 +22,9 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const GRID_API_KEY = Deno.env.get('GRID_API_Key')
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL')
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    const GRID_API_KEY = Deno.env.get('GRID_API_KEY')
 
     if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
       throw new Error('Missing Supabase configuration')
@@ -32,7 +32,14 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
-    const { action, matchId, matchData, packets, computeSummary = false } = await req.json()
+    let body: any = {}
+    try {
+      body = await req.json()
+    } catch (e) {
+      // Body might be empty or invalid JSON
+    }
+
+    const { action, matchId, matchData, packets, computeSummary = false } = body
 
     // Audit log helper (centralized logic mirrored for Edge Function compatibility)
     const auditLog = async (
@@ -44,9 +51,10 @@ Deno.serve(async (req) => {
       raw?: unknown
     ) => {
       try {
+        console.log(`[AUDIT] ${actionType} for ${resourceId}: ${status} - ${message}`)
         await supabase.from('grid_ingest_audit').insert({
           provider,
-          provider_resource_id: resourceId,
+          provider_resource_id: String(resourceId || 'unknown'),
           action: actionType,
           status,
           message,
@@ -277,6 +285,26 @@ Deno.serve(async (req) => {
 
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error'
+    console.error(`[GLOBAL ERROR] ${message}`)
+    
+    // Attempt one last audit log if we have Supabase client
+    try {
+      const SUPABASE_URL = Deno.env.get('SUPABASE_URL')
+      const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+      if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+        const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+        await supabase.from('grid_ingest_audit').insert({
+          provider: 'system',
+          action: 'uncaught_exception',
+          status: 'failure',
+          message: message,
+          raw: { stack: error instanceof Error ? error.stack : null }
+        })
+      }
+    } catch (auditErr) {
+      console.error('[CRITICAL] Failed to audit the error itself:', auditErr)
+    }
+
     return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
