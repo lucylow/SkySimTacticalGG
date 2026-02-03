@@ -4,15 +4,16 @@
 import type { RawGridEvent } from '@/types/grid';
 
 export class GridStreamClient {
-  private subscribers: Set<(event: RawGridEvent) => void> = new Set();
-  private isStreaming = false;
-  private matchId: string | null = null;
+  private _subscribers: Set<(event: RawGridEvent) => void> = new Set();
+  private _isStreaming = false;
+  private _matchId: string | null = null;
 
   /**
    * Subscribe to a match stream
    */
   async *subscribe(matchId: string): AsyncGenerator<RawGridEvent> {
-    this.matchId = matchId;
+    this._matchId = matchId;
+    this._isStreaming = true;
 
     // Simulate GRID stream events
     const events = this.generateMockEvents(matchId);

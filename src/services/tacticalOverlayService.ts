@@ -5,7 +5,7 @@ import type { GridDataPacket } from '@/types/grid';
 import type { TacticalOverlayData } from '@/components/dashboard/TacticalOverlay';
 import type { Insight } from '@/types';
 import { predictiveAnalytics, type PredictiveAnalysisResult } from './predictiveAnalytics';
-import { assistantCoach, type AssistantCoachAnalysis } from './assistantCoach';
+import { skySimTacticalGG, type SkySimTacticalGGAnalysis } from './skySimTacticalGG.ts';
 
 export class TacticalOverlayService {
   /**
@@ -14,10 +14,10 @@ export class TacticalOverlayService {
    */
   async generateTacticalOverlay(
     recentPackets: GridDataPacket[],
-    previousAnalysis?: AssistantCoachAnalysis
+    previousAnalysis?: SkySimTacticalGGAnalysis
   ): Promise<TacticalOverlayData> {
-    // Get live insights from assistant coach
-    const liveInsights = await assistantCoach.getLiveInsights(recentPackets, previousAnalysis);
+    // Get live insights from SkySim Tactical GG
+    const liveInsights = await skySimTacticalGG.getLiveInsights(recentPackets, previousAnalysis);
 
     // Extract current phase and coordination
     const currentPhase = this.extractCurrentPhase(recentPackets);
@@ -214,7 +214,7 @@ export class TacticalOverlayService {
    */
   private async generatePredictiveInsights(
     packets: GridDataPacket[],
-    previousAnalysis?: AssistantCoachAnalysis
+    previousAnalysis?: SkySimTacticalGGAnalysis
   ): Promise<Array<{
     type: 'opponent_strategy' | 'economic_decision' | 'fatigue_warning' | 'pattern_detection';
     title: string;
@@ -295,7 +295,7 @@ export class TacticalOverlayService {
    */
   private async generateMicroMacroAlerts(
     packets: GridDataPacket[],
-    previousAnalysis?: AssistantCoachAnalysis
+    previousAnalysis?: SkySimTacticalGGAnalysis
   ): Promise<Array<{
     micro_action: string;
     macro_risk: string;
@@ -325,10 +325,21 @@ export class TacticalOverlayService {
       });
     }
 
+    // Add dynamic correlation based on live packets
+    if (packets.length > 0) {
+      const latest = packets[packets.length - 1];
+      if (latest.player.health < 30 && latest.match_context.round_phase === 'mid_round') {
+        alerts.push({
+          micro_action: 'Low health player holding aggressive angle',
+          macro_risk: 'Early man-disadvantage leading to site collapse',
+          correlation_strength: 0.85,
+          recommendation: 'Reposition to passive crossfire or request utility support',
+        });
+      }
+    }
+
     return alerts;
   }
 }
 
 export const tacticalOverlayService = new TacticalOverlayService();
-
-

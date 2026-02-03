@@ -55,7 +55,7 @@ const notificationColors = {
 
 const menuItems = [
   { text: 'Dashboard', icon: LayoutDashboard, path: '/app' },
-  { text: 'Assistant Coach', icon: Brain, path: '/app/assistant-coach' },
+  { text: 'SkySim Tactical GG', icon: Brain, path: '/app/assistant-coach' },
   { text: 'Match Analysis', icon: Gamepad2, path: '/app/match' },
   { text: 'Player Development', icon: Users, path: '/app/player' },
   { text: 'Live Coach', icon: Radio, path: '/app/live' },
@@ -102,7 +102,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <div className="flex h-16 items-center justify-between border-b border-border px-4">
             <Link to="/app" className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary font-bold text-white">
-                AC
+                SS
               </div>
               <AnimatePresence>
                 {sidebarOpen && (
@@ -111,7 +111,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -10 }}
                   >
-                    <p className="font-bold text-foreground">Assistant Coach</p>
+                    <p className="font-bold text-foreground">SkySim Tactical GG</p>
                     <p className="text-xs text-muted-foreground">Pro Edition</p>
                   </motion.div>
                 )}
@@ -211,10 +211,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <div className="flex h-16 items-center justify-between border-b border-border px-4">
                   <Link to="/app" className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary font-bold text-white">
-                      AC
+                      SS
                     </div>
                     <div>
-                      <p className="font-bold text-foreground">Assistant Coach</p>
+                      <p className="font-bold text-foreground">SkySim Tactical GG</p>
                       <p className="text-xs text-muted-foreground">Pro Edition</p>
                     </div>
                   </Link>

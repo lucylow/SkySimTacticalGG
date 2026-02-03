@@ -6,6 +6,7 @@ export { eventNormalizer } from './eventNormalizer';
 export { eventBus } from './eventBus';
 export { matchStateEngine } from './matchState';
 export { agentService } from './agentService';
+export { LolObjectiveEngine } from './lolObjectiveEngine';
 export { ingestionService } from './ingestionService';
 export { reviewService } from './reviewService';
 
@@ -21,6 +22,9 @@ export type {
   MomentumSignal,
   StarPlayerSignal,
   EconomyCrashSignal,
+  ObjectiveRecommendationSignal,
+  ObjectiveState,
+  ObjectiveDecision,
 } from '@/types/grid';
 
 

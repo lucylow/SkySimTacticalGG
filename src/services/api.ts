@@ -1,4 +1,5 @@
 import type { DashboardData, Match, Player, MotionData, Insight } from '@/types';
+import type { LoLPlayer, ValorantPlayer, EsportsTeam, EsportsMatch } from '@/types/esports';
 import { 
   mockDashboardData, 
   mockPlayers, 
@@ -7,6 +8,10 @@ import {
   mockMotionData,
   mockPerformanceTrends,
   mockCoachingSuggestions,
+  mockLoLPlayers,
+  mockValorantPlayers,
+  mockLoLTeams,
+  mockLoLMatches,
 } from '@/data/mockData';
 import { ApiClient } from '@/lib/apiClient';
 import { config } from '@/lib/config';
@@ -39,11 +44,29 @@ class ApiService {
       await delay(300); // Simulate network
       return { ...mockDashboardData, last_update: new Date().toISOString() };
     }
-    
-    // In production, call real backend endpoint
-    // return this.apiClient.get<DashboardData>('/dashboard');
     await delay(300);
     return { ...mockDashboardData, last_update: new Date().toISOString() };
+  }
+
+  // Esports Specific Fetchers
+  async fetchLoLPlayers(): Promise<LoLPlayer[]> {
+    await delay(200);
+    return mockLoLPlayers;
+  }
+
+  async fetchValorantPlayers(): Promise<ValorantPlayer[]> {
+    await delay(200);
+    return mockValorantPlayers;
+  }
+
+  async fetchLoLTeams(): Promise<EsportsTeam[]> {
+    await delay(200);
+    return mockLoLTeams;
+  }
+
+  async fetchLoLMatches(): Promise<EsportsMatch[]> {
+    await delay(200);
+    return mockLoLMatches;
   }
 
   // Match Analysis
@@ -74,13 +97,13 @@ class ApiService {
     return mockInsights;
   }
 
-  async generateInsights(teamId: string): Promise<Insight[]> {
+  async generateInsights(_teamId: string): Promise<Insight[]> {
     await delay(500);
     return mockInsights.filter(() => Math.random() > 0.3);
   }
 
   // Motion Data
-  async fetchMotionData(motionId: string): Promise<MotionData> {
+  async fetchMotionData(_motionId: string): Promise<MotionData> {
     await delay(300);
     return mockMotionData;
   }
@@ -124,10 +147,9 @@ class ApiService {
     };
   }
 
-  // Assistant Coach - Comprehensive Analysis
-  async analyzeMatchWithAssistantCoach(matchId: string) {
+  // SkySim Tactical GG - Comprehensive Analysis
+  async analyzeMatchWithSkySimTacticalGG(matchId: string) {
     await delay(1000);
-    // In production, this would call the assistantCoach service with real GRID data
     return {
       analysis_id: `analysis-${matchId}`,
       summary: {
@@ -146,8 +168,8 @@ class ApiService {
     };
   }
 
-  // Assistant Coach - Live Insights
-  async getLiveInsights(matchId: string) {
+  // SkySim Tactical GG - Live Insights
+  async getLiveInsights(_matchId: string) {
     await delay(300);
     return {
       alerts: [],

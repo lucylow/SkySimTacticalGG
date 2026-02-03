@@ -94,16 +94,18 @@ export class EventNormalizer {
       );
     }
 
+    const matchStartPayload: MatchStartPayload = {
+      best_of: payload.best_of as number,
+      teams: payload.teams as string[],
+    };
+
     return {
       event_id: raw.ingestion_id,
       event_type: 'MATCH_START',
       game: raw.game,
       match_id: raw.match_id,
       timestamp: raw.received_at,
-      payload: {
-        best_of: payload.best_of as number,
-        teams: payload.teams as string[],
-      } as MatchStartPayload,
+      payload: matchStartPayload as unknown as Record<string, unknown>,
     };
   }
 
@@ -126,6 +128,11 @@ export class EventNormalizer {
       );
     }
 
+    const mapStartPayload: MapStartPayload = {
+      map_name: payload.map_name as string,
+      starting_sides: payload.starting_sides as Record<string, 'CT' | 'T'>,
+    };
+
     return {
       event_id: raw.ingestion_id,
       event_type: 'MAP_START',
@@ -133,10 +140,7 @@ export class EventNormalizer {
       match_id: raw.match_id,
       map: payload.map_name as string,
       timestamp: raw.received_at,
-      payload: {
-        map_name: payload.map_name as string,
-        starting_sides: payload.starting_sides as Record<string, 'CT' | 'T'>,
-      } as MapStartPayload,
+      payload: mapStartPayload as unknown as Record<string, unknown>,
     };
   }
 
@@ -159,6 +163,10 @@ export class EventNormalizer {
       );
     }
 
+    const roundStartPayload: RoundStartPayload = {
+      economy: payload.economy as Record<string, number>,
+    };
+
     return {
       event_id: raw.ingestion_id,
       event_type: 'ROUND_START',
@@ -166,9 +174,7 @@ export class EventNormalizer {
       match_id: raw.match_id,
       round: payload.round as number,
       timestamp: raw.received_at,
-      payload: {
-        economy: payload.economy as Record<string, number>,
-      } as RoundStartPayload,
+      payload: roundStartPayload as unknown as Record<string, unknown>,
     };
   }
 
@@ -215,6 +221,12 @@ export class EventNormalizer {
       );
     }
 
+    const killPayload: KillPayload = {
+      weapon: payload.weapon as string,
+      headshot: payload.headshot as boolean,
+      trade: payload.trade as boolean,
+    };
+
     return {
       event_id: raw.ingestion_id,
       event_type: 'KILL',
@@ -225,11 +237,7 @@ export class EventNormalizer {
       target: `player:${payload.victim}`,
       team: typeof payload.team === 'string' ? payload.team : undefined,
       timestamp: raw.received_at,
-      payload: {
-        weapon: payload.weapon as string,
-        headshot: payload.headshot as boolean,
-        trade: payload.trade as boolean,
-      } as KillPayload,
+      payload: killPayload as unknown as Record<string, unknown>,
     };
   }
 
@@ -253,16 +261,18 @@ export class EventNormalizer {
       );
     }
 
+    const objectivePayload: ObjectivePayload = {
+      objective: payload.objective as 'BOMB_PLANT' | 'BOMB_DEFUSE' | 'SITE_CAPTURE',
+      site: typeof payload.site === 'string' ? payload.site : undefined,
+    };
+
     return {
       event_id: raw.ingestion_id,
       event_type: 'OBJECTIVE',
       game: raw.game,
       match_id: raw.match_id,
       timestamp: raw.received_at,
-      payload: {
-        objective: payload.objective as 'BOMB_PLANT' | 'BOMB_DEFUSE' | 'SITE_CAPTURE',
-        site: typeof payload.site === 'string' ? payload.site : undefined,
-      } as ObjectivePayload,
+      payload: objectivePayload as unknown as Record<string, unknown>,
     };
   }
 
@@ -294,6 +304,11 @@ export class EventNormalizer {
       );
     }
 
+    const roundEndPayload: RoundEndPayload = {
+      winner: payload.winner as string,
+      win_condition: payload.win_condition as 'ELIMINATION' | 'DEFUSE' | 'TIME' | 'PLANT',
+    };
+
     return {
       event_id: raw.ingestion_id,
       event_type: 'ROUND_END',
@@ -301,10 +316,7 @@ export class EventNormalizer {
       match_id: raw.match_id,
       round: typeof payload.round === 'number' ? payload.round : undefined,
       timestamp: raw.received_at,
-      payload: {
-        winner: payload.winner as string,
-        win_condition: payload.win_condition as 'ELIMINATION' | 'DEFUSE' | 'TIME' | 'PLANT',
-      } as RoundEndPayload,
+      payload: roundEndPayload as unknown as Record<string, unknown>,
     };
   }
 
@@ -338,10 +350,9 @@ export class EventNormalizer {
       game: raw.game,
       match_id: raw.match_id,
       timestamp: raw.received_at,
-      payload: raw.payload,
+      payload: raw.payload as Record<string, unknown>,
     };
   }
 }
 
 export const eventNormalizer = new EventNormalizer();
-

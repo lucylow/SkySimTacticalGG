@@ -1,55 +1,45 @@
-// Automated Macro Review Agenda Generator
-// Transforms raw match data into structured, actionable coaching agenda
+// Macro Review Agenda Generator
+// Generates structured review agendas for post-match analysis
 
 import type { MatchMetadata, RoundData } from '@/types/backend';
 
-// ============= Review Section Types =============
-
-export interface ReviewSection {
-  title: string;
-  priority: number; // 1-5, 5 being highest
-  findings: string[];
-  evidence: Evidence[];
-  coaching_questions: string[];
-  recommended_drills: string[];
-  visualization_hook?: string;
-}
-
-export interface Evidence {
-  metric?: string;
-  round?: number;
-  our_team?: number;
-  their_team?: number;
-  differential?: number;
-  pattern?: string;
-  occurrences?: number;
-  rounds?: number[];
-  impact?: string;
-  key_moment?: string;
-}
-
-export interface ReviewAgendaSection {
-  section_title: string;
-  priority: string; // Emoji indicators
-  key_findings: string[];
-  evidence: Evidence[];
-  coaching_points: Array<{
-    question: string;
-    discussion_prompt: string;
-  }>;
-  recommended_actions: string[];
-  time_allocation: string;
-  visualization_available: boolean;
-}
+// ============= Types =============
 
 export interface MatchInfo {
   match_type: string;
   opponent: string;
   map: string;
-  score?: string;
-  composition?: string;
-  duration?: string;
+  score: string;
+  composition: string;
+  duration: string;
   date: string;
+}
+
+export interface CoachingPoint {
+  question: string;
+  discussion_prompt: string;
+}
+
+export interface ReviewAgendaSection {
+  section_title: string;
+  priority: string;
+  key_findings: string[];
+  evidence: Array<{
+    type: string;
+    description: string;
+    timestamp?: string;
+    metric?: string;
+    pattern?: string;
+    our_team?: number;
+    their_team?: number;
+    differential?: number;
+    rounds?: number[];
+    impact?: string;
+  }>;
+  coaching_points: CoachingPoint[];
+  recommended_actions: string[];
+  time_allocation: string;
+  visualization_available: boolean;
 }
 
 export interface ReviewAgenda {
@@ -66,117 +56,112 @@ export interface ReviewAgenda {
   agenda_version: string;
 }
 
-// ============= Agenda Generator Service =============
+interface ReviewSection {
+  title: string;
+  priority: number;
+  findings: string[];
+  evidence: Array<{ type: string; description: string; timestamp?: string }>;
+  coaching_questions: string[];
+  recommended_drills: string[];
+  visualization_hook?: string;
+}
+
+// ============= Agenda Generator =============
 
 class AgendaGeneratorService {
   /**
-   * Generate complete macro review agenda from match data
+   * Generate a comprehensive review agenda from match data
    */
   async generateReviewAgenda(
     match: MatchMetadata,
     rounds: RoundData[],
-    teamId: string = 't1' // Our team ID
+    teamId: string
   ): Promise<ReviewAgenda> {
-    // Run all analysis modules in parallel
-    const [
-      pistolAnalysis,
-      economicAnalysis,
-      midRoundAnalysis,
-      ultimateEconomyAnalysis,
-      mapControlAnalysis,
-      compositionAnalysis,
-    ] = await Promise.all([
-      this.analyzePistolRounds(rounds, teamId),
-      this.analyzeEconomicManagement(rounds, teamId),
-      this.analyzeMidRoundPatterns(rounds, teamId),
-      this.analyzeUltimateEconomy(match, rounds, teamId),
-      this.analyzeMapControlTrends(rounds, teamId),
-      this.analyzeTeamComposition(match, rounds, teamId),
-    ]);
+    const sections: ReviewSection[] = [];
 
-    // Filter and sort sections by priority
-    const allSections = [
-      pistolAnalysis,
-      economicAnalysis,
-      midRoundAnalysis,
-      ultimateEconomyAnalysis,
-      mapControlAnalysis,
-      compositionAnalysis,
-    ].filter((section): section is ReviewSection => section !== null && section.priority >= 3);
+    // Analyze different aspects
+    const pistolAnalysis = await this.analyzePistolRounds(rounds, teamId);
+    if (pistolAnalysis) sections.push(pistolAnalysis);
 
-    const sortedSections = allSections.sort((a, b) => b.priority - a.priority);
+    const economyAnalysis = await this.analyzeEconomyDecisions(rounds, teamId);
+    if (economyAnalysis) sections.push(economyAnalysis);
 
-    // Build agenda document
-    return this.buildAgendaDocument(match, rounds, sortedSections, teamId);
+    const positioningAnalysis = await this.analyzePositioning(rounds, teamId);
+    if (positioningAnalysis) sections.push(positioningAnalysis);
+
+    const utilityAnalysis = await this.analyzeUtilityUsage(rounds, teamId);
+    if (utilityAnalysis) sections.push(utilityAnalysis);
+
+    const mapControlAnalysis = await this.analyzeMapControlTrends(rounds, teamId);
+    if (mapControlAnalysis) sections.push(mapControlAnalysis);
+
+    const compositionAnalysis = await this.analyzeTeamComposition(match, rounds, teamId);
+    if (compositionAnalysis) sections.push(compositionAnalysis);
+
+    // Sort by priority
+    sections.sort((a, b) => b.priority - a.priority);
+
+    // Build final agenda
+    return this.buildAgendaDocument(match, rounds, sections, teamId);
   }
 
-  /**
-   * Analyze pistol round performance and impact
-   */
+  // ============= Analysis Methods =============
+
   private async analyzePistolRounds(
     rounds: RoundData[],
     teamId: string
   ): Promise<ReviewSection | null> {
-    const pistolRounds = rounds.filter((r) => r.round_number === 1 || r.round_number === 13);
+    const pistolRounds = rounds.filter(
+      (r) => r.round_number === 1 || r.round_number === 13
+    );
 
     if (pistolRounds.length === 0) return null;
 
+    const wins = pistolRounds.filter((r) => r.winning_team_id === teamId).length;
+    const losses = pistolRounds.length - wins;
+
+    if (losses === 0) return null;
+
     const findings: string[] = [];
-    const evidence: Evidence[] = [];
+    const evidence: Array<{ type: string; description: string; timestamp?: string }> = [];
 
-    let pistolWins = 0;
-    for (const pistolRound of pistolRounds) {
-      const won = pistolRound.winning_team_id === teamId;
-      if (won) {
-        pistolWins++;
-      } else {
-        const lossReasons = this.analyzePistolLoss(pistolRound, rounds);
-        findings.push(`Lost pistol round ${pistolRound.round_number}: ${lossReasons}`);
-
-        const ecoImpact = this.calculatePistolEcoImpact(rounds, pistolRound.round_number, teamId);
+    for (const round of pistolRounds) {
+      if (round.winning_team_id !== teamId) {
+        const reason = this.analyzePistolLoss(round);
+        findings.push(`Round ${round.round_number}: ${reason}`);
         evidence.push({
-          round: pistolRound.round_number,
-          impact: ecoImpact,
-          key_moment: `Economic disadvantage for next ${ecoImpact.split(' ')[0]} rounds`,
+          type: 'round_outcome',
+          description: `Pistol round loss - ${reason}`,
+          timestamp: round.round_number.toString(),
         });
       }
     }
 
-    // Overall pistol performance
-    const pistolPerformance = `Won ${pistolWins}/${pistolRounds.length} pistol rounds`;
-    findings.unshift(pistolPerformance);
-
-    if (pistolWins === 0) {
-      findings.unshift('Lost both pistols.');
-    }
-
     return {
-      title: 'Pistol Round Analysis',
-      priority: 5, // Highest priority
+      title: 'Pistol Round Performance',
+      priority: losses > 1 ? 5 : 3,
       findings,
       evidence,
       coaching_questions: [
-        'What was our default pistol strategy?',
-        'How did we adapt to the opponent\'s pistol setup?',
-        'Were our utility purchases optimal for our strategy?',
+        'What was the buy strategy for each pistol?',
+        'Did we win initial duels?',
+        'How was utility usage coordinated?',
       ],
-      recommended_drills: ['Pistol round simulator', 'Anti-pistol setups', 'Pistol utility usage'],
-      visualization_hook: 'pistol_round_visualization',
+      recommended_drills: [
+        'Pistol round utility timing drills',
+        'Anti-eco hold practice',
+      ],
+      visualization_hook: 'pistol_round_replay',
     };
   }
 
-  /**
-   * Analyze economic decisions and their ripple effects
-   */
-  private async analyzeEconomicManagement(
+  private async analyzeEconomyDecisions(
     rounds: RoundData[],
     teamId: string
   ): Promise<ReviewSection | null> {
-    const findings: string[] = [];
-    const evidence: Evidence[] = [];
-    const economicErrors: Evidence[] = [];
+    const economicIssues: string[] = [];
+    const evidence: Array<{ type: string; description: string; timestamp?: string }> = [];
 
-    // Track economic state round by round
     for (let i = 1; i < rounds.length; i++) {
       const prevRound = rounds[i - 1];
       const currentRound = rounds[i];
@@ -185,293 +170,159 @@ class AgendaGeneratorService {
 
       const decision = this.classifyEconomicDecision(prevRound, currentRound, teamId);
 
-      if (decision.type === 'force_buy') {
-        const success = currentRound.winning_team_id === teamId;
-        if (!success) {
-          const ecoLoss = this.calculateEconomicLoss(prevRound, currentRound, teamId);
-          const rippleEffect = this.calculateRippleEffect(rounds, i, 3, teamId);
-
-          economicErrors.push({
-            round: currentRound.round_number,
-            metric: 'Force buy impact',
-            impact: `${ecoLoss} economic deficit`,
-            pattern: `Extended economic disadvantage by ${rippleEffect} rounds`,
-          });
-
-          findings.push(
-            `Unsuccessful force-buy on Round ${currentRound.round_number} led to a ${ecoLoss} economic deficit. Review force-buy vs. save criteria.`
-          );
-        }
-      }
-
-      // Check for bonus round losses after force buys
-      const nextRound = rounds[i + 1];
-      if (
-        decision.type === 'force_buy' &&
-        !decision.success &&
-        nextRound &&
-        nextRound.round_type === 'full'
-      ) {
-        const bonusRoundWon = nextRound.winning_team_id === teamId;
-        if (!bonusRoundWon) {
-          findings.push(
-            `Force-buy on Round ${currentRound.round_number} led to a bonus round loss (Round ${nextRound.round_number}).`
-          );
-        }
-      }
-    }
-
-    // Calculate overall economic efficiency
-    const efficiencyScore = this.calculateEconomicEfficiency(rounds, teamId);
-    findings.unshift(`Economic Efficiency Score: ${efficiencyScore}/100`);
-
-    // Identify patterns
-    const patterns = this.identifyEconomicPatterns(rounds, teamId);
-    const firstPattern = patterns[0];
-    if (patterns.length > 0 && firstPattern) {
-      findings.push(`Pattern detected: ${firstPattern.description}`);
-      evidence.push({
-        pattern: firstPattern.description,
-        occurrences: firstPattern.frequency,
-        rounds: firstPattern.rounds,
-      });
-    }
-
-    return {
-      title: 'Economic Management',
-      priority: 4,
-      findings: findings.slice(0, 5), // Top 5 findings
-      evidence: economicErrors.slice(0, 3), // Top 3 errors
-      coaching_questions: [
-        'What are our force-buy criteria?',
-        'How do we communicate save/force decisions?',
-        'Are we tracking opponent economy correctly?',
-      ],
-      recommended_drills: ['Economic decision simulator', 'Save round protocols', 'Economic tracking'],
-      visualization_hook: 'economic_flow_visualization',
-    };
-  }
-
-  /**
-   * Analyze mid-round decision making and patterns
-   */
-  private async analyzeMidRoundPatterns(
-    rounds: RoundData[],
-    teamId: string
-  ): Promise<ReviewSection | null> {
-    // For VALORANT, analyze attacking rounds
-    // In VALORANT, teams switch sides at round 13
-    // Assume team starts on attack for rounds 1-12, then switches
-    const attackingRounds = rounds.filter((r) => {
-      // Determine side based on round number (simplified - in reality would check team side from GRID)
-      // Rounds 1-12: first half (team likely starts on attack or defense depending on map)
-      // Rounds 13-24: second half (switched sides)
-      // For this analysis, we'll assume rounds 1-12 are attack (can be adjusted based on actual data)
-      const isFirstHalf = r.round_number <= 12;
-      const isAttack = isFirstHalf; // Simplified - adjust based on actual side data
-      return isAttack;
-    });
-
-    if (attackingRounds.length === 0) return null;
-
-    const findings: string[] = [];
-    const evidence: Evidence[] = [];
-
-    // Analyze execution timing
-    const lateExecutions: Array<{
-      round: number;
-      execute_time: number;
-      outcome: boolean;
-      site?: string;
-    }> = [];
-
-    for (const roundData of attackingRounds) {
-      const executeTime = roundData.round_phase_stats?.execute_time;
-      if (executeTime && executeTime < 20) {
-        // Less than 20 seconds left
-        const won = roundData.winning_team_id === teamId;
-        lateExecutions.push({
-          round: roundData.round_number,
-          execute_time: executeTime,
-          outcome: won,
-          site: roundData.bomb_site,
+      if (decision.type === 'force_buy' && !decision.success) {
+        economicIssues.push(
+          `Round ${currentRound.round_number}: Unsuccessful force buy after pistol loss`
+        );
+        evidence.push({
+          type: 'economy',
+          description: 'Force buy failed',
+          timestamp: currentRound.round_number.toString(),
         });
       }
     }
 
-    if (lateExecutions.length > 0) {
-      const successRate =
-        lateExecutions.filter((e) => e.outcome).length / lateExecutions.length;
-      const totalAttackingRounds = attackingRounds.length;
+    if (economicIssues.length === 0) return null;
 
-      // Format finding similar to example: "4/10 attacking rounds on Map 1 saw a late A-main push with <20s left, resulting in 3 losses."
-      const losses = lateExecutions.filter((e) => !e.outcome).length;
-      findings.push(
-        `${lateExecutions.length}/${totalAttackingRounds} attacking rounds had late executes (<20s). Success rate: ${(successRate * 100).toFixed(0)}% (${losses} losses).`
-      );
+    return {
+      title: 'Economy Management',
+      priority: economicIssues.length > 3 ? 4 : 2,
+      findings: economicIssues,
+      evidence,
+      coaching_questions: [
+        'Were force buys coordinated?',
+        'Should we have saved instead?',
+      ],
+      recommended_drills: ['Economy decision tree review'],
+      visualization_hook: 'economy_timeline',
+    };
+  }
 
-      // Group by pattern (site)
-      const sitePatterns: Record<string, typeof lateExecutions> = {};
-      for (const execution of lateExecutions) {
-        const site = execution.site || 'Unknown';
-        if (!sitePatterns[site]) {
-          sitePatterns[site] = [];
-        }
-        sitePatterns[site].push(execution);
-      }
+  private async analyzePositioning(
+    rounds: RoundData[],
+    teamId: string
+  ): Promise<ReviewSection | null> {
+    const positioningIssues: string[] = [];
+    const evidence: Array<{ type: string; description: string; timestamp?: string }> = [];
 
-      for (const [site, executions] of Object.entries(sitePatterns)) {
-        if (executions.length >= 3) {
-          // Significant pattern
+    for (const round of rounds) {
+      if (round.winning_team_id !== teamId) {
+        const phaseStats = round.round_phase_stats;
+        if (phaseStats.first_contact_time && phaseStats.first_contact_time < 10) {
+          positioningIssues.push(
+            `Round ${round.round_number}: Early death in first ${phaseStats.first_contact_time}s`
+          );
           evidence.push({
-            pattern: `Repeated late executes on ${site}`,
-            occurrences: executions.length,
-            rounds: executions.map((e) => e.round),
-            metric: 'Late execution pattern',
+            type: 'positioning',
+            description: 'Exposed position led to early death',
+            timestamp: round.round_number.toString(),
           });
         }
       }
     }
 
-    // Analyze default setups
-    const defaultPatterns = this.analyzeDefaultPatterns(rounds, teamId);
-    if (defaultPatterns) {
-      findings.push(`Default pattern: ${defaultPatterns.primary_pattern}`);
-    }
-
-    if (findings.length === 0) return null;
+    if (positioningIssues.length < 2) return null;
 
     return {
-      title: 'Mid-Round Decision Making',
-      priority: 3,
-      findings,
+      title: 'Positioning Issues',
+      priority: positioningIssues.length > 5 ? 5 : 3,
+      findings: positioningIssues,
       evidence,
       coaching_questions: [
-        'What triggers our site executes?',
-        'How do we gather information during defaults?',
-        'When do we decide to rotate or commit?',
+        'Are players using off-angles?',
+        'Is positioning predictable?',
       ],
-      recommended_drills: ['Execute timing drills', 'Information gathering protocols', 'Default setups'],
-      visualization_hook: 'mid_round_pattern_visualization',
+      recommended_drills: [
+        'Off-angle positioning practice',
+        'Jiggle peek timing drills',
+      ],
+      visualization_hook: 'position_heatmap',
     };
   }
 
-  /**
-   * Analyze ultimate economy (VALORANT-specific)
-   */
-  private async analyzeUltimateEconomy(
-    match: MatchMetadata,
+  private async analyzeUtilityUsage(
     rounds: RoundData[],
     teamId: string
   ): Promise<ReviewSection | null> {
-    if (match.game !== 'valorant') return null;
+    const utilityIssues: string[] = [];
+    const evidence: Array<{ type: string; description: string; timestamp?: string }> = [];
 
-    const orbData = this.extractOrbData(rounds, teamId);
-
-    if (!orbData) return null;
-
-    const ourOrbs = orbData.our_team;
-    const theirOrbs = orbData.their_team;
-    const orbDifferential = ourOrbs - theirOrbs;
-
-    const findings: string[] = [];
-
-    if (orbDifferential < -2) {
-      // Significant disadvantage
-      findings.push(
-        `Ultimate Economy: Only ${ourOrbs} orbs collected vs ${theirOrbs} by enemy. (${Math.abs(orbDifferential)} orb deficit)`
-      );
+    for (const round of rounds) {
+      if (round.winning_team_id !== teamId) {
+        const phaseStats = round.round_phase_stats;
+        if (phaseStats.utility_used_early && phaseStats.utility_used_early > 3) {
+          utilityIssues.push(
+            `Round ${round.round_number}: ${phaseStats.utility_used_early} utility used too early`
+          );
+          evidence.push({
+            type: 'utility',
+            description: 'Wasted utility before execute',
+            timestamp: round.round_number.toString(),
+          });
+        }
+      }
     }
 
-    // Analyze ultimate usage efficiency (simulated)
-    const ultUsage = this.analyzeUltimateUsage(rounds, teamId);
-    if (ultUsage.wasted_ultimates > 0) {
-      findings.push(
-        `Ultimate Usage: ${ultUsage.wasted_ultimates} ultimates wasted (no kills or objective impact)`
-      );
-    }
-
-    if (findings.length === 0) return null;
+    if (utilityIssues.length === 0) return null;
 
     return {
-      title: 'Ultimate Economy',
-      priority: 3,
-      findings,
-      evidence: [
-        {
-          metric: 'Orb Collection',
-          our_team: ourOrbs,
-          their_team: theirOrbs,
-          differential: orbDifferential,
-        },
-        {
-          metric: 'Ultimate Usage Efficiency',
-          our_team: ultUsage.effective_ultimates,
-          their_team: ultUsage.wasted_ultimates,
-        },
-      ],
+      title: 'Utility Timing',
+      priority: utilityIssues.length > 4 ? 4 : 2,
+      findings: utilityIssues,
+      evidence,
       coaching_questions: [
-        'How are we prioritizing orb control?',
-        'What\'s our protocol for ultimate combos?',
-        'Are we tracking enemy ultimate economy?',
+        'Are smokes timed with entry?',
+        'Is flash usage coordinated?',
       ],
-      recommended_drills: ['Orb control rotations', 'Ultimate combo practice', 'Ultimate economy tracking'],
-      visualization_hook: 'ultimate_economy_visualization',
+      recommended_drills: ['Execute timing practice', 'Utility coordination drills'],
+      visualization_hook: 'utility_timeline',
     };
   }
 
-  /**
-   * Analyze map control trends
-   */
   private async analyzeMapControlTrends(
-    rounds: RoundData[],
-    teamId: string
+    _rounds: RoundData[],
+    _teamId: string
   ): Promise<ReviewSection | null> {
     // Simplified analysis - in reality would analyze map control events
-    return null; // Placeholder for future implementation
+    return null;
   }
 
-  /**
-   * Analyze team composition
-   */
   private async analyzeTeamComposition(
-    match: MatchMetadata,
-    rounds: RoundData[],
-    teamId: string
+    _match: MatchMetadata,
+    _rounds: RoundData[],
+    _teamId: string
   ): Promise<ReviewSection | null> {
     // Simplified analysis - in reality would analyze agent picks
-    return null; // Placeholder for future implementation
+    return null;
   }
 
-  /**
-   * Build the final agenda document
-   */
+  // ============= Build Agenda Document =============
+
   private buildAgendaDocument(
     match: MatchMetadata,
     rounds: RoundData[],
     sections: ReviewSection[],
     teamId: string
   ): ReviewAgenda {
-    // Calculate match info
     const ourTeamWins = rounds.filter((r) => r.winning_team_id === teamId).length;
     const theirTeamWins = rounds.length - ourTeamWins;
     const score = `${ourTeamWins}-${theirTeamWins}`;
 
     const matchInfo: MatchInfo = {
-      match_type: 'BO1', // Could be determined from tournament context
-      opponent: match.team_b_id, // Simplified
+      match_type: 'BO1',
+      opponent: match.team_b_id,
       map: match.map_name,
       score,
-      composition: '1-3-1', // Would come from agent picks
+      composition: '1-3-1',
       duration: this.calculateMatchDuration(rounds),
       date: match.start_time,
     };
 
     const reviewAgenda: ReviewAgendaSection[] = sections.map((section) => ({
       section_title: section.title,
-      priority: '🔥'.repeat(section.priority), // Visual priority indicator
+      priority: '🔥'.repeat(section.priority),
       key_findings: section.findings,
-      evidence: section.evidence.slice(0, 2), // Limit to top 2
+      evidence: section.evidence.slice(0, 2),
       coaching_points: section.coaching_questions.map((q) => ({
         question: q,
         discussion_prompt: this.generateDiscussionPrompt(q),
@@ -503,26 +354,8 @@ class AgendaGeneratorService {
 
   // ============= Helper Methods =============
 
-  private analyzePistolLoss(round: RoundData, allRounds: RoundData[]): string {
-    // Simplified analysis - in reality would analyze round events
+  private analyzePistolLoss(_round: RoundData): string {
     return 'Economic disadvantage impact';
-  }
-
-  private calculatePistolEcoImpact(
-    rounds: RoundData[],
-    pistolRoundNumber: number,
-    teamId: string
-  ): string {
-    let impactRounds = 0;
-    for (let i = pistolRoundNumber; i < Math.min(pistolRoundNumber + 4, rounds.length); i++) {
-      const round = rounds[i];
-      if (round.round_type === 'eco' || round.round_type === 'force') {
-        impactRounds++;
-      } else {
-        break;
-      }
-    }
-    return `${impactRounds} rounds`;
   }
 
   private classifyEconomicDecision(
@@ -540,126 +373,25 @@ class AgendaGeneratorService {
     return { type: 'normal' };
   }
 
-  private calculateEconomicLoss(
-    prevRound: RoundData,
-    currentRound: RoundData,
-    teamId: string
-  ): string {
-    // Simplified calculation
-    return 'significant';
+  private calculateMatchDuration(rounds: RoundData[]): string {
+    const totalSeconds = rounds.reduce((sum, r) => sum + r.duration_seconds, 0);
+    const minutes = Math.floor(totalSeconds / 60);
+    return `${minutes} minutes`;
   }
 
-  private calculateRippleEffect(
-    rounds: RoundData[],
-    startIndex: number,
-    lookAhead: number,
-    teamId: string
-  ): number {
-    let affectedRounds = 0;
-    for (let i = startIndex + 1; i < Math.min(startIndex + lookAhead + 1, rounds.length); i++) {
-      const round = rounds[i];
-      if (round.round_type === 'eco' || round.round_type === 'force') {
-        affectedRounds++;
-      } else {
-        break;
-      }
-    }
-    return affectedRounds;
-  }
-
-  private calculateEconomicEfficiency(rounds: RoundData[], teamId: string): number {
-    // Simplified efficiency calculation
-    const wins = rounds.filter((r) => r.winning_team_id === teamId).length;
-    const total = rounds.length;
-    return Math.round((wins / total) * 100);
-  }
-
-  private identifyEconomicPatterns(
-    rounds: RoundData[],
-    teamId: string
-  ): Array<{ description: string; frequency: number; rounds: number[] }> {
-    // Simplified pattern detection
-    return [];
-  }
-
-  private analyzeDefaultPatterns(
-    rounds: RoundData[],
-    teamId: string
-  ): { primary_pattern: string } | null {
-    // Simplified default pattern analysis
-    return null;
-  }
-
-  private extractOrbData(
-    rounds: RoundData[],
-    teamId: string
-  ): { our_team: number; their_team: number } | null {
-    // Simplified orb extraction - in reality would parse from GRID events
-    // For now, simulate based on round wins
-    let ourOrbs = 0;
-    let theirOrbs = 0;
-
-    for (const round of rounds) {
-      if (round.winning_team_id === teamId) {
-        ourOrbs++;
-      } else {
-        theirOrbs++;
-      }
-    }
-
-    // Adjust to simulate orb collection (not all rounds have orbs)
-    ourOrbs = Math.floor(ourOrbs * 0.5);
-    theirOrbs = Math.floor(theirOrbs * 0.5);
-
-    return { our_team: ourOrbs, their_team: theirOrbs };
-  }
-
-  private analyzeUltimateUsage(
-    rounds: RoundData[],
-    teamId: string
-  ): { effective_ultimates: number; wasted_ultimates: number } {
-    // Simplified analysis - in reality would analyze ultimate usage events
-    return {
-      effective_ultimates: Math.floor(rounds.length * 0.3),
-      wasted_ultimates: Math.floor(rounds.length * 0.1),
-    };
+  private generateDiscussionPrompt(question: string): string {
+    return `Discuss: ${question}`;
   }
 
   private generateExecutiveSummary(sections: ReviewSection[]): string {
     const criticalIssues = sections.filter((s) => s.priority >= 4);
     if (criticalIssues.length === 0) {
-      return 'Overall performance was solid with minor areas for improvement.';
+      return 'No critical issues identified. Focus on maintaining current performance levels.';
     }
 
-    const topIssue = criticalIssues[0];
-    if (!topIssue) {
-      return 'Overall performance was solid with minor areas for improvement.';
-    }
-    return `Key focus areas: ${topIssue.title} and ${sections.length - 1} other strategic elements. ${criticalIssues.length} critical issues identified requiring immediate attention.`;
-  }
-
-  private generateDiscussionPrompt(question: string): string {
-    // Generate discussion prompts based on question type
-    if (question.includes('strategy') || question.includes('default')) {
-      return 'Discuss team decision-making process and communication protocols. Review VOD clips showing key moments.';
-    }
-    if (question.includes('criteria') || question.includes('decision')) {
-      return 'Establish clear guidelines and decision trees. Practice scenarios in scrims to reinforce protocols.';
-    }
-    if (question.includes('adapt') || question.includes('opponent')) {
-      return 'Analyze opponent patterns and discuss adaptive strategies. Review how similar situations were handled in past matches.';
-    }
-    return 'Review specific moments and discuss alternative approaches. Identify root causes and preventive measures.';
-  }
-
-  private calculateMatchDuration(rounds: RoundData[]): string {
-    const totalSeconds = rounds.reduce((sum, r) => sum + r.duration_seconds, 0);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    const issueNames = criticalIssues.map((s) => s.title).join(', ');
+    return `Critical areas requiring attention: ${issueNames}. Review these sections first.`;
   }
 }
 
 export const agendaGenerator = new AgendaGeneratorService();
-export default agendaGenerator;
-

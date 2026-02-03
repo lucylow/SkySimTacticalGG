@@ -271,7 +271,7 @@ export const PlayerDevelopment: React.FC = () => {
   };
 
   const loadPlayerMistakes = async (playerId: string) => {
-    // Mock mistakes - in production, would come from assistant coach analysis
+    // Mock mistakes - in production, would come from SkySim Tactical GG analysis
     const mockMistakes: Mistake[] = [
       {
         id: 'm1',

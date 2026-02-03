@@ -16,7 +16,7 @@ export const Footer = () => {
               <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center font-black text-lg">
                 AC
               </div>
-              <span className="font-bold text-lg">AssistantCoach</span>
+              <span className="font-bold text-lg">SkySim Tactical GG</span>
             </div>
             <p className="text-sm text-muted-foreground mb-4">
               The AI-powered platform that transforms esports data into winning
@@ -88,8 +88,7 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-border/30 text-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Assistant Coach. All rights reserved.
-            Built with ❤️ for the hackathon
+            © {new Date().getFullYear()} SkySim Tactical GG. All rights reserved.
           </p>
         </div>
       </div>

@@ -1,4 +1,4 @@
-// Core Types for Esports Assistant Coach
+// Core Types for SkySim Tactical GG
 
 export interface Player {
   id: string;

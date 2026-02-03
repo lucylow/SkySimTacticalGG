@@ -4,7 +4,7 @@
 
 set -e  # Exit on error
 
-echo "=== Valorant AI Assistant Coach - ML Pipeline ==="
+echo "=== SkySim Tactical GG - ML Pipeline ==="
 echo ""
 
 echo "Step 1/4: Generating mock dataset..."

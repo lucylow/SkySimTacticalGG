@@ -139,8 +139,8 @@ export const WhatIfQuery: React.FC<WhatIfQueryProps> = ({
       // Use enhanced natural language analysis if query is provided
       if (useNaturalLanguage && query.trim() && !template) {
         const result = await backendApi.analyzeWhatIfQuery(matchId, query);
-        setEnhancedPrediction(result);
-        onPredictionComplete?.(result);
+        setEnhancedPrediction(result as EnhancedPredictionResult);
+        onPredictionComplete?.(result as EnhancedPredictionResult);
         return;
       }
 

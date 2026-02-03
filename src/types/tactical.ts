@@ -27,8 +27,8 @@ export interface GameStateContext {
 export interface CharacterDescriptor {
   id: string;
   player_id?: string;
-  role: 'entry_fragger' | 'support' | 'awper' | 'controller' | 'anchor' | 'initiator';
-  agent?: string; // VALORANT agent name (e.g., 'Jett', 'Brimstone')
+  role: 'entry_fragger' | 'support' | 'awper' | 'controller' | 'anchor' | 'initiator' | 'MID' | 'TOP' | 'JG' | 'ADC' | 'SUP';
+  agent?: string; // VALORANT agent name or LoL champion name
   emotional_context: EmotionalState;
   physical_context: PhysicalContext;
   grid_data_snapshot: Record<string, unknown>;
@@ -60,9 +60,9 @@ export interface PhysicalContext {
  */
 export interface TacticalPredictedAction {
   player_id: string;
-  action_type: 'peek' | 'throw' | 'defuse' | 'plant' | 'rotate' | 'retreat' | 'hold_angle' | 'communicate';
+  action_type: 'peek' | 'throw' | 'defuse' | 'plant' | 'rotate' | 'retreat' | 'hold_angle' | 'communicate' | 'kite';
   target_location?: { x: number; y: number };
-  urgency: 'immediate' | 'quick' | 'deliberate' | 'slow';
+  urgency: 'immediate' | 'quick' | 'deliberate' | 'slow' | 'high';
   confidence: number; // 0-1
   description: string;
   motion_style?: string;
@@ -128,15 +128,82 @@ export interface MotionPrompt {
   prompt_text: string;
   config: {
     duration?: number;
+    fps?: number;
     action_type?: string;
     player_role?: string;
     agent?: string;
   };
   scene_descriptor?: SceneDescriptor;
   metadata?: {
-    generated_at: string;
-    source: 'grid_data' | 'prediction' | 'correction';
+    generated_at?: string;
+    source?: 'grid_data' | 'prediction' | 'correction';
     confidence_score?: number;
+    game_context?: string;
+    tactical_layer?: string;
   };
 }
 
+// ============= Scouting & Roster Types =============
+
+export interface ValorantPlayer {
+  id: string;
+  name: string;
+  tag: string;
+  agentProficiency: Record<string, number>;
+  recentScore: number;
+  primaryAgent: string;
+  teamHistory?: Array<{ teamId: string }>;
+  scoutingScore: number;
+  liveRank?: string;
+  liveTier?: string;
+  liveRrLp?: number;
+  rankFetchedAt?: string;
+  championshipBoost?: number;
+  matchupPrediction?: {
+    vsTeam: string;
+    predictedWinrate: number;
+    confidence: number;
+  };
+}
+
+export interface LolPlayer {
+  id: string;
+  name: string;
+  primaryRole: 'TOP' | 'JG' | 'MID' | 'ADC' | 'SUP';
+  championProficiency: Record<string, number>;
+  recentScore: number;
+  teamHistory?: Array<{ teamId: string }>;
+  scoutingScore: number;
+  game?: 'LOL';
+}
+
+export interface ValorantMapComp {
+  map: string;
+  primaryComp: string[];
+  altComp1: string[];
+  altComp2: string[];
+  winrate: number;
+  pickBanRate: number;
+  notes: string;
+  roleBreakdown?: Record<string, number>;
+}
+
+export interface LolTeamComp {
+  archetype: string;
+  lanes: Partial<Record<'TOP' | 'JG' | 'MID' | 'ADC' | 'SUP', string[]>>;
+  winrate: number;
+  matchupStrength: Record<string, number>;
+  playstyle: string;
+}
+
+export interface SimulationResult {
+  team1: string[];
+  team2: string[];
+  map?: string;
+  game: 'VALORANT' | 'LOL';
+  winsTeam1: number;
+  totalSims: number;
+  winrate: number;
+  avgRoundScore: number[];
+  confidenceInterval: [number, number];
+}

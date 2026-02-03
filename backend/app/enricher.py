@@ -52,10 +52,11 @@ async def enrich_canonical(c: CanonicalEvent) -> Dict[str, Any]:
                 enriched["player_speed_m_s"] = None
             s["last_positions"][pid] = {"pos": pos, "t": ts}
 
-    # 2) KILL event -> opening_kill & streaks
+    # 2) KILL event -> opening_kill, streaks, and trade potential
     if c.event_type == "KILL":
         round_id = payload.get("round_id") or payload.get("round")
         actor = c.actor
+        target = c.target
         if round_id:
             # opening kill
             if s["round_first_kill"].get(round_id) is None:
@@ -63,6 +64,23 @@ async def enrich_canonical(c: CanonicalEvent) -> Dict[str, Any]:
                 enriched["opening_kill"] = True
             else:
                 enriched["opening_kill"] = False
+        
+        # trade potential: check if anyone on victim's team is nearby to trade
+        # requires victim's last position
+        if target and s["last_positions"].get(target):
+            v_pos = s["last_positions"][target]["pos"]
+            teammates_nearby = 0
+            for pid, pdata in s["last_positions"].items():
+                # skip victim and killer
+                if pid == target or pid == actor:
+                    continue
+                # check if same team (heuristic: GRID payload might have team info)
+                # For now, just check distance
+                if _distance(v_pos, pdata["pos"]) < 15.0: # 15 meters for trade window
+                    teammates_nearby += 1
+            enriched["trade_potential_count"] = teammates_nearby
+            enriched["is_untraded_risk"] = teammates_nearby == 0
+
         # streak detection: count consecutive kills within short timespan
         now = payload.get("ts") or None
         s["last_kills"].append({"actor": actor, "ts": now})
@@ -105,6 +123,18 @@ async def enrich_canonical(c: CanonicalEvent) -> Dict[str, Any]:
         obj = payload.get("objective_pos")
         dist = _distance(pos, obj)
         enriched["dist_to_objective_m"] = round(dist, 2)
+        
+        # New: Objective Control Signal
+        # If player is very close to objective, they are "controlling" it
+        if dist < 5.0:
+            enriched["objective_control"] = "ACTIVE"
+            enriched["control_intensity"] = round(1.0 - (dist / 5.0), 2)
+        elif dist < 15.0:
+            enriched["objective_control"] = "CONTESTING"
+            enriched["control_intensity"] = round(1.0 - (dist / 15.0), 2)
+        else:
+            enriched["objective_control"] = "NONE"
+            enriched["control_intensity"] = 0.0
 
     # 5) default passthrough enriched metadata: compute confidence placeholders
     # (real confidence comes from models, but we can provide heuristic confidence)

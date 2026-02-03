@@ -5,7 +5,6 @@
 import { BaseAgentImpl } from './baseAgent';
 import type {
   AgentInput,
-  AgentOutput,
   AgentTool,
   OpponentScoutingOutput,
   ScoutingReport,
@@ -13,6 +12,8 @@ import type {
   OpponentVulnerability,
   CompositionPreference,
   KeyPlayer,
+  MapTendency,
+  ClutchPerformance,
 } from '@/types/agents';
 
 export class OpponentScoutingAgent extends BaseAgentImpl {
@@ -21,9 +22,6 @@ export class OpponentScoutingAgent extends BaseAgentImpl {
   description =
     'Analyzes opponent historical data and VODs to generate scouting reports, predict tactics, and identify vulnerabilities.';
 
-  /**
-   * Execute opponent scouting analysis
-   */
   async execute(input: AgentInput): Promise<OpponentScoutingOutput> {
     const opponentData = input.opponent_data;
     const matchContext = input.match_context;
@@ -33,22 +31,13 @@ export class OpponentScoutingAgent extends BaseAgentImpl {
     }
 
     // Step 1: Build scouting report
-    const scoutingReport = await this.buildScoutingReport(
-      opponentData,
-      matchContext
-    );
+    const scoutingReport = await this.buildScoutingReport(opponentData, matchContext);
 
     // Step 2: Predict tactics
-    const predictedTactics = await this.predictTactics(
-      scoutingReport,
-      matchContext
-    );
+    const predictedTactics = await this.predictTactics(scoutingReport, matchContext);
 
     // Step 3: Identify vulnerabilities
-    const vulnerabilities = this.identifyVulnerabilities(
-      scoutingReport,
-      predictedTactics
-    );
+    const vulnerabilities = this.identifyVulnerabilities(scoutingReport, predictedTactics);
 
     // Step 4: Build insights
     const insights = [
@@ -85,36 +74,31 @@ export class OpponentScoutingAgent extends BaseAgentImpl {
     };
   }
 
-  /**
-   * Build comprehensive scouting report
-   */
   private async buildScoutingReport(
-    opponentData?: any,
-    matchContext?: any
+    opponentData?: unknown,
+    matchContext?: unknown
   ): Promise<ScoutingReport> {
-    const teamName = opponentData?.team_name || matchContext?.opponent_team || 'Unknown Team';
+    const od = opponentData as {
+      team_name?: string;
+      preferred_compositions?: string[];
+      map_tendencies?: Array<{ map: string; preferred_sites?: string[]; common_strategies?: string[]; success_rate?: number }>;
+      clutch_performance?: ClutchPerformance;
+      key_players?: KeyPlayer[];
+    } | undefined;
+    const mc = matchContext as { opponent_team?: string; map?: string } | undefined;
 
-    // Use LLM to analyze opponent data
-    const prompt = this.buildScoutingPrompt(opponentData, matchContext);
+    const teamName = od?.team_name || mc?.opponent_team || 'Unknown Team';
+
+    const prompt = this.buildScoutingPrompt(od, mc);
     const llmAnalysis = await this.callLLM(
       prompt,
       'You are an expert esports analyst. Analyze opponent data and generate a comprehensive scouting report.'
     );
 
-    // Extract composition preferences
-    const preferredCompositions = this.extractCompositionPreferences(
-      opponentData,
-      matchContext
-    );
-
-    // Extract map tendencies
-    const mapTendencies = this.extractMapTendencies(opponentData);
-
-    // Extract clutch performance
-    const clutchPerformance = this.extractClutchPerformance(opponentData);
-
-    // Identify key players
-    const keyPlayers = this.identifyKeyPlayers(opponentData);
+    const preferredCompositions = this.extractCompositionPreferences(od, mc);
+    const mapTendencies = this.extractMapTendencies(od);
+    const clutchPerformance = this.extractClutchPerformance(od);
+    const keyPlayers = this.identifyKeyPlayers(od);
 
     return {
       team_name: teamName,
@@ -126,21 +110,20 @@ export class OpponentScoutingAgent extends BaseAgentImpl {
     };
   }
 
-  /**
-   * Build scouting prompt for LLM
-   */
-  private buildScoutingPrompt(opponentData?: any, matchContext?: any): string {
+  private buildScoutingPrompt(
+    opponentData?: { team_name?: string; preferred_compositions?: string[]; map_tendencies?: Array<{ map: string; preferred_sites?: string[] }> },
+    matchContext?: { opponent_team?: string; map?: string }
+  ): string {
     return `Analyze the following opponent data:
 
 Team: ${opponentData?.team_name || matchContext?.opponent_team || 'Unknown'}
-Historical Matches: ${opponentData?.historical_matches?.length || 0}
 Map: ${matchContext?.map || 'Unknown'}
 
 Preferred Compositions:
-${opponentData?.preferred_compositions?.map((c: string[]) => `- ${c.join(', ')}`).join('\n') || 'Unknown'}
+${opponentData?.preferred_compositions?.join(', ') || 'Unknown'}
 
 Map Tendencies:
-${opponentData?.map_tendencies?.map((t: any) => `- ${t.map}: ${t.preferred_sites?.join(', ')}`).join('\n') || 'Unknown'}
+${opponentData?.map_tendencies?.map((t) => `- ${t.map}: ${t.preferred_sites?.join(', ')}`).join('\n') || 'Unknown'}
 
 Generate a playstyle analysis covering:
 1. Overall strategy approach (aggressive/defensive/mixed)
@@ -150,26 +133,29 @@ Generate a playstyle analysis covering:
 5. Team coordination style`;
   }
 
-  /**
-   * Extract composition preferences
-   */
   private extractCompositionPreferences(
-    opponentData?: any,
-    matchContext?: any
+    opponentData?: { preferred_compositions?: string[] },
+    matchContext?: { map?: string }
   ): CompositionPreference[] {
     const compositions: CompositionPreference[] = [];
 
-    if (opponentData?.preferred_compositions) {
-      for (const comp of opponentData.preferred_compositions) {
-        compositions.push({
-          composition: comp,
-          frequency: 0.7, // Would calculate from historical data
-          success_rate: 0.65, // Would calculate from historical data
-          maps: [matchContext?.map || 'all'],
-        });
+    if (opponentData?.preferred_compositions && opponentData.preferred_compositions.length > 0) {
+      // Split compositions into groups of 5 agents
+      const compArray = opponentData.preferred_compositions;
+      for (let i = 0; i < compArray.length; i += 5) {
+        const comp = compArray.slice(i, i + 5);
+        if (comp.length > 0) {
+          compositions.push({
+            composition: comp,
+            frequency: 0.7,
+            success_rate: 0.65,
+            maps: [matchContext?.map || 'all'],
+          });
+        }
       }
-    } else {
-      // Default composition if no data
+    }
+    
+    if (compositions.length === 0) {
       compositions.push({
         composition: ['Jett', 'Omen', 'Sage', 'Sova', 'Killjoy'],
         frequency: 0.5,
@@ -181,15 +167,18 @@ Generate a playstyle analysis covering:
     return compositions;
   }
 
-  /**
-   * Extract map tendencies
-   */
-  private extractMapTendencies(opponentData?: any): any[] {
+  private extractMapTendencies(
+    opponentData?: { map_tendencies?: Array<{ map: string; preferred_sites?: string[]; common_strategies?: string[]; success_rate?: number }> }
+  ): MapTendency[] {
     if (opponentData?.map_tendencies) {
-      return opponentData.map_tendencies;
+      return opponentData.map_tendencies.map((t) => ({
+        map: t.map,
+        preferred_sites: t.preferred_sites || ['A'],
+        common_strategies: t.common_strategies || ['Standard execute'],
+        success_rate: t.success_rate ?? 0.6,
+      }));
     }
 
-    // Default tendencies if no data
     return [
       {
         map: 'Bind',
@@ -200,15 +189,19 @@ Generate a playstyle analysis covering:
     ];
   }
 
-  /**
-   * Extract clutch performance
-   */
-  private extractClutchPerformance(opponentData?: any): any {
+  private extractClutchPerformance(
+    opponentData?: { clutch_performance?: ClutchPerformance }
+  ): ClutchPerformance {
     if (opponentData?.clutch_performance) {
-      return opponentData.clutch_performance;
+      return {
+        one_v_one: opponentData.clutch_performance.one_v_one ?? 0.55,
+        one_v_two: opponentData.clutch_performance.one_v_two ?? 0.35,
+        one_v_three: opponentData.clutch_performance.one_v_three ?? 0.20,
+        one_v_four: opponentData.clutch_performance.one_v_four ?? 0.10,
+        one_v_five: opponentData.clutch_performance.one_v_five ?? 0.05,
+      };
     }
 
-    // Default clutch performance
     return {
       one_v_one: 0.55,
       one_v_two: 0.35,
@@ -218,57 +211,45 @@ Generate a playstyle analysis covering:
     };
   }
 
-  /**
-   * Identify key players
-   */
-  private identifyKeyPlayers(opponentData?: any): KeyPlayer[] {
-    const players: KeyPlayer[] = [];
+  private identifyKeyPlayers(
+    opponentData?: { key_players?: KeyPlayer[] }
+  ): KeyPlayer[] {
+    if (opponentData?.key_players) {
+      return opponentData.key_players;
+    }
 
-    // Mock key players - in production, would analyze historical data
-    if (!opponentData || !opponentData.key_players) {
-      players.push({
+    return [
+      {
         player_id: 'opponent-1',
         role: 'duelist',
         strengths: ['Entry fragging', 'Clutch situations'],
         weaknesses: ['Utility usage'],
         impact_rating: 0.8,
-      });
-    } else {
-      return opponentData.key_players;
-    }
-
-    return players;
+      },
+    ];
   }
 
-  /**
-   * Predict opponent tactics
-   */
   private async predictTactics(
     scoutingReport: ScoutingReport,
-    matchContext?: any
+    matchContext?: unknown
   ): Promise<PredictedTactic[]> {
     const tactics: PredictedTactic[] = [];
+    const mc = matchContext as { map?: string } | undefined;
 
-    // Use LLM to predict tactics
     const prompt = `Based on this scouting report, predict likely tactics:
 
 Team: ${scoutingReport.team_name}
-Map: ${matchContext?.map || 'Unknown'}
+Map: ${mc?.map || 'Unknown'}
 Preferred Compositions: ${scoutingReport.preferred_compositions.map((c) => c.composition.join(', ')).join('; ')}
 Map Tendencies: ${scoutingReport.map_specific_tendencies.map((t) => `${t.map}: ${t.preferred_sites.join(', ')}`).join('; ')}
 
-Predict 3-5 likely tactics they will use, including:
-- Site preferences
-- Timing patterns
-- Utility usage
-- Economic strategies`;
+Predict 3-5 likely tactics they will use.`;
 
-    const llmResponse = await this.callLLM(
+    await this.callLLM(
       prompt,
       'You are a tactical predictor. Analyze opponent tendencies and predict their likely strategies.'
     );
 
-    // Generate predicted tactics based on scouting report
     for (const tendency of scoutingReport.map_specific_tendencies) {
       for (const site of tendency.preferred_sites) {
         tactics.push({
@@ -281,7 +262,6 @@ Predict 3-5 likely tactics they will use, including:
       }
     }
 
-    // Add default tactics if none found
     if (tactics.length === 0) {
       tactics.push({
         tactic_id: 'tactic-default-1',
@@ -295,16 +275,12 @@ Predict 3-5 likely tactics they will use, including:
     return tactics;
   }
 
-  /**
-   * Identify opponent vulnerabilities
-   */
   private identifyVulnerabilities(
     scoutingReport: ScoutingReport,
     predictedTactics: PredictedTactic[]
   ): OpponentVulnerability[] {
     const vulnerabilities: OpponentVulnerability[] = [];
 
-    // Analyze clutch performance for vulnerabilities
     if (scoutingReport.clutch_performance.one_v_three < 0.3) {
       vulnerabilities.push({
         vulnerability_id: 'vuln-clutch',
@@ -314,11 +290,10 @@ Predict 3-5 likely tactics they will use, including:
       });
     }
 
-    // Analyze retake performance
     const retakeTactics = predictedTactics.filter((t) =>
       t.description.toLowerCase().includes('retake')
     );
-    if (retakeTactics.length === 0 || retakeTactics[0].likelihood < 0.5) {
+    if (retakeTactics.length === 0 || (retakeTactics[0] && retakeTactics[0].likelihood < 0.5)) {
       vulnerabilities.push({
         vulnerability_id: 'vuln-retake',
         description: 'Struggles with retake scenarios',
@@ -327,7 +302,6 @@ Predict 3-5 likely tactics they will use, including:
       });
     }
 
-    // Analyze map-specific vulnerabilities
     for (const tendency of scoutingReport.map_specific_tendencies) {
       if (tendency.success_rate < 0.5) {
         vulnerabilities.push({
@@ -342,9 +316,6 @@ Predict 3-5 likely tactics they will use, including:
     return vulnerabilities;
   }
 
-  /**
-   * Get tools available to this agent
-   */
   getTools(): AgentTool[] {
     return [
       {
@@ -356,7 +327,7 @@ Predict 3-5 likely tactics they will use, including:
             match_data: { type: 'array' },
           },
         },
-        execute: async (args: Record<string, unknown>) => {
+        execute: async (_args: Record<string, unknown>) => {
           return { analyzed: true };
         },
       },
@@ -369,12 +340,10 @@ Predict 3-5 likely tactics they will use, including:
             matches: { type: 'array' },
           },
         },
-        execute: async (args: Record<string, unknown>) => {
+        execute: async (_args: Record<string, unknown>) => {
           return { patterns_extracted: true };
         },
       },
     ];
   }
 }
-
-

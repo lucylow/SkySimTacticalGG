@@ -61,7 +61,7 @@ export const CTASection = () => {
                 Ready to Transform Your <span className="gradient-text">Coaching?</span>
               </h2>
               <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
-                Join professional teams already using Assistant Coach to gain a competitive edge.
+                Join professional teams already using SkySim Tactical GG to gain a competitive edge.
               </p>
 
               {/* Email Form */}

@@ -7,7 +7,7 @@ This document contains all user-facing text (microcopy) for the application. Use
 ### Main Headline
 
 **Current**: "The AI-Powered Esports Coaching Revolution"
-**Value Prop**: "Transform raw match data into winning strategies with our comprehensive assistant coach platform. Powered by GRID data and HY-Motion 1.0."
+**Value Prop**: "Transform raw match data into winning strategies with our comprehensive SkySim Tactical GG platform. Powered by GRID data and HY-Motion 1.0."
 
 ### 3-Step CTA
 
@@ -335,7 +335,7 @@ This document contains all user-facing text (microcopy) for the application. Use
 - "Match Analysis"
 - "Player Development"
 - "AI Playground"
-- "Assistant Coach"
+- "SkySim Tactical GG"
 
 ## Footer
 

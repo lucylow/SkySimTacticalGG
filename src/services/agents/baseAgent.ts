@@ -8,6 +8,7 @@ import type {
   AgentOutput,
   AgentTool,
   AgentLLMConfig,
+  AgentInsight,
 } from '@/types/agents';
 
 /**
@@ -48,41 +49,17 @@ export abstract class BaseAgentImpl implements BaseAgent {
    */
   protected async callLLM(
     prompt: string,
-    systemMessage?: string
+    _systemMessage?: string
   ): Promise<string> {
     // Mock LLM call for now - in production, replace with actual API call
-    // Example: OpenAI API call
-    /*
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.llmConfig.api_key}`,
-      },
-      body: JSON.stringify({
-        model: this.llmConfig.model,
-        messages: [
-          { role: 'system', content: systemMessage || this.description },
-          { role: 'user', content: prompt },
-        ],
-        temperature: this.llmConfig.temperature,
-        max_tokens: this.llmConfig.max_tokens,
-      }),
-    });
-    const data = await response.json();
-    return data.choices[0].message.content;
-    */
-
-    // Mock implementation for development
     await this.delay(100 + Math.random() * 200);
-    return this.generateMockResponse(prompt, systemMessage);
+    return this.generateMockResponse(prompt);
   }
 
   /**
    * Generate mock LLM response (for development/testing)
    */
-  private generateMockResponse(prompt: string, systemMessage?: string): string {
-    // Simple heuristic-based response generation
+  private generateMockResponse(prompt: string): string {
     const lowerPrompt = prompt.toLowerCase();
 
     if (lowerPrompt.includes('mistake') || lowerPrompt.includes('error')) {
@@ -157,7 +134,7 @@ export abstract class BaseAgentImpl implements BaseAgent {
    * Create base output structure
    */
   protected createBaseOutput(
-    insights: any[],
+    insights: AgentInsight[],
     recommendations: string[],
     confidence: number = 0.8
   ): AgentOutput {
@@ -171,5 +148,3 @@ export abstract class BaseAgentImpl implements BaseAgent {
     };
   }
 }
-
-

@@ -2,7 +2,7 @@
 REM run_pipeline.bat
 REM Execute the complete ML pipeline: generate data → extract features → train model → explain
 
-echo === Valorant AI Assistant Coach - ML Pipeline ===
+echo === SkySim Tactical GG - ML Pipeline ===
 echo.
 
 echo Step 1/4: Generating mock dataset...

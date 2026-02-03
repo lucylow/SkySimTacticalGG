@@ -31,7 +31,7 @@ export const LiveCoach: React.FC = () => {
   const [inputMessage, setInputMessage] = useState('');
 
   const { isConnected, lastMessage, sendMessage } = useWebSocket(
-    'wss://demo.assistantcoach.ai/ws',
+    'wss://demo.skysimtactical.gg/ws',
     {
       onConnect: () => console.log('Connected to live feed'),
       onDisconnect: () => console.log('Disconnected from live feed'),

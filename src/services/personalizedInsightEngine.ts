@@ -12,6 +12,7 @@ import type {
   PlayerInsightReport 
 } from '@/types/insights';
 import { backendApi } from './backendApi';
+import { mockPlayers } from '@/data/mockData';
 
 export interface PlayerMatchData {
   playerId: string;
@@ -42,12 +43,12 @@ class PersonalizedInsightEngine {
     const matchData = await this.fetchPlayerMatchData(playerId, matchIds);
     
     // Run analysis modules
-    const analysisResults = await Promise.all([
+    const analysisResults = [
       this.analyzeOpeningDuelImpact(matchData),
       this.analyzeRoundWinCorrelations(matchData),
       this.analyzeMapSpecificPatterns(matchData),
       this.analyzeEconomicSnowball(matchData),
-    ]);
+    ];
     
     // Format insights
     const insights: PersonalizedInsight[] = [];
@@ -121,15 +122,10 @@ class PersonalizedInsightEngine {
     const allMistakes = await backendApi.getPlayerMistakes(playerId);
     mistakes.push(...allMistakes.filter(m => matchIds.includes(m.match_id)));
     
-    // Try to get player name from mock data
-    try {
-      const { mockPlayers } = await import('@/data/mockData');
-      const player = mockPlayers.find(p => p.id === playerId);
-      if (player) {
-        playerName = player.name;
-      }
-    } catch {
-      // Ignore if mock data not available
+    // Get player name from mock data
+    const player = mockPlayers.find(p => p.id === playerId);
+    if (player) {
+      playerName = player.name;
     }
     
     return {
@@ -145,9 +141,9 @@ class PersonalizedInsightEngine {
   /**
    * Analyze opening duel impact (e.g., "C9 loses 78% of rounds when OXY dies without KAST")
    */
-  private async analyzeOpeningDuelImpact(
+  private analyzeOpeningDuelImpact(
     matchData: PlayerMatchData
-  ): Promise<AnalysisResult | null> {
+  ): AnalysisResult | null {
     // Group rounds by whether player died first without KAST
     const openingDeathRounds: string[] = [];
     
@@ -237,9 +233,9 @@ class PersonalizedInsightEngine {
   /**
    * Analyze round win correlations
    */
-  private async analyzeRoundWinCorrelations(
+  private analyzeRoundWinCorrelations(
     matchData: PlayerMatchData
-  ): Promise<AnalysisResult | null> {
+  ): AnalysisResult | null {
     // Analyze correlations between player actions and round outcomes
     // For now, use simplified logic based on available data
     
@@ -291,9 +287,9 @@ class PersonalizedInsightEngine {
   /**
    * Analyze map-specific patterns (e.g., "C9 loses pistol rounds 7/10 times with 1-3-1 on Split")
    */
-  private async analyzeMapSpecificPatterns(
+  private analyzeMapSpecificPatterns(
     matchData: PlayerMatchData
-  ): Promise<AnalysisResult | null> {
+  ): AnalysisResult | null {
     // Group rounds by map
     const roundsByMap = new Map<string, RoundData[]>();
     for (const round of matchData.rounds) {
@@ -345,9 +341,9 @@ class PersonalizedInsightEngine {
   /**
    * Analyze economic snowball (e.g., "C9 won force buy but lost subsequent rounds")
    */
-  private async analyzeEconomicSnowball(
+  private analyzeEconomicSnowball(
     matchData: PlayerMatchData
-  ): Promise<AnalysisResult | null> {
+  ): AnalysisResult | null {
     // Find force buy rounds
     const forceBuyRounds = matchData.rounds.filter(r => r.round_type === 'force');
     if (forceBuyRounds.length < 5) return null;
@@ -412,7 +408,7 @@ class PersonalizedInsightEngine {
     matchData: PlayerMatchData
   ): PersonalizedInsight | null {
     const templates = this.getInsightTemplates();
-    const template = templates[result.type];
+    const template = templates[result.type as keyof ReturnType<typeof PersonalizedInsightEngine.prototype.getInsightTemplates>];
     
     if (!template) return null;
     
@@ -462,7 +458,7 @@ class PersonalizedInsightEngine {
         return { data_statement: dataStatement, insight, recommendation };
       },
       
-      MAP_SPECIFIC_PATTERN: (data: Record<string, unknown>, matchData: PlayerMatchData) => {
+      MAP_SPECIFIC_PATTERN: (data: Record<string, unknown>, _matchData: PlayerMatchData) => {
         const mapName = (data.map_name as string) || 'this map';
         const lossRate = (data.loss_rate as number) || 0;
         const losses = (data.losses as number) || 0;
@@ -479,7 +475,7 @@ class PersonalizedInsightEngine {
         return { data_statement: dataStatement, insight, recommendation };
       },
       
-      ECONOMIC_SNOWBALL: (data: Record<string, unknown>, matchData: PlayerMatchData) => {
+      ECONOMIC_SNOWBALL: (data: Record<string, unknown>, _matchData: PlayerMatchData) => {
         const winRate = (data.win_rate as number) || 0;
         const snowballRate = (data.snowball_rate as number) || 0;
         const wins = (data.force_buy_wins as number) || 0;
@@ -502,18 +498,18 @@ class PersonalizedInsightEngine {
         const correlation = (data.correlation as number) || 0;
         const correlationPercentage = Math.round(Math.abs(correlation) * 100);
         
-        const dataStatement = `When ${matchData.playerName}'s ${factor.replace('_', ' ')} is high, round win rate increases by ${correlationPercentage}%.`;
+        const dataStatement = `When ${matchData.playerName}'s ${factor.replace(/_/g, ' ')} is high, round win rate increases by ${correlationPercentage}%.`;
         
-        const insight = `${matchData.playerName}'s ${factor.replace('_', ' ')} has a ${correlation > 0 ? 'positive' : 'negative'} impact on round outcomes with ${correlationPercentage}% correlation.`;
+        const insight = `${matchData.playerName}'s ${factor.replace(/_/g, ' ')} has a ${correlation > 0 ? 'positive' : 'negative'} impact on round outcomes with ${correlationPercentage}% correlation.`;
         
-        const recommendation = `Focus on improving ${factor.replace('_', ' ')} through targeted drills and strategy adjustments.`;
+        const recommendation = `Focus on improving ${factor.replace(/_/g, ' ')} through targeted drills and strategy adjustments.`;
         
         return { data_statement: dataStatement, insight, recommendation };
       },
     };
   }
   
-  private generateTitle(type: string, data: Record<string, unknown>): string {
+  private generateTitle(type: string, _data: Record<string, unknown>): string {
     const titles: Record<string, string> = {
       OPENING_DUEL_IMPACT: 'Opening Duel Impact on Round Outcomes',
       MAP_SPECIFIC_PATTERN: 'Map-Specific Performance Issue',
@@ -532,7 +528,8 @@ class PersonalizedInsightEngine {
     
     if (result.type === 'MAP_SPECIFIC_PATTERN') {
       const lossRate = (result.data.loss_rate as number) || 0;
-      return `${Math.round(lossRate * 100)}% loss rate on ${result.data.map_name}`;
+      const mapName = (result.data.map_name as string) || 'unknown map';
+      return `${Math.round(lossRate * 100)}% loss rate on ${mapName}`;
     }
     
     return 'Performance impact detected';
@@ -570,7 +567,7 @@ class PersonalizedInsightEngine {
 /**
  * Factory function to create an insight engine instance
  */
-export function createInsightEngine(teamId: string): PersonalizedInsightEngine {
+export function createInsightEngine(_teamId: string): PersonalizedInsightEngine {
   return new PersonalizedInsightEngine();
 }
 

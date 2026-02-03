@@ -1,7 +1,7 @@
 // Game State Extractor - Extracts structured game state from GRID data packets
 // Used by prediction agents to get accurate game state information
 
-import type { GridDataPacket, MatchContext, PlayerState } from '@/types/grid';
+import type { GridDataPacket, MatchContext } from '@/types/grid';
 import type { RoundData, MatchMetadata } from '@/types/backend';
 
 export interface ExtractedGameState {
@@ -42,7 +42,7 @@ export class GameStateExtractor {
     matchData: MatchMetadata
   ): ExtractedGameState {
     // Get the latest packet for this round (or filter by timestamp if needed)
-    const roundPackets = packets.filter(p => {
+    const roundPackets = packets.filter(_p => {
       // In production, would match by round number from GRID metadata
       return true; // For now, use all packets
     });
@@ -122,7 +122,7 @@ export class GameStateExtractor {
    */
   private determineRoundPhase(
     context: MatchContext,
-    roundData: RoundData
+    _roundData: RoundData
   ): ExtractedGameState['round_phase'] {
     if (context.round_phase) {
       return context.round_phase;
@@ -148,7 +148,7 @@ export class GameStateExtractor {
   /**
    * Calculate score at a specific round
    */
-  private calculateScore(roundData: RoundData, matchData: MatchMetadata): [number, number] {
+  private calculateScore(_roundData: RoundData, _matchData: MatchMetadata): [number, number] {
     // In production, would calculate from all rounds up to this point
     // For now, return placeholder
     return [0, 0];

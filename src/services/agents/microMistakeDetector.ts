@@ -5,7 +5,6 @@
 import { BaseAgentImpl } from './baseAgent';
 import type {
   AgentInput,
-  AgentOutput,
   AgentTool,
   MicroMistakeDetectorOutput,
   DetectedMistake,
@@ -13,7 +12,6 @@ import type {
 } from '@/types/agents';
 import type { GridDataPacket } from '@/types/grid';
 import { heuristicEngine } from '../heuristicEngine';
-import { backendApi } from '../backendApi';
 
 export class MicroMistakeDetectorAgent extends BaseAgentImpl {
   name = 'Micro-Mistake Detector';
@@ -21,9 +19,6 @@ export class MicroMistakeDetectorAgent extends BaseAgentImpl {
   description =
     'Analyzes player telemetry to find technical mistakes, quantifies impact on win probability, and generates HY-Motion visualization prompts for corrections.';
 
-  /**
-   * Execute micro-mistake detection analysis
-   */
   async execute(input: AgentInput): Promise<MicroMistakeDetectorOutput> {
     const gridData = input.grid_data || [];
     const enrichedData = input.enriched_data || [];
@@ -39,28 +34,19 @@ export class MicroMistakeDetectorAgent extends BaseAgentImpl {
 
     // Step 2: Enhance with LLM reasoning for pattern detection
     const llmPrompt = this.buildAnalysisPrompt(gridData, microAnalysis);
-    const llmInsights = await this.callLLM(
+    await this.callLLM(
       llmPrompt,
       'You are a micro-analysis expert. Identify recurring mistakes and quantify their impact on round outcomes.'
     );
 
     // Step 3: Process detected mistakes and calculate impact
-    const detectedMistakes = this.processMistakes(
-      microAnalysis.mistakes,
-      gridData,
-      llmInsights
-    );
+    const detectedMistakes = this.processMistakes(microAnalysis.mistakes, gridData);
 
     // Step 4: Generate motion prompts for HY-Motion visualization
-    const motionPrompts = await this.generateMotionPrompts(
-      detectedMistakes,
-      gridData
-    );
+    const motionPrompts = await this.generateMotionPrompts(detectedMistakes, gridData);
 
     // Step 5: Calculate win probability swing
-    const winProbabilitySwing = this.calculateWinProbabilitySwing(
-      detectedMistakes
-    );
+    const winProbabilitySwing = this.calculateWinProbabilitySwing(detectedMistakes);
 
     // Step 6: Convert to insights format
     const insights = detectedMistakes.map((mistake) => ({
@@ -87,12 +73,9 @@ export class MicroMistakeDetectorAgent extends BaseAgentImpl {
     };
   }
 
-  /**
-   * Build prompt for LLM analysis
-   */
   private buildAnalysisPrompt(
     gridData: GridDataPacket[],
-    microAnalysis: any
+    microAnalysis: { mistakes?: unknown[]; technical_issues?: unknown[] }
   ): string {
     const mistakeCount = microAnalysis.mistakes?.length || 0;
     const technicalIssues = microAnalysis.technical_issues?.length || 0;
@@ -103,9 +86,6 @@ export class MicroMistakeDetectorAgent extends BaseAgentImpl {
 - Detected mistakes: ${mistakeCount}
 - Technical issues: ${technicalIssues}
 
-Mistake types detected:
-${microAnalysis.mistakes?.map((m: any) => `- ${m.type}: ${m.description}`).join('\n') || 'None'}
-
 Identify:
 1. Recurring mistake patterns (same mistake happening multiple times)
 2. Impact of each mistake on round win probability
@@ -115,44 +95,39 @@ Identify:
 Provide specific, actionable insights with quantified impact.`;
   }
 
-  /**
-   * Process mistakes and enhance with impact analysis
-   */
   private processMistakes(
-    mistakes: any[],
-    gridData: GridDataPacket[],
-    llmInsights: string
+    mistakes: unknown[],
+    gridData: GridDataPacket[]
   ): DetectedMistake[] {
     const detected: DetectedMistake[] = [];
+    const mistakeGroups = new Map<string, unknown[]>();
 
-    // Group mistakes by type to find recurring patterns
-    const mistakeGroups = new Map<string, any[]>();
     for (const mistake of mistakes) {
-      const key = mistake.type;
+      const m = mistake as { type: string };
+      const key = m.type;
       if (!mistakeGroups.has(key)) {
         mistakeGroups.set(key, []);
       }
       mistakeGroups.get(key)!.push(mistake);
     }
 
-    // Process each mistake group
     for (const [mistakeType, mistakeList] of mistakeGroups.entries()) {
       const frequency = mistakeList.length;
       const avgSeverity =
-        mistakeList.reduce((sum, m) => sum + m.severity, 0) / frequency;
+        mistakeList.reduce((sum: number, m) => sum + (m as { severity: number }).severity, 0) / frequency;
 
-      // Calculate impact based on frequency and severity
       const impactOnRound = Math.min(1, avgSeverity * (frequency / gridData.length) * 2);
 
       for (const mistake of mistakeList) {
+        const m = mistake as { id: string; player_id: string; type: string; description: string; severity: number };
         detected.push({
-          mistake_id: mistake.id,
-          player_id: mistake.player_id,
-          mistake_type: mistake.type,
-          description: mistake.description,
-          severity: mistake.severity,
+          mistake_id: m.id,
+          player_id: m.player_id,
+          mistake_type: m.type,
+          description: m.description,
+          severity: m.severity,
           impact_on_round: impactOnRound,
-          correction_prompt: this.generateCorrectionPrompt(mistake, mistakeType),
+          correction_prompt: this.generateCorrectionPrompt(mistakeType),
           timestamp: Date.now(),
         });
       }
@@ -161,10 +136,7 @@ Provide specific, actionable insights with quantified impact.`;
     return detected;
   }
 
-  /**
-   * Generate correction prompt for HY-Motion visualization
-   */
-  private generateCorrectionPrompt(mistake: any, mistakeType: string): string {
+  private generateCorrectionPrompt(mistakeType: string): string {
     const prompts: Record<string, string> = {
       predictable_positioning:
         'Player should vary positioning, use off-angles, and avoid holding the same angle repeatedly. Show correct movement: quick peek, immediate reposition, use cover effectively.',
@@ -178,15 +150,9 @@ Provide specific, actionable insights with quantified impact.`;
         'Player should improve crosshair placement. Show correct technique: keep crosshair at head level, pre-aim common angles, smooth tracking.',
     };
 
-    return (
-      prompts[mistakeType] ||
-      `Correct the ${mistakeType} mistake: ${mistake.recommendation}`
-    );
+    return prompts[mistakeType] || `Correct the ${mistakeType} mistake with proper technique.`;
   }
 
-  /**
-   * Generate motion prompts for HY-Motion
-   */
   private async generateMotionPrompts(
     mistakes: DetectedMistake[],
     gridData: GridDataPacket[]
@@ -194,33 +160,9 @@ Provide specific, actionable insights with quantified impact.`;
     const prompts: MotionPrompt[] = [];
 
     for (const mistake of mistakes.slice(0, 5)) {
-      // Find corresponding player data
-      const playerPacket = gridData.find(
-        (p) => p.player.id === mistake.player_id
-      );
+      const playerPacket = gridData.find((p) => p.player.id === mistake.player_id);
 
       if (playerPacket) {
-        // Generate motion visualization prompt
-        const motionPrompt = await backendApi.generateMotionFromGridData(
-          {
-            player_id: mistake.player_id,
-            agent: playerPacket.player.agent,
-            kills: 0,
-            deaths: 0,
-            assists: 0,
-            damage: 0,
-            utility_used: 0,
-          },
-          {
-            round_number: 1,
-            match_id: 'current',
-            map: playerPacket.match_context.map,
-            outcome: 'loss',
-            duration: 120,
-            events: [],
-          }
-        );
-
         prompts.push({
           player_id: mistake.player_id,
           action_type: 'correction',
@@ -234,26 +176,17 @@ Provide specific, actionable insights with quantified impact.`;
     return prompts;
   }
 
-  /**
-   * Calculate win probability swing from mistakes
-   */
   private calculateWinProbabilitySwing(mistakes: DetectedMistake[]): number {
     if (mistakes.length === 0) return 0;
 
-    // Aggregate impact of all mistakes
     const totalImpact = mistakes.reduce(
       (sum, m) => sum + m.impact_on_round * m.severity,
       0
     );
 
-    // Normalize to 0-1 range (swing can be positive or negative)
-    // Negative swing = mistakes reduce win probability
     return Math.min(1, totalImpact / mistakes.length);
   }
 
-  /**
-   * Generate recommendations from detected mistakes
-   */
   private generateRecommendations(mistakes: DetectedMistake[]): string[] {
     const recommendations: string[] = [];
     const mistakeTypes = new Set(mistakes.map((m) => m.mistake_type));
@@ -285,30 +218,24 @@ Provide specific, actionable insights with quantified impact.`;
     return recommendations;
   }
 
-  /**
-   * Get tools available to this agent
-   */
   getTools(): AgentTool[] {
     return [
       {
         name: 'analyze_player_frame',
-        description:
-          'Analyzes a single GRID data frame to detect technical mistakes',
+        description: 'Analyzes a single GRID data frame to detect technical mistakes',
         input_schema: {
           type: 'object',
           properties: {
             grid_data_frame: { type: 'object' },
           },
         },
-        execute: async (args: Record<string, unknown>) => {
-          // This would call the heuristic engine
+        execute: async (_args: Record<string, unknown>) => {
           return { analyzed: true };
         },
       },
       {
         name: 'generate_motion_visualization',
-        description:
-          'Generates HY-Motion visualization prompt for a detected mistake',
+        description: 'Generates HY-Motion visualization prompt for a detected mistake',
         input_schema: {
           type: 'object',
           properties: {
@@ -316,15 +243,13 @@ Provide specific, actionable insights with quantified impact.`;
             player_data: { type: 'object' },
           },
         },
-        execute: async (args: Record<string, unknown>) => {
-          // This would call HY-Motion API
+        execute: async (_args: Record<string, unknown>) => {
           return { prompt_generated: true };
         },
       },
       {
         name: 'calculate_win_probability_impact',
-        description:
-          'Calculates how a mistake affects round win probability',
+        description: 'Calculates how a mistake affects round win probability',
         input_schema: {
           type: 'object',
           properties: {
@@ -332,11 +257,10 @@ Provide specific, actionable insights with quantified impact.`;
             round_context: { type: 'object' },
           },
         },
-        execute: async (args: Record<string, unknown>) => {
+        execute: async (_args: Record<string, unknown>) => {
           return { impact: 0.65 };
         },
       },
     ];
   }
 }
-

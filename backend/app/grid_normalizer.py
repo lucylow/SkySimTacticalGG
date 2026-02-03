@@ -4,6 +4,9 @@ from pydantic import ValidationError
 from datetime import datetime, timezone
 from app.enricher import enrich_canonical
 import uuid
+import logging
+
+logger = logging.getLogger(__name__)
 
 async def normalize_grid_event(raw: dict) -> CanonicalEvent:
     """
@@ -20,6 +23,7 @@ async def normalize_grid_event(raw: dict) -> CanonicalEvent:
             seq=raw.get("seq")
         )
     except ValidationError as e:
+        logger.warning(f"Validation error for GridRawEvent; falling back. err={e}")
         # fallback to minimal structure
         grid_evt = GridRawEvent(
             grid_event_id=raw.get("id") or raw.get("grid_event_id"),
@@ -38,15 +42,30 @@ async def normalize_grid_event(raw: dict) -> CanonicalEvent:
     target = None
     team = None
     p = grid_evt.payload
-    # common cases:
-    if "killer" in p:
-        actor = p.get("killer")
-    if "victim" in p:
-        target = p.get("victim")
-    if "team" in p:
-        team = p.get("team")
-    if "player_id" in p and actor is None:
-        actor = p.get("player_id")
+
+    # Improved Extraction Logic
+    # 1. VALORANT specific
+    if p.get("game") == "valorant" or "round_id" in p:
+        actor = p.get("killer") or p.get("player_id") or p.get("activator")
+        target = p.get("victim") or p.get("damaged_player")
+        team = p.get("team") or p.get("attacker_team")
+
+    # 2. League of Legends specific
+    elif p.get("game") == "lol" or "participantId" in p:
+        actor = p.get("killerId") or p.get("participantId") or p.get("creatorId")
+        target = p.get("victimId") or p.get("targetId")
+        team = p.get("teamId") or p.get("side")
+
+    # 3. Common/Generic fallbacks
+    else:
+        if "killer" in p:
+            actor = p.get("killer")
+        if "victim" in p:
+            target = p.get("victim")
+        if "team" in p:
+            team = p.get("team")
+        if "player_id" in p and actor is None:
+            actor = p.get("player_id")
 
     canonical = CanonicalEvent(
         event_id=event_id,
@@ -66,8 +85,12 @@ async def normalize_grid_event(raw: dict) -> CanonicalEvent:
     )
 
     # run enrichment (compute speeds, econ deltas, opening kills, etc.)
-    enriched = await enrich_canonical(canonical)
-    canonical.enriched = enriched
+    try:
+        enriched = await enrich_canonical(canonical)
+        canonical.enriched = enriched
+    except Exception as e:
+        logger.warning(f"Enrichment failed for event_id={event_id}: {e}", exc_info=True)
+        canonical.enriched = {}
     return canonical
 
 

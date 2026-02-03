@@ -1,10 +1,13 @@
 // GRID Data Packet Types - Simplified VALORANT/CS2 format
 
+export type GameType = 'VALORANT' | 'LEAGUE_OF_LEGENDS';
+
 export interface GridDataPacket {
   timestamp: number;
-  player: PlayerState;
-  inventory: InventoryState;
-  match_context: MatchContext;
+  game: GameType;
+  player: PlayerState | LoLPlayerState;
+  inventory?: InventoryState | LoLInventoryState;
+  match_context: MatchContext | LoLMatchContext;
 }
 
 export interface PlayerState {
@@ -19,6 +22,18 @@ export interface PlayerState {
   is_moving: boolean;
 }
 
+export interface LoLPlayerState {
+  id: string;
+  team: 'Blue' | 'Red';
+  champion: string;
+  position: { x: number; y: number; z: number };
+  health: number;
+  mana: number;
+  level: number;
+  is_moving: boolean;
+  is_attacking: boolean;
+}
+
 export interface InventoryState {
   primary_weapon: string;
   secondary_weapon: string;
@@ -31,6 +46,12 @@ export interface InventoryState {
   credits: number;
 }
 
+export interface LoLInventoryState {
+  items: string[];
+  summoner_spells: string[];
+  gold: number;
+}
+
 export interface MatchContext {
   map: string;
   round_time_remaining: number;
@@ -41,12 +62,23 @@ export interface MatchContext {
   site_control: 'Attacker' | 'Defender' | 'Contested';
 }
 
+export interface LoLMatchContext {
+  map: string;
+  game_time: number;
+  objectives: {
+    baron_alive: boolean;
+    dragon_count: number;
+    towers_destroyed: number;
+  };
+  team_gold_diff: number;
+}
+
 export interface PredictedAction {
   action: string;
   confidence: number;
   prompt_snippet: string;
   full_prompt: string;
-  motion_type: 'peek' | 'throw' | 'defuse' | 'plant' | 'rotate' | 'disengage' | 'hold' | 'retake';
+  motion_type: 'peek' | 'throw' | 'defuse' | 'plant' | 'rotate' | 'disengage' | 'hold' | 'retake' | 'kite' | 'ability' | 'auto_attack';
 }
 
 export interface MotionKeyframe {
@@ -201,7 +233,49 @@ export type AgentSignalType =
   | 'ECONOMY_CRASH'
   | 'STRATEGIC_PATTERN'
   | 'CLUTCH_OPPORTUNITY'
-  | 'ROUND_CRITICAL';
+  | 'ROUND_CRITICAL'
+  | 'OBJECTIVE_RECOMMENDATION';
+
+export interface ObjectiveRecommendationSignal extends AgentSignal {
+  type: 'OBJECTIVE_RECOMMENDATION';
+  explanation: {
+    objective: 'DRAGON' | 'BARON' | 'HERALD' | 'TOWER';
+    recommendation: 'SECURE' | 'CONTEST' | 'AVOID' | 'TRADE';
+    confidence: number;
+    expectedValue: number;
+    pSuccess: number;
+    winProbDelta: number;
+    coachCall: string;
+    rationale: string[];
+  };
+}
+
+export interface ObjectiveState {
+  objective: 'DRAGON' | 'BARON' | 'HERALD' | 'TOWER';
+  timeToSpawn: number;        // seconds
+  matchTime: number;          // total game time
+  teamGoldDiff: number;
+  allyCountNear: number;
+  enemyCountNear: number;
+  visionInPit: number;        // friendly wards
+  enemyVisionInPit: number;
+  ultimatesUp: number;        // team ultimates ready
+  enemyUltimatesUp: number;
+  smiteReady: boolean;
+  enemySmiteReady: boolean;
+  sidelanePressure: boolean;  // can we threaten sidelanes?
+  playerHpPercent: number;    // avg team HP%
+}
+
+export interface ObjectiveDecision {
+  recommendation: 'SECURE' | 'CONTEST' | 'AVOID' | 'TRADE';
+  confidence: number;
+  expectedValue: number;
+  rationale: string[];
+  pSuccess: number;
+  winProbDelta: number;       // % winrate increase
+  coachCall: string;          // 1-3 word call
+}
 
 export interface MomentumSignal extends AgentSignal {
   type: 'MOMENTUM_SHIFT';

@@ -5,13 +5,13 @@
 import { BaseAgentImpl } from './baseAgent';
 import type {
   AgentInput,
-  AgentOutput,
   AgentTool,
   PredictivePlaybookOutput,
   StrategySimulation,
   DraftRecommendation,
   VetoRecommendation,
   InGameAdaptation,
+  MapTendency,
 } from '@/types/agents';
 
 export class PredictivePlaybookAgent extends BaseAgentImpl {
@@ -20,24 +20,16 @@ export class PredictivePlaybookAgent extends BaseAgentImpl {
   description =
     'Runs strategy simulations to recommend optimal draft picks, veto orders, and in-game tactical adaptations.';
 
-  /**
-   * Execute predictive playbook analysis
-   */
   async execute(input: AgentInput): Promise<PredictivePlaybookOutput> {
     const matchContext = input.match_context;
     const opponentData = input.opponent_data;
-    const previousAnalysis = input.previous_analysis;
 
     if (!matchContext) {
       throw new Error('No match context provided to Predictive Playbook Agent');
     }
 
     // Step 1: Run strategy simulations
-    const simulations = await this.runStrategySimulations(
-      matchContext,
-      opponentData,
-      previousAnalysis
-    );
+    const simulations = await this.runStrategySimulations(matchContext, opponentData);
 
     // Step 2: Generate optimal draft recommendations
     const optimalDraft = await this.generateDraftRecommendations(
@@ -53,11 +45,7 @@ export class PredictivePlaybookAgent extends BaseAgentImpl {
     );
 
     // Step 4: Generate in-game adaptations
-    const inGameAdaptations = await this.generateInGameAdaptations(
-      matchContext,
-      opponentData,
-      previousAnalysis
-    );
+    const inGameAdaptations = await this.generateInGameAdaptations(matchContext, opponentData);
 
     // Step 5: Build insights
     const insights = [
@@ -96,24 +84,15 @@ export class PredictivePlaybookAgent extends BaseAgentImpl {
     };
   }
 
-  /**
-   * Run strategy simulations
-   */
   private async runStrategySimulations(
-    matchContext: any,
-    opponentData?: any,
-    previousAnalysis?: any
+    matchContext: { map?: string; opponent_team?: string },
+    opponentData?: { map_tendencies?: MapTendency[] }
   ): Promise<StrategySimulation[]> {
     const simulations: StrategySimulation[] = [];
 
-    // Use LLM to generate simulation scenarios
     const prompt = this.buildSimulationPrompt(matchContext, opponentData);
-    const llmResponse = await this.callLLM(
-      prompt,
-      'You are a strategy simulator. Run thousands of simulations to predict match outcomes.'
-    );
+    await this.callLLM(prompt, 'You are a strategy simulator.');
 
-    // Generate simulations for different strategies
     const strategies = [
       'Aggressive early-round pressure',
       'Defensive utility stack',
@@ -123,9 +102,8 @@ export class PredictivePlaybookAgent extends BaseAgentImpl {
     ];
 
     for (const strategy of strategies) {
-      // Simulate win probability (in production, would use actual simulation engine)
       const winProbability = this.simulateStrategy(strategy, matchContext, opponentData);
-      const confidence = 0.7 + Math.random() * 0.2; // Mock confidence
+      const confidence = 0.7 + Math.random() * 0.2;
 
       simulations.push({
         simulation_id: `sim-${strategy.toLowerCase().replace(/\s+/g, '-')}`,
@@ -140,49 +118,38 @@ export class PredictivePlaybookAgent extends BaseAgentImpl {
       });
     }
 
-    // Sort by win probability
     simulations.sort((a, b) => b.win_probability - a.win_probability);
 
     return simulations;
   }
 
-  /**
-   * Simulate a strategy and return win probability
-   */
   private simulateStrategy(
     strategy: string,
-    matchContext: any,
-    opponentData?: any
+    matchContext: { map?: string },
+    opponentData?: { map_tendencies?: MapTendency[] }
   ): number {
-    // Mock simulation - in production, would use actual simulation engine
     let baseProbability = 0.5;
 
-    // Adjust based on opponent data
     if (opponentData?.map_tendencies) {
       const mapTendency = opponentData.map_tendencies.find(
-        (t: any) => t.map === matchContext.map
+        (t) => t.map === matchContext.map
       );
       if (mapTendency && mapTendency.success_rate < 0.5) {
-        baseProbability += 0.15; // Opponent weak on this map
+        baseProbability += 0.15;
       }
     }
 
-    // Adjust based on strategy type
     if (strategy.includes('Aggressive')) {
       baseProbability += 0.1;
     } else if (strategy.includes('Defensive')) {
       baseProbability += 0.05;
     }
 
-    // Add some randomness
     baseProbability += (Math.random() - 0.5) * 0.1;
 
     return Math.max(0, Math.min(1, baseProbability));
   }
 
-  /**
-   * Generate expected outcomes for a strategy
-   */
   private generateExpectedOutcomes(
     strategy: string,
     winProbability: number
@@ -206,10 +173,10 @@ export class PredictivePlaybookAgent extends BaseAgentImpl {
     return outcomes;
   }
 
-  /**
-   * Build simulation prompt for LLM
-   */
-  private buildSimulationPrompt(matchContext: any, opponentData?: any): string {
+  private buildSimulationPrompt(
+    matchContext: { map?: string; opponent_team?: string; current_score?: { team?: number; opponent?: number } },
+    opponentData?: { map_tendencies?: MapTendency[] }
+  ): string {
     return `Run strategy simulations for this match:
 
 Map: ${matchContext.map}
@@ -217,48 +184,32 @@ Opponent: ${matchContext.opponent_team}
 Current Score: ${matchContext.current_score?.team || 0} - ${matchContext.current_score?.opponent || 0}
 
 Opponent Tendencies:
-${opponentData?.map_tendencies?.map((t: any) => `- ${t.map}: ${t.success_rate * 100}% success`).join('\n') || 'Unknown'}
+${opponentData?.map_tendencies?.map((t) => `- ${t.map}: ${t.success_rate * 100}% success`).join('\n') || 'Unknown'}
 
-Simulate outcomes for:
-1. Aggressive early-round strategies
-2. Defensive utility stacks
-3. Mid-round executes
-4. Late-round scenarios
-5. Economic decisions
-
-Provide win probabilities and expected outcomes for each strategy.`;
+Simulate outcomes for various strategies.`;
   }
 
-  /**
-   * Generate draft recommendations
-   */
   private async generateDraftRecommendations(
-    matchContext: any,
-    opponentData?: any,
-    simulations?: StrategySimulation[]
+    matchContext: { map?: string; opponent_team?: string },
+    opponentData?: { preferred_compositions?: string[] },
+    _simulations?: StrategySimulation[]
   ): Promise<DraftRecommendation> {
-    // Use LLM to recommend optimal draft
     const prompt = `Recommend optimal agent composition for:
 
 Map: ${matchContext.map}
 Opponent: ${matchContext.opponent_team}
-Team Composition Options: Jett, Omen, Sage, Sova, Killjoy, Raze, Brimstone
 
 Opponent Preferred Compositions:
-${opponentData?.preferred_compositions?.map((c: any) => `- ${c.composition.join(', ')}`).join('\n') || 'Unknown'}
+${opponentData?.preferred_compositions?.join(', ') || 'Unknown'}
 
 Recommend the best composition with reasoning.`;
 
     const llmResponse = await this.callLLM(
       prompt,
-      'You are a draft strategist. Recommend optimal agent compositions based on map and opponent analysis.'
+      'You are a draft strategist.'
     );
 
-    // Generate draft recommendation
-    const recommendedPicks = this.selectOptimalComposition(
-      matchContext,
-      opponentData
-    );
+    const recommendedPicks = this.selectOptimalComposition(matchContext);
 
     return {
       recommended_picks: recommendedPicks,
@@ -271,14 +222,7 @@ Recommend the best composition with reasoning.`;
     };
   }
 
-  /**
-   * Select optimal composition
-   */
-  private selectOptimalComposition(
-    matchContext: any,
-    opponentData?: any
-  ): string[] {
-    // Mock composition selection - in production, would use ML model
+  private selectOptimalComposition(matchContext: { map?: string }): string[] {
     const mapCompositions: Record<string, string[]> = {
       Bind: ['Jett', 'Omen', 'Sage', 'Sova', 'Killjoy'],
       Haven: ['Raze', 'Omen', 'Sage', 'Sova', 'Cypher'],
@@ -286,31 +230,18 @@ Recommend the best composition with reasoning.`;
       Split: ['Raze', 'Brimstone', 'Sage', 'Breach', 'Cypher'],
     };
 
-    return (
-      mapCompositions[matchContext.map] || [
-        'Jett',
-        'Omen',
-        'Sage',
-        'Sova',
-        'Killjoy',
-      ]
-    );
+    return mapCompositions[matchContext.map || ''] || ['Jett', 'Omen', 'Sage', 'Sova', 'Killjoy'];
   }
 
-  /**
-   * Generate veto recommendations
-   */
   private async generateVetoRecommendations(
-    matchContext: any,
-    opponentData?: any
+    matchContext: { map?: string },
+    opponentData?: { map_tendencies?: MapTendency[] }
   ): Promise<VetoRecommendation[]> {
     const recommendations: VetoRecommendation[] = [];
 
-    // Analyze opponent map performance
     if (opponentData?.map_tendencies) {
       for (const tendency of opponentData.map_tendencies) {
         if (tendency.success_rate > 0.7) {
-          // Opponent strong on this map - consider banning
           recommendations.push({
             map: tendency.map,
             action: 'ban',
@@ -318,7 +249,6 @@ Recommend the best composition with reasoning.`;
             priority: tendency.success_rate,
           });
         } else if (tendency.success_rate < 0.4) {
-          // Opponent weak on this map - consider picking
           recommendations.push({
             map: tendency.map,
             action: 'pick',
@@ -329,7 +259,6 @@ Recommend the best composition with reasoning.`;
       }
     }
 
-    // Add default recommendations if none found
     if (recommendations.length === 0) {
       recommendations.push({
         map: matchContext.map || 'Unknown',
@@ -339,23 +268,17 @@ Recommend the best composition with reasoning.`;
       });
     }
 
-    // Sort by priority
     recommendations.sort((a, b) => b.priority - a.priority);
 
     return recommendations;
   }
 
-  /**
-   * Generate in-game adaptations
-   */
   private async generateInGameAdaptations(
-    matchContext: any,
-    opponentData?: any,
-    previousAnalysis?: any
+    matchContext: { current_score?: { team?: number; opponent?: number }; map?: string },
+    opponentData?: { map_tendencies?: MapTendency[] }
   ): Promise<InGameAdaptation[]> {
     const adaptations: InGameAdaptation[] = [];
 
-    // Generate adaptations based on match context
     if (matchContext.current_score) {
       const teamScore = matchContext.current_score.team || 0;
       const opponentScore = matchContext.current_score.opponent || 0;
@@ -370,7 +293,6 @@ Recommend the best composition with reasoning.`;
       }
     }
 
-    // Generate adaptations based on opponent data
     if (opponentData?.map_tendencies) {
       for (const tendency of opponentData.map_tendencies) {
         if (tendency.map === matchContext.map) {
@@ -387,9 +309,6 @@ Recommend the best composition with reasoning.`;
     return adaptations;
   }
 
-  /**
-   * Get tools available to this agent
-   */
   getTools(): AgentTool[] {
     return [
       {
@@ -402,7 +321,7 @@ Recommend the best composition with reasoning.`;
             conditions: { type: 'object' },
           },
         },
-        execute: async (args: Record<string, unknown>) => {
+        execute: async (_args: Record<string, unknown>) => {
           return { win_probability: 0.65 };
         },
       },
@@ -416,12 +335,10 @@ Recommend the best composition with reasoning.`;
             map: { type: 'string' },
           },
         },
-        execute: async (args: Record<string, unknown>) => {
+        execute: async (_args: Record<string, unknown>) => {
           return { score: 0.75 };
         },
       },
     ];
   }
 }
-
-

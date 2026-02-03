@@ -69,10 +69,10 @@ export const Navbar = () => {
             {/* Logo */}
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center font-bold text-lg font-display">
-                AC
+                SS
               </div>
               <span className="font-bold text-lg hidden sm:block font-display gradient-text">
-                AssistantCoach.ai
+                SkySim Tactical GG
               </span>
             </div>
 

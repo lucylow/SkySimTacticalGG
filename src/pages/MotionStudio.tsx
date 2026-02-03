@@ -16,32 +16,37 @@ import { TacticalMotionViewer } from '@/components/motion/TacticalMotionViewer';
 import { 
   predictActionFromGrid, 
   generateMotionKeyframes, 
-  createSampleGridPacket 
+  getLatestMatchSnapshot
 } from '@/services/actionPredictor';
-import type { PredictedAction, MotionKeyframe, GridDataPacket } from '@/types/grid';
+import type { PredictedAction, MotionKeyframe, GridDataPacket, GameType, PlayerState, LoLPlayerState, InventoryState, LoLInventoryState, MatchContext, LoLMatchContext } from '@/types/grid';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export const MotionStudio: React.FC = () => {
+  const [selectedGame, setSelectedGame] = useState<GameType>('VALORANT');
   const [selectedMotion, setSelectedMotion] = useState<string | null>('demo');
   const [predictedAction, setPredictedAction] = useState<PredictedAction | null>(null);
   const [motionKeyframes, setMotionKeyframes] = useState<MotionKeyframe[]>([]);
   const [_currentGridData, setCurrentGridData] = useState<GridDataPacket | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const mockMotions = [
-    { id: 'demo', name: 'Round 5 - A Execute', duration: '12s', type: 'Execute' },
-    { id: 'motion2', name: 'Round 8 - Retake B', duration: '8s', type: 'Retake' },
-    { id: 'motion3', name: 'Round 12 - Eco Push', duration: '15s', type: 'Economy' },
+  const availableMotions = [
+    { id: 'demo', name: 'Round 5 - A Execute', duration: '12s', type: 'Execute', game: 'VALORANT' },
+    { id: 'motion2', name: 'Round 8 - Retake B', duration: '8s', type: 'Retake', game: 'VALORANT' },
+    { id: 'motion3', name: '15:20 - Dragon Fight', duration: '15s', type: 'Teamfight', game: 'LEAGUE_OF_LEGENDS' },
+    { id: 'motion4', name: '22:10 - Baron Stealth', duration: '10s', type: 'Objective', game: 'LEAGUE_OF_LEGENDS' },
   ];
+
+  const filteredMotions = availableMotions.filter(m => m.game === selectedGame);
 
   const handleGenerateGhost = () => {
     setIsGenerating(true);
     
-    // Simulate API call delay
+    // Live data ingestion from GRID
     setTimeout(() => {
-      // Create sample GRID data packet
-      const gridPacket = createSampleGridPacket();
+      // Fetch latest match state from GRID
+      const gridPacket = getLatestMatchSnapshot(selectedGame);
       setCurrentGridData(gridPacket);
 
       // Predict action using heuristic rules
@@ -73,16 +78,32 @@ export const MotionStudio: React.FC = () => {
           </Button>
           <div>
             <h1 className="text-2xl font-bold">Motion Studio</h1>
-            <p className="text-muted-foreground">
-              3D player movement analysis powered by HY-Motion 1.0
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-muted-foreground">
+                3D motion analysis powered by HY-Motion 1.0 for
+              </p>
+              <Tabs 
+                value={selectedGame} 
+                onValueChange={(v) => {
+                  setSelectedGame(v as GameType);
+                  setPredictedAction(null);
+                  setMotionKeyframes([]);
+                }}
+                className="w-[300px]"
+              >
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="VALORANT">VALORANT</TabsTrigger>
+                  <TabsTrigger value="LEAGUE_OF_LEGENDS">LoL</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
           </div>
         </div>
 
         <div className="flex gap-2">
           <Button onClick={handleGenerateGhost} disabled={isGenerating}>
             <Sparkles className="mr-2 h-4 w-4" />
-            {isGenerating ? 'Generating...' : 'Generate Opponent Ghost'}
+            {isGenerating ? 'Generating...' : `Predict ${selectedGame === 'VALORANT' ? 'Opponent' : 'Champion'} Action`}
           </Button>
           <Button variant="outline">
             <Upload className="mr-2 h-4 w-4" />
@@ -101,29 +122,35 @@ export const MotionStudio: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {mockMotions.map((motion) => (
-              <div
-                key={motion.id}
-                onClick={() => setSelectedMotion(motion.id)}
-                className={`cursor-pointer rounded-lg border p-3 transition-all hover:bg-muted/50 ${
-                  selectedMotion === motion.id
-                    ? 'border-primary bg-primary/10'
-                    : 'border-border'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <FileVideo className="h-8 w-8 text-primary" />
-                  <div className="flex-1">
-                    <p className="font-medium">{motion.name}</p>
-                    <div className="flex gap-2 text-xs text-muted-foreground">
-                      <span>{motion.duration}</span>
-                      <span>•</span>
-                      <span>{motion.type}</span>
+            {filteredMotions.length > 0 ? (
+              filteredMotions.map((motion) => (
+                <div
+                  key={motion.id}
+                  onClick={() => setSelectedMotion(motion.id)}
+                  className={`cursor-pointer rounded-lg border p-3 transition-all hover:bg-muted/50 ${
+                    selectedMotion === motion.id
+                      ? 'border-primary bg-primary/10'
+                      : 'border-border'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <FileVideo className="h-8 w-8 text-primary" />
+                    <div className="flex-1">
+                      <p className="font-medium">{motion.name}</p>
+                      <div className="flex gap-2 text-xs text-muted-foreground">
+                        <span>{motion.duration}</span>
+                        <span>•</span>
+                        <span>{motion.type}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-center text-sm text-muted-foreground py-4">
+                No motions for this game yet.
+              </p>
+            )}
           </CardContent>
         </Card>
 
@@ -194,28 +221,51 @@ export const MotionStudio: React.FC = () => {
                   <>
                     <Separator />
                     <div>
-                      <div className="mb-2 text-sm font-medium text-muted-foreground">GRID Data Context</div>
+                      <div className="mb-2 text-sm font-medium text-muted-foreground">GRID Data Context ({_currentGridData.game})</div>
                       <div className="rounded-md bg-muted/50 p-3 text-xs">
-                        <div className="grid grid-cols-2 gap-2">
-                          <div>
-                            <span className="font-medium">Agent:</span> {_currentGridData.player.agent}
+                        {_currentGridData.game === 'VALORANT' ? (
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <span className="font-medium">Agent:</span> {(_currentGridData.player as PlayerState).agent}
+                            </div>
+                            <div>
+                              <span className="font-medium">Team:</span> {(_currentGridData.player as PlayerState).team}
+                            </div>
+                            <div>
+                              <span className="font-medium">Health:</span> {(_currentGridData.player as PlayerState).health}
+                            </div>
+                            <div>
+                              <span className="font-medium">Weapon:</span> {(_currentGridData.inventory as InventoryState).primary_weapon}
+                            </div>
+                            <div>
+                              <span className="font-medium">Spike:</span> {(_currentGridData.match_context as MatchContext).spike_status}
+                            </div>
+                            <div>
+                              <span className="font-medium">Phase:</span> {(_currentGridData.match_context as MatchContext).round_phase}
+                            </div>
                           </div>
-                          <div>
-                            <span className="font-medium">Team:</span> {_currentGridData.player.team}
+                        ) : (
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <span className="font-medium">Champion:</span> {(_currentGridData.player as LoLPlayerState).champion}
+                            </div>
+                            <div>
+                              <span className="font-medium">Level:</span> {(_currentGridData.player as LoLPlayerState).level}
+                            </div>
+                            <div>
+                              <span className="font-medium">Health:</span> {(_currentGridData.player as LoLPlayerState).health}
+                            </div>
+                            <div>
+                              <span className="font-medium">Gold Diff:</span> {(_currentGridData.match_context as LoLMatchContext).team_gold_diff}
+                            </div>
+                            <div>
+                              <span className="font-medium">Attacking:</span> {(_currentGridData.player as LoLPlayerState).is_attacking ? 'Yes' : 'No'}
+                            </div>
+                            <div>
+                              <span className="font-medium">Game Time:</span> {Math.floor((_currentGridData.match_context as LoLMatchContext).game_time / 60)}:00
+                            </div>
                           </div>
-                          <div>
-                            <span className="font-medium">Health:</span> {_currentGridData.player.health}
-                          </div>
-                          <div>
-                            <span className="font-medium">Weapon:</span> {_currentGridData.inventory.primary_weapon}
-                          </div>
-                          <div>
-                            <span className="font-medium">Spike:</span> {_currentGridData.match_context.spike_status}
-                          </div>
-                          <div>
-                            <span className="font-medium">Phase:</span> {_currentGridData.match_context.round_phase}
-                          </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   </>

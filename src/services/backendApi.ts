@@ -1,4 +1,4 @@
-// Mock Backend API Service - Simulates FastAPI backend responses
+// Backend API Service - Emulates FastAPI backend responses for local runs
 import type {
   MatchMetadata,
   RoundData,
@@ -148,32 +148,32 @@ class BackendApiService {
   }
 
   async getMicroMacroConnections(
-    playerId: string,
-    matchId: string,
+    _playerId: string,
+    _matchId: string,
     timeframeMinutes = 10
   ): Promise<MicroMacroConnection> {
     await randomDelay(400, 800);
     return {
       ...mockMicroMacroConnection,
-      player_id: playerId,
+      player_id: _playerId,
       timeframe_minutes: timeframeMinutes,
     };
   }
 
   // ============= Strategic Patterns =============
 
-  async getStrategicPatterns(teamId: string, mapName?: string): Promise<StrategicPattern[]> {
+  async getStrategicPatterns(_teamId: string, mapName?: string): Promise<StrategicPattern[]> {
     await randomDelay(250, 500);
-    let patterns = mockStrategicPatterns.filter((p) => p.team_id === teamId);
+    let patterns = mockStrategicPatterns.filter((p) => p.team_id === _teamId);
     if (mapName) {
       patterns = patterns.filter((p) => p.map_name === mapName);
     }
     return patterns;
   }
 
-  async identifyTeamPatterns(teamId: string, matchesLimit = 20): Promise<TeamPattern> {
+  async identifyTeamPatterns(_teamId: string, _matchesLimit = 20): Promise<TeamPattern> {
     await randomDelay(600, 1200);
-    return { ...mockTeamPattern, team_id: teamId };
+    return { ...mockTeamPattern, team_id: _teamId };
   }
 
   // ============= Coaching Insights =============
@@ -200,7 +200,7 @@ class BackendApiService {
     };
   }
 
-  async getActionItems(teamId: string): Promise<ActionItem[]> {
+  async getActionItems(_teamId: string): Promise<ActionItem[]> {
     await randomDelay(200, 400);
     return mockActionItems;
   }
@@ -248,19 +248,18 @@ class BackendApiService {
         id: `motion_gen_${Date.now()}`,
         prompt_used: prompt,
         motion_data: {
-          frames: motionData.frames,
-          fps: motionData.fps,
-          duration_s: motionData.duration_s,
+          smpl_params: motionData.smpl_params || Array.from({ length: 72 }, () => Math.random()),
+          joint_positions: motionData.joint_positions || motionData.frames || [],
         },
-        duration_frames: motionData.frames.length,
-        fps: motionData.fps,
+        duration_frames: motionData.frames?.length || Math.floor((config.duration || 5) * 30),
+        fps: motionData.fps || 30,
         action_type: (config.actionType as MotionSequence['action_type']) || 'peek',
         player_role: (config.playerRole as MotionSequence['player_role']) || 'entry',
         quality_score: 0.9,
       };
     } catch (error) {
       console.error('Error calling HY-Motion-1.0 API:', error);
-      // Fallback to mock data for development
+      // Fallback to cached seed data for development
       await randomDelay(1000, 2000);
       return {
         id: `motion_gen_${Date.now()}`,
@@ -291,32 +290,46 @@ class BackendApiService {
     gridSnapshot: Record<string, unknown>
   ): Promise<MotionSequence> {
     // Import tactical engine dynamically to avoid circular dependencies
-    const { generateOpponentGhostPrompt } = await import('./tacticalPromptEngine');
+    const { generateMotionPrompt, buildSceneDescriptor } = await import('./tacticalPromptEngine');
 
-    // Build game state context
+    // Build game state context - map round_type to economy_state
+    const economyMap: Record<string, 'full_buy' | 'force' | 'eco' | 'semi' | undefined> = {
+      full: 'full_buy',
+      pistol: 'eco',
+      eco: 'eco',
+      force: 'force',
+    };
+    
     const gameState = {
       map: matchData.map_name,
-      round_phase: this.inferRoundPhase(roundData) as any,
+      round_phase: this.inferRoundPhase(roundData) as 'pre_round' | 'mid_round' | 'post_plant' | 'round_end',
       win_probability_team_a: 0.5, // Would come from GRID data
       round_number: roundData.round_number,
       time_remaining: roundData.duration_seconds,
-      economy_state: roundData.round_type,
-      spike_state: 'not_planted' as any, // Would come from GRID data
+      economy_state: economyMap[roundData.round_type] || 'full_buy',
+      spike_state: 'not_planted' as const,
     };
 
-    // Generate tactical prompt
-    const motionPrompt = generateOpponentGhostPrompt(
-      playerData,
+    // Build scene descriptor
+    const sceneDescriptor = buildSceneDescriptor(
+      matchData,
       roundData,
-      gameState,
-      gridSnapshot
+      [{ playerData, gridSnapshot }],
+      gameState
+    );
+
+    // Generate tactical prompt
+    const motionPrompt = generateMotionPrompt(
+      sceneDescriptor,
+      playerData.player_id,
+      {}
     );
 
     // Generate motion using the tactical prompt
     return this.generateMotionVisualization(motionPrompt.prompt_text, {
       duration: motionPrompt.config.duration,
       actionType: motionPrompt.config.action_type,
-      playerRole: motionPrompt.config.player_role as any,
+      playerRole: motionPrompt.config.player_role as string,
     });
   }
 
@@ -337,7 +350,7 @@ class BackendApiService {
     // 4. Generate motion prompts for each predicted action
     // 5. Return array of motion sequences
 
-    const { generateOpponentGhostPrompt } = await import('./tacticalPromptEngine');
+    const { generateMotionPrompt, buildSceneDescriptor } = await import('./tacticalPromptEngine');
     const roundData = mockRoundData.find(
       (r) => r.match_id === matchId && r.round_number === roundNumber
     );
@@ -366,23 +379,29 @@ class BackendApiService {
 
       const gameState = {
         map: matchData.map_name,
-        round_phase: this.inferRoundPhase(roundData) as any,
+        round_phase: this.inferRoundPhase(roundData) as 'pre_round' | 'mid_round' | 'post_plant' | 'round_end',
         round_number: roundData.round_number,
         time_remaining: 30,
         economy_state: roundData.round_type,
-        spike_state: 'planted' as any,
+        spike_state: 'planted' as const,
       };
 
-      const motionPrompt = generateOpponentGhostPrompt(
-        playerData,
+      const sceneDescriptor = buildSceneDescriptor(
+        matchData,
         roundData,
-        gameState,
-        gridSnapshot
+        [{ playerData, gridSnapshot }],
+        gameState
+      );
+
+      const motionPrompt = generateMotionPrompt(
+        sceneDescriptor,
+        playerData.player_id,
+        {}
       );
       const motion = await this.generateMotionVisualization(motionPrompt.prompt_text, {
         duration: motionPrompt.config.duration,
         actionType: motionPrompt.config.action_type,
-        playerRole: motionPrompt.config.player_role as any,
+        playerRole: motionPrompt.config.player_role as string,
       });
       motions.push(motion);
     }
@@ -452,7 +471,7 @@ class BackendApiService {
     };
   }
 
-  async getPlayerProgressMetrics(playerId: string): Promise<Record<string, number>> {
+  async getPlayerProgressMetrics(_playerId: string): Promise<Record<string, number>> {
     await randomDelay(150, 300);
     return {
       coordination: 0.65 + Math.random() * 0.1,
@@ -466,7 +485,7 @@ class BackendApiService {
   // ============= Real-time Insights (WebSocket simulation) =============
 
   subscribeToTeamInsights(
-    teamId: string,
+    _teamId: string,
     onInsight: (insight: CoachingInsight) => void
   ): () => void {
     // Simulate real-time insights arriving
@@ -486,23 +505,24 @@ class BackendApiService {
   }
 
   subscribeToLiveMatch(
-    matchId: string,
+    _matchId: string,
     onEvent: (event: { type: string; data: unknown }) => void
   ): () => void {
-    const events = [
-      { type: 'round_start', data: { round_number: 1 } },
-      { type: 'kill', data: { player: 'OXY', weapon: 'Vandal' } },
-      { type: 'ability_used', data: { player: 'SMOKE', ability: 'smoke' } },
-      { type: 'round_end', data: { winner: 't1' } },
+    const events: Array<{ type: string; data: Record<string, unknown> }> = [
+      { type: 'round_start', data: { round_number: 1, timestamp: Date.now() } },
+      { type: 'kill', data: { player: 'OXY', weapon: 'Vandal', timestamp: Date.now() } },
+      { type: 'ability_used', data: { player: 'SMOKE', ability: 'smoke', timestamp: Date.now() } },
+      { type: 'round_end', data: { winner: 't1', timestamp: Date.now() } },
     ];
 
     let eventIndex = 0;
     const interval = setInterval(
       () => {
+        const event = events[eventIndex % events.length];
         onEvent({
-          ...events[eventIndex % events.length],
+          type: event.type,
           data: {
-            ...events[eventIndex % events.length].data,
+            ...event.data,
             timestamp: Date.now(),
           },
         });
@@ -539,8 +559,6 @@ class BackendApiService {
   async generateReviewAgenda(
     matchId: string
   ): Promise<import('@/services/agendaGenerator').ReviewAgenda> {
-    // Type alias for cleaner code
-    type ReviewAgenda = import('@/services/agendaGenerator').ReviewAgenda;
     await randomDelay(1500, 2500); // Simulate analysis time
 
     // Import agenda generator
@@ -561,7 +579,7 @@ class BackendApiService {
     return agenda;
   }
 
-  async getReviewHistory(teamId: string, limit = 10): Promise<MacroReview[]> {
+  async getReviewHistory(_teamId: string, limit = 10): Promise<MacroReview[]> {
     await randomDelay(400, 800);
     return Array.from({ length: Math.min(limit, 5) }, (_, i) => ({
       ...mockMacroReview,
@@ -641,7 +659,7 @@ class BackendApiService {
         original_action: scenario.original_action,
         hypothetical_action: scenario.hypothetical_action,
         player_affected: scenario.player_affected,
-        context: scenario.context as string,
+        context: typeof scenario.context === 'string' ? scenario.context : JSON.stringify(scenario.context || ''),
       },
       prediction,
       generated_at: new Date().toISOString(),
@@ -657,7 +675,7 @@ class BackendApiService {
   /**
    * Get all what-if analyses for a match/review
    */
-  async getWhatIfAnalyses(matchId: string, reviewId?: string): Promise<WhatIfAnalysis[]> {
+  async getWhatIfAnalyses(_matchId: string, _reviewId?: string): Promise<WhatIfAnalysis[]> {
     await randomDelay(300, 600);
     // In production, would fetch from database
     // For now, return empty array
@@ -674,7 +692,7 @@ class BackendApiService {
     gridPackets?: GridDataPacket[]
   ): Promise<{
     query: string;
-    parsed_query: any;
+    parsed_query: unknown;
     actual_scenario: {
       success_probability: number;
       outcome: string;
@@ -689,7 +707,7 @@ class BackendApiService {
     confidence_score: number;
     supporting_data: Record<string, unknown>;
     visualization_prompt?: string;
-    specialized_analysis?: any;
+    specialized_analysis?: unknown;
   }> {
     await randomDelay(1500, 3000); // Simulate complex analysis
 
@@ -726,9 +744,9 @@ class BackendApiService {
    * Simplified text-based scenario prediction (for UI)
    */
   async predictScenario(
-    matchId: string,
+    _matchId: string,
     scenario: string,
-    roundNumber?: number
+    _roundNumber?: number
   ): Promise<{
     scenario: string;
     original_outcome: string;
@@ -752,13 +770,6 @@ class BackendApiService {
       scenarioLower.includes('instead');
 
     const winProbChange = isPositive ? 0.25 + Math.random() * 0.2 : -(0.15 + Math.random() * 0.1);
-
-    // Extract round number from scenario if not provided
-    const extractedRound =
-      roundNumber ||
-      (scenario.match(/round\s+(\d+)/i)?.[1]
-        ? parseInt(scenario.match(/round\s+(\d+)/i)?.[1] || '0')
-        : undefined);
 
     return {
       scenario,
@@ -826,16 +837,16 @@ class BackendApiService {
    * POST /api/v1/agents/analyze-round
    */
   async analyzeRoundWithAgents(
-    gridData: any[],
-    roundData?: any
+    gridData: unknown[],
+    roundData?: unknown
   ): Promise<AgentOrchestrationResponse> {
     await randomDelay(1500, 3000);
 
     const request: AgentOrchestrationRequest = {
       agents: ['micro_mistake_detector', 'macro_strategy_analyst'],
       input: {
-        grid_data: gridData,
-        round_data: roundData,
+        grid_data: gridData as GridDataPacket[],
+        round_data: roundData as AgentInput['round_data'],
       },
       coordination_strategy: 'sequential',
       context_sharing: true,
@@ -848,14 +859,24 @@ class BackendApiService {
    * Get opponent scouting report
    * GET /api/v1/agents/scout/{opponentTeam}
    */
-  async getOpponentScouting(opponentTeam: string, matchContext?: any): Promise<AgentOutput> {
+  async getOpponentScouting(opponentTeam: string, matchContext?: unknown): Promise<AgentOutput> {
     await randomDelay(1000, 2000);
 
     return await this.executeAgent('opponent_scouting', {
       opponent_data: {
         team_name: opponentTeam,
+        historical_matches: [],
+        preferred_compositions: [],
+        map_tendencies: [],
+        clutch_performance: {
+          one_v_one: 0.5,
+          one_v_two: 0.35,
+          one_v_three: 0.2,
+          one_v_four: 0.1,
+          one_v_five: 0.05,
+        },
       },
-      match_context: matchContext,
+      match_context: matchContext as AgentInput['match_context'],
     });
   }
 
@@ -863,12 +884,12 @@ class BackendApiService {
    * Get predictive playbook recommendations
    * POST /api/v1/agents/predictive-playbook
    */
-  async getPredictivePlaybook(matchContext: any, opponentData?: any): Promise<AgentOutput> {
+  async getPredictivePlaybook(matchContext: unknown, opponentData?: unknown): Promise<AgentOutput> {
     await randomDelay(2000, 4000);
 
     return await this.executeAgent('predictive_playbook', {
-      match_context: matchContext,
-      opponent_data: opponentData,
+      match_context: matchContext as AgentInput['match_context'],
+      opponent_data: opponentData as AgentInput['opponent_data'],
     });
   }
 
@@ -876,11 +897,11 @@ class BackendApiService {
    * Get real-time coaching suggestions
    * POST /api/v1/agents/live-coach
    */
-  async getLiveCoaching(gridData: any[], previousAnalysis?: any): Promise<AgentOutput> {
+  async getLiveCoaching(gridData: unknown[], previousAnalysis?: unknown): Promise<AgentOutput> {
     await randomDelay(300, 800); // Fast response for real-time
 
     return await this.executeAgent('prosthetic_coach', {
-      grid_data: gridData,
+      grid_data: gridData as GridDataPacket[],
       previous_analysis: previousAnalysis,
       live_feed: true,
     });

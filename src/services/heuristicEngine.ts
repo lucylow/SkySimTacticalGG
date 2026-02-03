@@ -1,7 +1,7 @@
 // Heuristic Engine for Micro-Analysis
 // Identifies player mistakes, predicts intent, and generates motion synthesis prompts
 
-import type { GridDataPacket, PredictedAction, PlayerState } from '@/types/grid';
+import type { GridDataPacket, PredictedAction } from '@/types/grid';
 import type { EnrichedGridData } from '@/types/tactical';
 import type { Mistake } from '@/types';
 
@@ -45,8 +45,11 @@ class HeuristicEngine {
 
     for (let i = 0; i < enrichedData.length; i++) {
       const enriched = enrichedData[i];
-      const packet = enriched.raw_data as GridDataPacket;
-      const prevPacket = i > 0 ? enrichedData[i - 1].raw_data as GridDataPacket : null;
+      if (!enriched) continue;
+      
+      const _packet = enriched.raw_data as unknown as GridDataPacket;
+      const prevEnriched = i > 0 ? enrichedData[i - 1] : undefined;
+      const prevPacket = prevEnriched ? prevEnriched.raw_data as unknown as GridDataPacket : null;
 
       // Detect mistakes
       const detectedMistakes = this.detectMistakes(enriched, prevPacket, roundPackets);
@@ -86,7 +89,7 @@ class HeuristicEngine {
     roundPackets: GridDataPacket[]
   ): Mistake[] {
     const mistakes: Mistake[] = [];
-    const packet = enriched.raw_data as GridDataPacket;
+    const packet = enriched.raw_data as unknown as GridDataPacket;
     const player = packet.player;
     const context = packet.match_context;
 

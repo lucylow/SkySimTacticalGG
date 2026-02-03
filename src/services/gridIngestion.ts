@@ -1,9 +1,9 @@
 // GRID Data Ingestion & Enrichment Service
 // Processes official GRID esports data and enriches it with tactical context
 
-import type { GridDataPacket, PlayerState, MatchContext } from '@/types/grid';
+import type { GridDataPacket } from '@/types/grid';
 import { GridValidator, GridValidationError } from '@/types/grid';
-import type { EnrichedGridData, TacticalContextLayer, EmotionalInference, BiomechanicalData } from '@/types/tactical';
+import type { EnrichedGridData, TacticalContextLayer, EmotionalInference, BiomechanicalData, EmotionalState } from '@/types/tactical';
 
 export class GridIngestionError extends Error {
   constructor(
@@ -100,18 +100,19 @@ class GridIngestionService {
       }
 
       for (let roundIndex = 0; roundIndex < rounds.length; roundIndex++) {
-        const roundPackets = rounds[roundIndex];
+        const currentRoundPackets = rounds[roundIndex];
         
-        if (roundPackets.length === 0) {
+        if (!currentRoundPackets || currentRoundPackets.length === 0) {
           console.warn(`Round ${roundIndex} has no packets, skipping`);
           continue;
         }
 
         // Enrich each packet
-        for (let packetIndex = 0; packetIndex < roundPackets.length; packetIndex++) {
-          const packet = roundPackets[packetIndex];
+        for (let packetIndex = 0; packetIndex < currentRoundPackets.length; packetIndex++) {
+          const packet = currentRoundPackets[packetIndex];
+          if (!packet) continue;
           try {
-            enriched.push(this.enrichPacket(packet, roundPackets));
+            enriched.push(this.enrichPacket(packet, currentRoundPackets));
           } catch (error) {
             errors.push(
               new GridIngestionError(
@@ -127,7 +128,7 @@ class GridIngestionService {
 
         // Detect team sync events
         try {
-          const syncEvents = this.detectTeamSyncEvents(roundPackets);
+          const syncEvents = this.detectTeamSyncEvents(currentRoundPackets);
           teamSyncEvents.push(...syncEvents);
         } catch (error) {
           errors.push(

@@ -1,4 +1,4 @@
-# Assistant Coach Backend
+# SkySim Tactical GG Backend
 
 Multi-agent system for tactical motion synthesis using FastAPI, Celery, and HY-Motion.
 

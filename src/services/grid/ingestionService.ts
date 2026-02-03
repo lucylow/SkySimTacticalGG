@@ -81,7 +81,7 @@ export class IngestionService {
         try {
           // Validate raw event before processing
           if (!rawEvent || typeof rawEvent !== 'object') {
-            throw new Error('Raw event is not an object');
+            throw new IngestionError('Raw event is not an object', matchId);
           }
 
           // Store raw event

@@ -1,0 +1,496 @@
+// server/map_movement_model.js
+// Map-aware movement + event generator for Valorant mock replays.
+//
+// Exports: generateValorantReplayFramesWithMap(match, opts)
+// Usage: const gen = require('./map_movement_model'); frames = gen.generateValorantReplayFramesWithMap(match, { ticks: 600 });
+//
+// No external dependencies.
+
+const fs = require('fs');
+const path = require('path');
+
+function xorShift32(seed) {
+  let x = seed || 88675123;
+  return function () {
+    x ^= x << 13;
+    x ^= x >>> 17;
+    x ^= x << 5;
+    return (x >>> 0) / 0xffffffff;
+  };
+}
+
+function euclid(a, b) {
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  return Math.hypot(dx, dy);
+}
+
+function lerp(a, b, t) {
+  return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+}
+
+// Simple waypoint interpolation along sequence of waypoints
+function pathPosition(waypoints, distanceAlong, pathLengths) {
+  // pathLengths: cumulative lengths array for each waypoint segment start
+  if (!waypoints.length) return { x: 0, y: 0 };
+  if (distanceAlong <= 0) return waypoints[0];
+  const total = pathLengths[pathLengths.length - 1];
+  if (distanceAlong >= total) return waypoints[waypoints.length - 1];
+  // find segment
+  let idx = 0;
+  while (idx < pathLengths.length - 1 && distanceAlong >= pathLengths[idx + 1]) idx++;
+  const segStart = waypoints[idx];
+  const segEnd = waypoints[idx + 1];
+  const segLen = pathLengths[idx + 1] - pathLengths[idx];
+  const segPos = (distanceAlong - pathLengths[idx]) / segLen;
+  return lerp(segStart, segEnd, segPos);
+}
+
+// Build cumulative distances for a path
+function cumulativePathLengths(waypoints) {
+  const cum = [0];
+  for (let i = 1; i < waypoints.length; i++) {
+    cum.push(cum[i - 1] + euclid(waypoints[i - 1], waypoints[i]));
+  }
+  return cum;
+}
+
+// A minimal "map blueprint" for Ascent (greatly simplified coordinates).
+// Coordinates are arbitrary units (0..10000) matching earlier generator scale.
+const MAP_TEMPLATES = {
+  Ascent: {
+    spawnAttackers: { x: 200, y: 5000 },
+    spawnDefenders: { x: 9800, y: 5000 },
+    lanes: {
+      A: {
+        // A-main path from attackers spawn to A site
+        attackersPath: [
+          { x: 200, y: 5000 },
+          { x: 1200, y: 4700 },
+          { x: 2400, y: 4400 },
+          { x: 3600, y: 4200 },
+          { x: 4800, y: 4000 }, // A-site approach
+          { x: 5100, y: 3950 }  // A-site center
+        ],
+        defendersPath: [
+          { x: 9800, y: 5000 },
+          { x: 8200, y: 4800 },
+          { x: 6400, y: 4600 },
+          { x: 5200, y: 4300 },
+          { x: 5000, y: 4100 },
+          { x: 5100, y: 3950 }
+        ],
+        chokepoints: [{ x: 3600, y: 4200 }, { x: 4800, y: 4000 }]
+      },
+      B: {
+        attackersPath: [
+          { x: 200, y: 5000 },
+          { x: 1200, y: 5300 },
+          { x: 2400, y: 5600 },
+          { x: 3600, y: 5800 },
+          { x: 4800, y: 6000 },
+          { x: 5100, y: 6050 } // B-site center
+        ],
+        defendersPath: [
+          { x: 9800, y: 5000 },
+          { x: 8200, y: 5200 },
+          { x: 6400, y: 5400 },
+          { x: 5200, y: 5700 },
+          { x: 5000, y: 5900 },
+          { x: 5100, y: 6050 }
+        ],
+        chokepoints: [{ x: 3600, y: 5800 }, { x: 4800, y: 6000 }]
+      },
+      Mid: {
+        attackersPath: [
+          { x: 200, y: 5000 },
+          { x: 3000, y: 5000 },
+          { x: 5200, y: 5000 }
+        ],
+        defendersPath: [
+          { x: 9800, y: 5000 },
+          { x: 7000, y: 5000 },
+          { x: 5200, y: 5000 }
+        ],
+        chokepoints: [{ x: 3000, y: 5000 }, { x: 7000, y: 5000 }]
+      }
+    },
+    sites: {
+      A: { center: { x: 5100, y: 3950 }, radius: 200 },
+      B: { center: { x: 5100, y: 6050 }, radius: 200 }
+    }
+  }
+};
+
+// Default weapon power mapping (reuse rough numbers)
+const WEAPON_POWER = {
+  Classic: 0.1, Ghost: 0.45, Sheriff: 0.65, Frenzy: 0.2, Shorty: 0.08,
+  Bulldog: 0.5, Guardian: 0.55, Phantom: 0.85, Vandal: 0.87, Operator: 1.1, Spectre: 0.6, Judge: 0.45
+};
+
+/**
+ * Main generator
+ * match: match object with players array (ids)
+ * opts: { mapName, ticks, tickHz, seed, speedMultiplier }
+ */
+function generateValorantReplayFramesWithMap(match, opts = {}) {
+  const mapName = opts.mapName || 'Ascent';
+  const ticks = opts.ticks || 600; // total frames
+  const tickHz = opts.tickHz || 10; // frames per real second
+  const seed = typeof opts.seed === 'number' ? opts.seed : 123456;
+  const speedMultiplier = opts.speedMultiplier || 1.0;
+
+  const rng = xorShift32(seed);
+
+  const map = MAP_TEMPLATES[mapName];
+  if (!map) throw new Error('Map template not found: ' + mapName);
+
+  // players: ensure 10 players
+  const players = (match.players || []).slice(0, 10).map((p, idx) => {
+    // assign role shorthand: attacker 0-4, defender 5-9
+    const side = idx < 5 ? 'attackers' : 'defenders';
+    // assign a preferred lane for attacker: random among A/B/Mid; defenders prefer a site to anchor
+    const preferredLane = side === 'attackers' ? (rng() < 0.45 ? 'A' : (rng() < 0.6 ? 'B' : 'Mid')) : (idx % 2 === 0 ? 'A' : 'B');
+    // base speed units per second: 1200..2400 (tuned to coordinate scale)
+    const baseSpeed = 1600 + (rng() - 0.5) * 400;
+    return {
+      id: p.id || `val-player-${idx + 1}`,
+      name: p.name || `Player_${idx + 1}`,
+      side,
+      preferredLane,
+      baseSpeed,
+      weaponPower: WEAPON_POWER[(p.weapon || p.preferredWeapon) || 'Phantom'] || 0.6,
+      skill: (p.baseSkill || 0.45) // 0..1
+    };
+  });
+
+  // compute waypoint path structures for lanes
+  const laneDefs = {};
+  Object.entries(map.lanes).forEach(([laneName, lane]) => {
+    laneDefs[laneName] = {
+      attackersPath: lane.attackersPath,
+      defendersPath: lane.defendersPath,
+      attackersLengths: cumulativePathLengthsSimple(lane.attackersPath),
+      defendersLengths: cumulativePathLengthsSimple(lane.defendersPath),
+      chokepoints: lane.chokepoints || []
+    };
+  });
+
+  // spawn positions initial
+  function spawnFor(player) {
+    return player.side === 'attackers' ? map.spawnAttackers : map.spawnDefenders;
+  }
+
+  // Plans: for each round we will decide attacker target: 'A' or 'B' or 'Split' or 'Fake'
+  // For realism we simulate sequences: attackers commit to one site with some chance to rotate
+  // We'll produce one plan for the entire match (small variety) but you can randomize per round
+  const roundPlans = [];
+  const nRounds = Math.max(24, match.rounds ? match.rounds.length : 24);
+  for (let r = 1; r <= nRounds; r++) {
+    // per-round choice: generally A or B or split
+    const randVal = rng();
+    let plan;
+    if (randVal < 0.46) plan = 'A';
+    else if (randVal < 0.92) plan = 'B';
+    else plan = 'Split';
+    // occasional fake (send 1-2 players mid)
+    const fake = rng() < 0.12 ? true : false;
+    roundPlans.push({ round: r, target: plan, fake });
+  }
+
+  // Movement state per player
+  const playerState = {};
+  players.forEach(pl => {
+    const spawn = spawnFor(pl);
+    playerState[pl.id] = {
+      pos: { x: spawn.x + (rng() - 0.5) * 20, y: spawn.y + (rng() - 0.5) * 20 },
+      // current planned path (waypoints array)
+      path: [],
+      pathLengths: [],
+      distanceAlong: 0,
+      status: 'spawn', // 'moving','holding','engaged','dead'
+      goalSite: null,
+      isRunning: true
+    };
+  });
+
+  // helper: build a path for player depending on plan and side and role
+  function assignPathForPlayer(pl, plan) {
+    // if attacker: follow attackersPath of chosen lane; defenders follow defendersPath but may rotate
+    const lane = plan.target;
+    let waypoints, lengths;
+    if (pl.side === 'attackers') {
+      if (lane === 'Split') {
+        // go mid then choose site randomly
+        const mid = laneDefs['Mid'].attackersPath;
+        const midLengths = laneDefs['Mid'].attackersLengths;
+        const subsite = rng() < 0.5 ? 'A' : 'B';
+        const sitePath = laneDefs[subsite].attackersPath.slice(2); // append after mid
+        waypoints = mid.concat(sitePath);
+        lengths = cumulativePathLengthsSimple(waypoints);
+      } else {
+        waypoints = laneDefs[lane].attackersPath;
+        lengths = laneDefs[lane].attackersLengths;
+      }
+      return { waypoints, lengths, goalSite: lane };
+    } else {
+      // defenders typically hold site: choose defendersPath and then hold at chokepoint near site
+      waypoints = laneDefs[lane].defendersPath;
+      lengths = laneDefs[lane].defendersLengths;
+      return { waypoints, lengths, goalSite: lane };
+    }
+  }
+
+  // compute engagement kill probability model between two players:
+  // base = attackerSkill * weaponPower * (1 + positionalAdvantage)
+  function killProbability(attacker, defender, distance, surpriseFactor = 1.0) {
+    // less probability at long range: attenuate by distance
+    const rangeFactor = distance < 120 ? 1.0 : distance < 600 ? 0.8 : 0.6;
+    const base = attacker.skill * attacker.weaponPower * rangeFactor * attacker.baseAggressiveness;
+    // defender skill mitigates
+    const defendFactor = 1 - defender.skill * 0.4;
+    // surprise can amplify
+    let p = base * defendFactor * surpriseFactor;
+    // normalize to reasonable interval
+    p = Math.min(0.98, Math.max(0.01, p));
+    return p;
+  }
+
+  // give players baseAggressiveness from buy type mapping if present in match rounds
+  const buyAggressiveMap = { Eco: 0.3, Pistol: 0.5, Partial: 0.8, Force: 0.9, Full: 1.0 };
+
+  // Preload per-round buyType map (player->buyType) from match if available
+  const buyPlanMap = {};
+  if (match.rounds) {
+    match.rounds.forEach(r => {
+      const rn = r.roundNumber || r.roundIndex;
+      if (!r.buys) return;
+      r.buys.forEach(b => {
+        buyPlanMap[`${rn}_${b.playerId}`] = b.buyType || 'Full';
+      });
+    });
+  }
+
+  // frames array to fill
+  const frames = [];
+  // frame time step (s)
+  const dt = 1.0 / tickHz;
+
+  // Helper to set path distance start slightly offset so players don't overlap spawn exactly
+  function initPathDistance(plState) {
+    plState.distanceAlong = (rng() * 0.15 * (plState.pathLengths.length ? plState.pathLengths[plState.pathLengths.length - 1] : 0));
+  }
+
+  // Prepare initial paths for round 1 based on plan
+  function setupRoundPaths(roundIdx) {
+    const plan = roundPlans[roundIdx - 1] || { target: 'A', fake: false };
+    players.forEach(pl => {
+      const info = assignPathForPlayer(pl, plan);
+      // store path in player state
+      const st = playerState[pl.id];
+      st.path = info.waypoints.slice(); // clone
+      st.pathLengths = info.lengths.slice();
+      st.goalSite = info.goalSite;
+      st.status = 'moving';
+      // choose run/walk probability
+      // if buy type indicates eco then slower
+      const buyType = buyPlanMap[`${roundIdx}_${pl.id}`] || 'Full';
+      const agg = buyAggressiveMap[buyType] || 0.75;
+      pl.baseAggressiveness = agg;
+      // speed scaling: baseSpeed * speedMultiplier * (1.0 + small jitters)
+      st.currentSpeed = pl.baseSpeed * (1 + (rng() - 0.5) * 0.08) * speedMultiplier * (1 + 0.2 * agg);
+      // initialize distanceAlong near 0
+      st.distanceAlong = 0;
+      // starting pos = spawn
+      const spawn = spawnFor(pl);
+      st.pos = { x: spawn.x + (rng() - 0.5) * 10, y: spawn.y + (rng() - 0.5) * 10 };
+    });
+  }
+
+  // line-of-sight simplistic test: if two players' positions projecting on path without chokepoint blocking
+  // We'll assume LOS is true if distance < losDistance and not separated by site center for now.
+  function hasLOS(a, b) {
+    const d = euclid(a, b);
+    if (d < 600) return true;
+    // if both near same site center within site radius + margin treat as LOS
+    for (const siteName of Object.keys(map.sites || {})) {
+      const c = map.sites[siteName].center;
+      const rad = map.sites[siteName].radius + 200;
+      if (euclid(a, c) < rad && euclid(b, c) < rad) return true;
+    }
+    return d < 900;
+  }
+
+  // engagement resolution: when players on opposite sides are within proximity and LOS
+  function maybeResolveEngagement(attackerID, defenderID, frameTs) {
+    const atkP = players.find(p => p.id === attackerID);
+    const defP = players.find(p => p.id === defenderID);
+    const aState = playerState[attackerID];
+    const dState = playerState[defenderID];
+    if (!aState || !dState) return null;
+    const dist = euclid(aState.pos, dState.pos);
+    if (dist > 900) return null;
+    if (!hasLOS(aState.pos, dState.pos)) return null;
+    // compute surprise factor if defender facing away (not tracked) — approximate: if attacker came from chokepoint recently
+    const surpriseFactor = 1.0 + (rng() < 0.08 ? 0.5 : 0.0);
+    const pKill = killProbability(atkP, defP, dist, surpriseFactor);
+    const roll = rng();
+    if (roll < pKill) {
+      // attacker wins -> return kill event for attacker
+      dState.status = 'dead';
+      return {
+        type: 'kill',
+        ts: frameTs,
+        attacker: attackerID,
+        victim: defenderID,
+        distance: Math.round(dist),
+        method: 'gun',
+        prob: +pKill.toFixed(3)
+      };
+    } else {
+      // defender survives -> possible return fire event with lower prob
+      const pDefKill = killProbability(defP, atkP, dist, 0.6) * 0.6;
+      if (rng() < pDefKill) {
+        aState.status = 'dead';
+        return {
+          type: 'kill',
+          ts: frameTs,
+          attacker: defenderID,
+          victim: attackerID,
+          distance: Math.round(dist),
+          method: 'gun',
+          prob: +pDefKill.toFixed(3)
+        };
+      }
+    }
+    return null;
+  }
+
+  // Utility use model: if a player reaches chokepoint, occasionally emit utility events (smoke, flash)
+  function maybeEmitUtility(playerId, frameTs) {
+    const st = playerState[playerId];
+    const pl = players.find(p => p.id === playerId);
+    // probability depends on aggressiveness and chokepoint proximity
+    const lane = st.goalSite || players.find(p => p.id === playerId).preferredLane;
+    const cpList = laneDefs[lane] ? laneDefs[lane].chokepoints : [];
+    let nearCp = false;
+    cpList.forEach(cp => {
+      if (euclid(st.pos, cp) < 240) nearCp = true;
+    });
+    if (!nearCp) return null;
+    const prob = 0.05 + 0.18 * pl.baseAggressiveness;
+    if (rng() < prob) {
+      const util = rng() < 0.6 ? 'smoke' : (rng() < 0.5 ? 'flash' : 'grenade');
+      return { type: 'utility', ts: frameTs, playerId, ability: util };
+    }
+    return null;
+  }
+
+  // helper to advance along path given distance delta
+  function advancePlayerAlongPath(st, distanceDelta) {
+    if (!st.path || st.path.length < 2) return st.pos;
+    st.distanceAlong = Math.min((st.pathLengths || [0]).slice(-1)[0], st.distanceAlong + distanceDelta);
+    const pos = pathPosition(st.path, st.distanceAlong, st.pathLengths);
+    st.pos = { x: pos.x + (rng() - 0.5) * 6, y: pos.y + (rng() - 0.5) * 6 }; // small jitter
+    return st.pos;
+  }
+
+  // initialize for round 1
+  setupRoundPaths(1);
+
+  // Per tick simulation loop
+  // For simplicity we simulate a single round's frames (the function designed to produce frames for a single round)
+  // To produce multi-round replay, call this per-round with different round plans and reset states.
+  for (let t = 0; t < ticks; t++) {
+    const frameTs = t; // relative tick number (you can scale by dt)
+    // update each player
+    const events = [];
+    players.forEach(pl => {
+      const st = playerState[pl.id];
+      // if dead, respawn at end? For round-level frames we leave dead until end
+      if (st.status === 'dead') {
+        // dead players stay off-map (or faintly at last pos)
+        // 5% chance of "revive" for demo: no
+        return;
+      }
+      // movement: move forward along path with speed scaled by tick and possible walk/run toggles
+      const speed = st.currentSpeed || pl.baseSpeed;
+      const distToAdvance = (speed * dt) * (0.9 + (rng() - 0.5) * 0.2); // jitter speed ±10%
+      advancePlayerAlongPath(st, distToAdvance);
+
+      // check chokepoint utility
+      const util = maybeEmitUtility(pl.id, frameTs);
+      if (util) events.push(util);
+
+      // test engagements: find nearest opponent within radius
+      const opponents = players.filter(q => q.side !== pl.side && playerState[q.id].status !== 'dead');
+      // compute nearest opponent
+      let nearest = null;
+      let nearestD = Infinity;
+      opponents.forEach(op => {
+        const d = euclid(st.pos, playerState[op.id].pos);
+        if (d < nearestD) {
+          nearest = op;
+          nearestD = d;
+        }
+      });
+      if (nearest && nearestD < 950) {
+        // chance of engagement increases with proximity and if both are near chokepoint
+        const engageProb = 0.01 + 0.6 * Math.exp(-nearestD / 600) * (0.3 + 0.7 * pl.baseAggressiveness);
+        if (rng() < engageProb) {
+          // choose attacker/defender based on who is closer to their path "forward" (approx)
+          // heuristics: attacker initiating if moving faster or nearer site
+          const attackerCandidate = pl;
+          const defenderCandidate = nearest;
+          const ev = maybeResolveEngagement(attackerCandidate.id, defenderCandidate.id, frameTs);
+          if (ev) events.push(ev);
+        }
+      }
+
+      // rotation event: if player gets close to site center and hasn't announced enter event
+      for (const siteName of Object.keys(map.sites || {})) {
+        const c = map.sites[siteName].center;
+        const rad = map.sites[siteName].radius + 120;
+        if (euclid(st.pos, c) < rad) {
+          // emit enter_site event occasionally
+          if (rng() < 0.02) {
+            events.push({ type: 'enter_site', ts: frameTs, playerId: pl.id, site: siteName });
+          }
+        }
+      }
+    }); // players loop
+
+    // compose frame summary: frames include tick number, ts (optional), positions minimal info
+    const frame = {
+      tick: t,
+      ts: frameTs,
+      players: players.map(p => {
+        const st = playerState[p.id];
+        return { id: p.id, x: Math.round(st.pos.x), y: Math.round(st.pos.y), hp: st.status === 'dead' ? 0 : 100 };
+      }),
+      events // array of small events
+    };
+    frames.push(frame);
+  }
+
+  return frames;
+}
+
+// helper: cumulative path lengths simpler version
+function cumulativePathLengthsSimple(waypoints) {
+  const cum = [];
+  let sum = 0;
+  if (!waypoints || waypoints.length === 0) return [0];
+  cum.push(0);
+  for (let i = 1; i < waypoints.length; i++) {
+    const d = euclid(waypoints[i - 1], waypoints[i]);
+    sum += d;
+    cum.push(sum);
+  }
+  return cum;
+}
+
+// Export
+module.exports = {
+  generateValorantReplayFramesWithMap
+};

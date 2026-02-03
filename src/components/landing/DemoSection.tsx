@@ -36,7 +36,7 @@ export const DemoSection = () => {
               See It <span className="gradient-text-accent">In Action</span>
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Experience how Assistant Coach transforms complex data into
+              Experience how SkySim Tactical GG transforms complex data into
               actionable insights with our interactive demo.
             </p>
 

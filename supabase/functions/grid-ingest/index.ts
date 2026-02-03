@@ -32,32 +32,61 @@ Deno.serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
-    const { action, matchId, matchData } = await req.json()
+    const { action, matchId, matchData, computeSummary = false } = await req.json()
 
-    // Audit log helper
+    // Audit log helper (centralized logic mirrored for Edge Function compatibility)
     const auditLog = async (
       provider: string,
       resourceId: string,
       actionType: string,
-      status: 'ok' | 'failed',
+      status: 'ok' | 'failed' | 'success' | 'failure',
       message: string,
       raw?: unknown
     ) => {
-      await supabase.from('grid_ingest_audit').insert({
-        provider,
-        provider_resource_id: resourceId,
-        action: actionType,
-        status,
-        message,
-        raw: raw || null,
-      })
+      try {
+        await supabase.from('grid_ingest_audit').insert({
+          provider,
+          provider_resource_id: resourceId,
+          action: actionType,
+          status,
+          message,
+          raw: raw || null,
+        })
+      } catch (err) {
+        console.error(`[AUDIT ERROR] for ${resourceId}:`, err)
+      }
     }
 
     if (action === 'ingest_match') {
-      // Ingest a match from provided data
-      const data = matchData as GridMatch
+      let data = matchData as GridMatch
+      
+      // If no matchData but matchId and GRID_API_KEY provided, try fetching from GRID
+      if (!data && matchId && GRID_API_KEY) {
+        try {
+          const response = await fetch(`https://api.grid.gg/v1/matches/${matchId}`, {
+            headers: { 'x-api-key': GRID_API_KEY }
+          })
+          if (response.ok) {
+            const gridData = await response.json()
+            data = {
+              matchId: gridData.id,
+              provider: 'grid',
+              mapName: gridData.map?.name,
+              matchTs: gridData.startTime,
+              durationSeconds: gridData.duration,
+              raw: gridData
+            }
+          } else {
+            throw new Error(`GRID API returned ${response.status}: ${await response.text()}`)
+          }
+        } catch (e) {
+          await auditLog('grid', matchId, 'fetch_match', 'failed', e.message)
+          throw e
+        }
+      }
+
       if (!data?.matchId) {
-        throw new Error('Match ID required')
+        throw new Error('Match ID or valid GRID data required')
       }
 
       const { data: matchRow, error: matchErr } = await supabase
@@ -80,6 +109,18 @@ Deno.serve(async (req) => {
       }
 
       await auditLog(data.provider || 'grid', data.matchId, 'upsert_match', 'ok', `Match saved: ${matchRow?.id}`)
+
+      if (computeSummary && matchRow?.id) {
+        const { error: rpcError } = await supabase.rpc('upsert_player_match_summaries_for_match', {
+          _match_id: matchRow.id
+        })
+        
+        if (rpcError) {
+          await auditLog(data.provider || 'grid', matchRow.id, 'summary_compute', 'failure', rpcError.message)
+        } else {
+          await auditLog(data.provider || 'grid', matchRow.id, 'summary_compute', 'success', 'Summary computed automatically')
+        }
+      }
 
       return new Response(JSON.stringify({ success: true, match: matchRow }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -122,19 +163,63 @@ Deno.serve(async (req) => {
         .eq('match_id', matchId)
         .limit(100)
 
-      return new Response(JSON.stringify({ match, signals: signals || [], events: events || [] }), {
+      const { data: summaries } = await supabase
+        .from('player_match_summaries')
+        .select('*')
+        .eq('match_id', matchId)
+
+      return new Response(JSON.stringify({ 
+        match, 
+        signals: signals || [], 
+        events: events || [],
+        summaries: summaries || []
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
+
+    if (action === 'compute_summary') {
+      if (!matchId) throw new Error('matchId required')
+
+      const { error: rpcError } = await supabase.rpc('upsert_player_match_summaries_for_match', {
+        _match_id: matchId
+      })
+
+      if (rpcError) {
+        await auditLog('grid', matchId, 'summary_compute', 'failure', rpcError.message)
+        throw rpcError
+      }
+
+      await auditLog('grid', matchId, 'summary_compute', 'success', 'Summary computed manually via API')
+
+      return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
 
     if (action === 'health') {
-      return new Response(JSON.stringify({ 
-        status: 'ok', 
-        hasGridKey: !!GRID_API_KEY,
-        timestamp: new Date().toISOString() 
-      }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
+      try {
+        const { data, error } = await supabase.from('grid_matches').select('id').limit(1);
+        const dbStatus = error ? `error: ${error.message}` : 'connected';
+        
+        return new Response(JSON.stringify({ 
+          status: 'ok', 
+          database: dbStatus,
+          hasGridKey: !!GRID_API_KEY,
+          timestamp: new Date().toISOString() 
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      } catch (err) {
+        return new Response(JSON.stringify({ 
+          status: 'degraded', 
+          error: String(err),
+          timestamp: new Date().toISOString() 
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
     }
 
     return new Response(JSON.stringify({ error: 'Unknown action' }), {

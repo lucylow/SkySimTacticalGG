@@ -27,6 +27,8 @@ export interface RoundData {
   round_phase_stats: {
     execute_time?: number;
     post_plant_time?: number;
+    first_contact_time?: number;
+    utility_used_early?: number;
   };
 }
 

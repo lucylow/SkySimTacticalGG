@@ -5,7 +5,6 @@
 import { BaseAgentImpl } from './baseAgent';
 import type {
   AgentInput,
-  AgentOutput,
   AgentTool,
   ProstheticCoachOutput,
   RealTimeSuggestion,
@@ -13,7 +12,7 @@ import type {
   TacticalWhisper,
 } from '@/types/agents';
 import type { GridDataPacket } from '@/types/grid';
-import { assistantCoach } from '../assistantCoach';
+import { skySimTacticalGG } from '../skySimTacticalGG.ts';
 
 export class ProstheticCoachAgent extends BaseAgentImpl {
   name = 'Prosthetic Coach (Real-Time)';
@@ -21,12 +20,6 @@ export class ProstheticCoachAgent extends BaseAgentImpl {
   description =
     'Provides real-time tactical suggestions during live matches or scrims. Acts as a co-pilot that whispers tactical advice and alerts to detected patterns.';
 
-  private patternHistory: Map<string, number[]> = new Map();
-  private lastAnalysisTime: number = 0;
-
-  /**
-   * Execute real-time coaching analysis
-   */
   async execute(input: AgentInput): Promise<ProstheticCoachOutput> {
     const gridData = input.grid_data || [];
     const liveFeed = input.live_feed || false;
@@ -35,29 +28,18 @@ export class ProstheticCoachAgent extends BaseAgentImpl {
       throw new Error('No GRID data provided to Prosthetic Coach');
     }
 
-    // Step 1: Get live insights from assistant coach
-    const liveInsights = await assistantCoach.getLiveInsights(
-      gridData,
-      input.previous_analysis
-    );
+    // Step 1: Get live insights from SkySim Tactical GG
+    await skySimTacticalGG.getLiveInsights(gridData, input.previous_analysis);
 
     // Step 2: Generate real-time suggestions
-    const realTimeSuggestions = await this.generateRealTimeSuggestions(
-      gridData,
-      liveInsights,
-      liveFeed
-    );
+    const realTimeSuggestions = await this.generateRealTimeSuggestions(gridData, liveFeed);
 
     // Step 3: Detect pattern alerts
-    const patternAlerts = await this.detectPatternAlerts(
-      gridData,
-      liveInsights
-    );
+    const patternAlerts = await this.detectPatternAlerts(gridData);
 
     // Step 4: Generate tactical whispers
     const tacticalWhispers = await this.generateTacticalWhispers(
       gridData,
-      liveInsights,
       realTimeSuggestions
     );
 
@@ -85,12 +67,8 @@ export class ProstheticCoachAgent extends BaseAgentImpl {
     ];
 
     const recommendations = [
-      ...realTimeSuggestions
-        .filter((s) => s.urgency === 'high')
-        .map((s) => s.message),
-      ...patternAlerts
-        .filter((a) => a.action_required)
-        .map((a) => a.description),
+      ...realTimeSuggestions.filter((s) => s.urgency === 'high').map((s) => s.message),
+      ...patternAlerts.filter((a) => a.action_required).map((a) => a.description),
     ];
 
     return {
@@ -101,17 +79,11 @@ export class ProstheticCoachAgent extends BaseAgentImpl {
     };
   }
 
-  /**
-   * Generate real-time tactical suggestions
-   */
   private async generateRealTimeSuggestions(
     gridData: GridDataPacket[],
-    liveInsights: any,
     liveFeed: boolean
   ): Promise<RealTimeSuggestion[]> {
     const suggestions: RealTimeSuggestion[] = [];
-
-    // Analyze recent packets (last 5 seconds of data)
     const recentPackets = gridData.slice(-10);
     const currentPacket = recentPackets[recentPackets.length - 1];
 
@@ -122,7 +94,6 @@ export class ProstheticCoachAgent extends BaseAgentImpl {
     const context = currentPacket.match_context;
     const player = currentPacket.player;
 
-    // Generate suggestions based on game state
     if (context.spike_status === 'planted' && player.team === 'Defender') {
       suggestions.push({
         suggestion_id: `suggestion-${Date.now()}-retake`,
@@ -133,7 +104,6 @@ export class ProstheticCoachAgent extends BaseAgentImpl {
       });
     }
 
-    // Check utility levels
     const abilities = currentPacket.inventory.abilities;
     const utilityCount = Object.values(abilities).filter(
       (a) => a && a.charges > 0
@@ -149,7 +119,6 @@ export class ProstheticCoachAgent extends BaseAgentImpl {
       });
     }
 
-    // Check economy
     if (currentPacket.inventory.credits < 2000 && context.round_phase === 'pre_round') {
       suggestions.push({
         suggestion_id: `suggestion-${Date.now()}-economy`,
@@ -160,7 +129,6 @@ export class ProstheticCoachAgent extends BaseAgentImpl {
       });
     }
 
-    // Check positioning
     if (!player.is_moving && !player.is_crouching && context.round_phase === 'mid_round') {
       suggestions.push({
         suggestion_id: `suggestion-${Date.now()}-positioning`,
@@ -172,21 +140,19 @@ export class ProstheticCoachAgent extends BaseAgentImpl {
       });
     }
 
-    // Use LLM for advanced suggestions
     if (liveFeed && recentPackets.length > 5) {
       const llmPrompt = this.buildRealTimePrompt(recentPackets, context);
       const llmResponse = await this.callLLM(
         llmPrompt,
-        'You are a real-time esports coach. Provide brief, actionable tactical suggestions based on current game state.'
+        'You are a real-time esports coach.'
       );
 
-      // Parse LLM response into suggestions
       if (llmResponse.includes('push') || llmResponse.includes('aggressive')) {
         suggestions.push({
           suggestion_id: `suggestion-${Date.now()}-llm`,
           timestamp: Date.now(),
           type: 'tactical',
-          message: llmResponse.substring(0, 100), // Truncate for brevity
+          message: llmResponse.substring(0, 100),
           urgency: 'medium',
         });
       }
@@ -195,12 +161,9 @@ export class ProstheticCoachAgent extends BaseAgentImpl {
     return suggestions;
   }
 
-  /**
-   * Build real-time prompt for LLM
-   */
   private buildRealTimePrompt(
-    recentPackets: GridDataPacket[],
-    context: any
+    _recentPackets: GridDataPacket[],
+    context: { round_phase?: string; spike_status?: string; round_time_remaining?: number; site_control?: string; player_locations_alive?: unknown[] }
   ): string {
     return `Analyze current game state and provide tactical suggestion:
 
@@ -210,24 +173,13 @@ Time Remaining: ${context.round_time_remaining}s
 Site Control: ${context.site_control}
 Alive Players: ${context.player_locations_alive?.length || 0}
 
-Recent Events: ${recentPackets.length} data packets
-
 Provide ONE brief tactical suggestion (max 50 words).`;
   }
 
-  /**
-   * Detect pattern alerts
-   */
-  private async detectPatternAlerts(
-    gridData: GridDataPacket[],
-    liveInsights: any
-  ): Promise<PatternAlert[]> {
+  private async detectPatternAlerts(gridData: GridDataPacket[]): Promise<PatternAlert[]> {
     const alerts: PatternAlert[] = [];
-
-    // Track patterns over time
     const recentPackets = gridData.slice(-20);
 
-    // Detect predictable positioning pattern
     const positionPattern = this.detectPositionPattern(recentPackets);
     if (positionPattern.detected) {
       alerts.push({
@@ -240,7 +192,6 @@ Provide ONE brief tactical suggestion (max 50 words).`;
       });
     }
 
-    // Detect utility usage pattern
     const utilityPattern = this.detectUtilityPattern(recentPackets);
     if (utilityPattern.detected) {
       alerts.push({
@@ -253,28 +204,9 @@ Provide ONE brief tactical suggestion (max 50 words).`;
       });
     }
 
-    // Check for high-priority alerts from live insights
-    if (liveInsights.alerts) {
-      for (const alert of liveInsights.alerts) {
-        if (alert.priority === 'high') {
-          alerts.push({
-            alert_id: `alert-${Date.now()}-insight`,
-            pattern_type: alert.type,
-            description: alert.description,
-            detected_at: Date.now(),
-            confidence: 0.8,
-            action_required: alert.actionable,
-          });
-        }
-      }
-    }
-
     return alerts;
   }
 
-  /**
-   * Detect position pattern
-   */
   private detectPositionPattern(
     packets: GridDataPacket[]
   ): { detected: boolean; duration: number; confidence: number } {
@@ -288,7 +220,6 @@ Provide ONE brief tactical suggestion (max 50 words).`;
       timestamp: p.timestamp,
     }));
 
-    // Check if same player is in similar position
     const positionGroups = new Map<string, number[]>();
     for (const pos of playerPositions) {
       const key = `${pos.id}-${Math.round(pos.position.x / 100)}-${Math.round(pos.position.y / 100)}`;
@@ -298,25 +229,25 @@ Provide ONE brief tactical suggestion (max 50 words).`;
       positionGroups.get(key)!.push(pos.timestamp);
     }
 
-    // Find longest duration
     let maxDuration = 0;
     for (const timestamps of positionGroups.values()) {
       if (timestamps.length >= 3) {
-        const duration = (timestamps[timestamps.length - 1] - timestamps[0]) / 1000;
-        maxDuration = Math.max(maxDuration, duration);
+        const first = timestamps[0];
+        const last = timestamps[timestamps.length - 1];
+        if (first !== undefined && last !== undefined) {
+          const duration = (last - first) / 1000;
+          maxDuration = Math.max(maxDuration, duration);
+        }
       }
     }
 
     return {
-      detected: maxDuration > 5, // 5 seconds in same position
+      detected: maxDuration > 5,
       duration: maxDuration,
       confidence: Math.min(1, maxDuration / 10),
     };
   }
 
-  /**
-   * Detect utility pattern
-   */
   private detectUtilityPattern(
     packets: GridDataPacket[]
   ): {
@@ -325,7 +256,6 @@ Provide ONE brief tactical suggestion (max 50 words).`;
     confidence: number;
     action_required: boolean;
   } {
-    // Check utility usage timing
     const utilityUsage = packets.filter((p) => {
       const abilities = p.inventory.abilities;
       return Object.values(abilities).some((a) => a && a.charges === 0);
@@ -342,7 +272,6 @@ Provide ONE brief tactical suggestion (max 50 words).`;
 
     const context = packets[packets.length - 1]?.match_context;
     if (context && context.round_time_remaining && context.round_time_remaining < 20) {
-      // Utility used late in round
       return {
         detected: true,
         description: 'Utility being used late in round - consider earlier timing',
@@ -359,17 +288,12 @@ Provide ONE brief tactical suggestion (max 50 words).`;
     };
   }
 
-  /**
-   * Generate tactical whispers
-   */
   private async generateTacticalWhispers(
     gridData: GridDataPacket[],
-    liveInsights: any,
     suggestions: RealTimeSuggestion[]
   ): Promise<TacticalWhisper[]> {
     const whispers: TacticalWhisper[] = [];
 
-    // Generate whispers from high-priority suggestions
     for (const suggestion of suggestions.filter((s) => s.urgency === 'high')) {
       whispers.push({
         whisper_id: `whisper-${suggestion.suggestion_id}`,
@@ -380,20 +304,6 @@ Provide ONE brief tactical suggestion (max 50 words).`;
       });
     }
 
-    // Generate whispers from recommendations
-    if (liveInsights.recommendations) {
-      for (const rec of liveInsights.recommendations.slice(0, 2)) {
-        whispers.push({
-          whisper_id: `whisper-${Date.now()}-rec`,
-          timestamp: Date.now(),
-          message: rec,
-          context: 'Live coaching recommendation',
-          priority: 0.7,
-        });
-      }
-    }
-
-    // Use LLM for contextual whispers
     if (gridData.length > 10) {
       const recentPackets = gridData.slice(-10);
       const context = recentPackets[recentPackets.length - 1]?.match_context;
@@ -425,9 +335,6 @@ Provide ONE concise tactical tip.`;
     return whispers;
   }
 
-  /**
-   * Get tools available to this agent
-   */
   getTools(): AgentTool[] {
     return [
       {
@@ -439,7 +346,7 @@ Provide ONE concise tactical tip.`;
             grid_packets: { type: 'array' },
           },
         },
-        execute: async (args: Record<string, unknown>) => {
+        execute: async (_args: Record<string, unknown>) => {
           return { analyzed: true };
         },
       },
@@ -453,7 +360,7 @@ Provide ONE concise tactical tip.`;
             pattern_type: { type: 'string' },
           },
         },
-        execute: async (args: Record<string, unknown>) => {
+        execute: async (_args: Record<string, unknown>) => {
           return { pattern_detected: true };
         },
       },
@@ -467,12 +374,10 @@ Provide ONE concise tactical tip.`;
             context: { type: 'object' },
           },
         },
-        execute: async (args: Record<string, unknown>) => {
+        execute: async (_args: Record<string, unknown>) => {
           return { suggestion: 'Coordinate utility usage' };
         },
       },
     ];
   }
 }
-
-

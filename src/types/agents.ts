@@ -1,5 +1,5 @@
 // Multi-Agent System Types
-// Defines the structure for specialized AI agents in the esports Assistant Coach
+// Defines the structure for specialized AI agents in SkySim Tactical GG
 
 import type { GridDataPacket, PredictedAction } from './grid';
 import type { EnrichedGridData } from './tactical';

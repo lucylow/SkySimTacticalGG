@@ -621,7 +621,7 @@ export const mockHealthCheck: HealthCheck = {
 };
 
 export const mockAPIInfo: APIInfo = {
-  message: 'Esports Assistant Coach API',
+  message: 'SkySim Tactical GG API',
   version: '1.0.0',
   endpoints: {
     matches: '/api/v1/matches',

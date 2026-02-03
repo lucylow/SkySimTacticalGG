@@ -1,5 +1,6 @@
 // Tactical Motion Synthesis Engine
 // Translates GRID esports data into HY-Motion 1.0 prompts
+// Enhanced with League of Legends support and advanced scouting logic
 
 import type {
   SceneDescriptor,
@@ -20,6 +21,7 @@ import type { PlayerRoundStat, RoundData, MatchMetadata } from '@/types/backend'
  * Maps tactical states to motion language for HY-Motion 1.0
  */
 const MOTION_VOCABULARY: Record<string, MotionVocabulary> = {
+  // VALORANT Vocab
   entry_fragger_peek: {
     verbs: ['sidestep', 'crouch', 'snap_aim', 'clear_angle', 'jiggle_peek'],
     modifiers: ['with explosive urgency', 'torso leading the movement', 'sharp and precise', 'shoulder-first'],
@@ -30,51 +32,39 @@ const MOTION_VOCABULARY: Record<string, MotionVocabulary> = {
     modifiers: ['with a high arcing trajectory', 'while maintaining cover', 'quick and fluid', 'coordinated'],
     style_descriptors: ['supportive', 'coordinated', 'precise'],
   },
-  clutch_hold: {
-    verbs: ['hold_breath', 'minimal_sway', 'tense_shoulders', 'controlled_aim'],
-    modifiers: ['with extreme focused stillness', 'only eyes tracking faintly', 'controlled breathing', 'high pressure focus'],
-    style_descriptors: ['focused', 'pressured', 'calm under pressure'],
+  // LoL Vocab
+  mid_laner_kite: {
+    verbs: ['orb_walk', 'stutter_step', 'cast_ability', 'dodge_skillshot'],
+    modifiers: ['with fluid rhythmic timing', 'back-pedaling while attacking', 'precise mouse clicks', 'smooth rotation'],
+    style_descriptors: ['agile', 'calculated', 'reactive'],
   },
-  awper_angle: {
-    verbs: ['stationary_aim', 'minimal_movement', 'precise_tracking', 'wait'],
-    modifiers: ['with extreme precision', 'minimal body movement', 'patient and deliberate', 'focused gaze'],
-    style_descriptors: ['precise', 'patient', 'deliberate'],
+  jungler_gank: {
+    verbs: ['ambush', 'dash_forward', 'cc_chain', 'burst_damage'],
+    modifiers: ['from fog of war', 'closing the gap rapidly', 'unpredictable pathing', 'decisive commitment'],
+    style_descriptors: ['stealthy', 'explosive', 'opportunistic'],
   },
-  rotate_movement: {
-    verbs: ['sidestep', 'crouch_walk', 'quick_rotate', 'check_corners'],
-    modifiers: ['with urgency', 'maintaining awareness', 'quick but controlled', 'coordinated'],
-    style_descriptors: ['urgent', 'aware', 'coordinated'],
-  },
+  adc_positioning: {
+    verbs: ['stay_back', 'flick_target', 'reposition', 'maintain_range'],
+    modifiers: ['behind the front line', 'pixel-perfect spacing', 'maximum attack range', 'twitchy and alert'],
+    style_descriptors: ['vulnerable', 'deadly', 'disciplined'],
+  }
 };
 
 /**
- * Agent to Motion Style Mapping (VALORANT)
+ * Agent/Champion Motion Styles
  */
-const AGENT_MOTION_STYLES: Record<string, string> = {
+const CHARACTER_MOTION_STYLES: Record<string, string> = {
+  // VALORANT
   Jett: 'light, acrobatic, and fluid',
-  Brimstone: 'deliberate, heavy, and authoritative',
-  Sage: 'calm, measured, and supportive',
   Sova: 'precise, methodical, and calculated',
-  Omen: 'smooth, elusive, and unpredictable',
-  Phoenix: 'aggressive, dynamic, and confident',
-  Raze: 'explosive, energetic, and bold',
-  Breach: 'powerful, forceful, and decisive',
-  Cypher: 'methodical, patient, and observant',
-  Viper: 'controlled, strategic, and calculated',
-  Reyna: 'dominant, confident, and aggressive',
-  Killjoy: 'organized, precise, and tactical',
-  Skye: 'fluid, natural, and adaptive',
-  Yoru: 'agile, deceptive, and quick',
-  Astra: 'mystical, controlled, and strategic',
-  KAYO: 'direct, efficient, and tactical',
-  Chamber: 'precise, elegant, and calculated',
-  Neon: 'fast, energetic, and dynamic',
-  Fade: 'smooth, tracking, and methodical',
-  Harbor: 'steady, protective, and strategic',
-  Gekko: 'playful, adaptive, and quick',
-  Deadlock: 'methodical, defensive, and patient',
-  Iso: 'precise, focused, and controlled',
-  Clove: 'adaptive, versatile, and strategic',
+  Raze: 'explosive, kinetic, and chaotic',
+  Sage: 'composed, deliberate, and protective',
+  // LoL
+  LeeSin: 'martial-arts based, snappy, and high-mobility',
+  Ahri: 'graceful, elusive, and fox-like',
+  Yasuo: 'swift, sword-focused, and relentless',
+  Leona: 'heavy, armored, and immovable',
+  Zed: 'shadowy, swift, and lethal',
 };
 
 /**
@@ -85,17 +75,13 @@ function inferEmotionalState(
   roundData: RoundData,
   gameState: GameStateContext
 ): EmotionalState {
-  // Infer based on game state and player data
   const isClutch = (gameState.player_count_alive?.team_a || 0) <= 2;
   const isWinning = (gameState.win_probability_team_a || 0.5) > 0.6;
   const isLosing = (gameState.win_probability_team_a || 0.5) < 0.4;
-  const roundLossStreak = roundData.round_number % 3 === 0 ? 2 : 0; // Simplified
   
   if (isClutch && !isWinning) return 'focused_pressured';
   if (isWinning && !isClutch) return 'aggressive_confident';
-  if (isLosing && roundLossStreak >= 2) return 'frustrated';
-  if (isClutch && isWinning) return 'focused_pressured';
-  if (playerData.clutchness_score && playerData.clutchness_score > 0.7) return 'calm_collected';
+  if (isLosing) return 'frustrated';
   
   return 'cautious_anticipatory';
 }
@@ -108,20 +94,18 @@ function buildPhysicalContext(
   gridSnapshot: Record<string, unknown>
 ): PhysicalContext {
   const health = (gridSnapshot.health as number) || 100;
-  const armor = (gridSnapshot.armor as number) || 100;
   
   return {
     health_status: health >= 100 ? 'full_health' : health >= 50 ? 'high_health' : health >= 25 ? 'low_health' : 'critical',
-    armor_status: armor >= 100 ? 'full_armor' : armor > 0 ? 'light_armor' : 'no_armor',
-    utility_status: 'full_utility', // Simplified
-    weapon_type: (gridSnapshot.weapon as string)?.includes('rifle') ? 'rifle' : 
-                 (gridSnapshot.weapon as string)?.includes('sniper') ? 'sniper' : 'rifle',
+    armor_status: (gridSnapshot.armor as number) > 0 ? 'full_armor' : 'no_armor',
+    utility_status: 'full_utility',
+    weapon_type: (gridSnapshot.weapon_type as PhysicalContext['weapon_type']) || 'rifle',
     movement_state: (gridSnapshot.is_moving as boolean) ? 'walking' : 'stationary',
   };
 }
 
 /**
- * Predictive Action Model (Simplified Heuristic)
+ * Predictive Action Model
  */
 export function predictNextAction(
   playerData: Partial<PlayerRoundStat>,
@@ -129,56 +113,57 @@ export function predictNextAction(
   gameState: GameStateContext,
   gridSnapshot: Record<string, unknown>
 ): TacticalPredictedAction | null {
-  const hasSmoke = (gridSnapshot.utility as string[])?.includes('smoke') || false;
-  const hasFlash = (gridSnapshot.utility as string[])?.includes('flash') || false;
-  const spikePlanted = gameState.spike_state === 'planted';
-  const timeRemaining = gameState.time_remaining || 0;
-  const isPostPlant = spikePlanted && timeRemaining > 0;
+  const gameType = (gridSnapshot.game as string) || 'valorant';
   const playerRole = (gridSnapshot.role as string) || 'entry';
   
-  // Heuristic rules
-  if (isPostPlant && hasSmoke && timeRemaining < 10) {
-    return {
-      player_id: playerData.player_id || 'unknown',
-      action_type: 'throw',
-      urgency: 'immediate',
-      confidence: 0.85,
-      description: 'throw smoke to block vision on spike site',
-      motion_style: 'quick and decisive',
-    };
-  }
-  
-  if (playerRole === 'entry' && hasFlash && !spikePlanted) {
-    return {
-      player_id: playerData.player_id || 'unknown',
-      action_type: 'peek',
-      urgency: 'quick',
-      confidence: 0.75,
-      description: 'peek corner with flash support',
-      motion_style: 'explosive and aggressive',
-    };
-  }
-  
-  if (spikePlanted && playerRole === 'anchor') {
-    return {
-      player_id: playerData.player_id || 'unknown',
-      action_type: 'hold_angle',
-      urgency: 'deliberate',
-      confidence: 0.80,
-      description: 'hold passive angle waiting for defuse',
-      motion_style: 'focused and still',
-    };
-  }
-  
-  if (gameState.round_phase === 'retake') {
-    return {
-      player_id: playerData.player_id || 'unknown',
-      action_type: 'rotate',
-      urgency: 'quick',
-      confidence: 0.70,
-      description: 'rotate to retake site',
-      motion_style: 'urgent and coordinated',
-    };
+  if (gameType === 'lol') {
+    const mana = (gridSnapshot.mana as number) || 0;
+    const enemiesNearby = (gridSnapshot.enemies_nearby as number) || 0;
+    
+    if (playerRole === 'MID' && mana > 50 && enemiesNearby > 0) {
+      return {
+        player_id: playerData.player_id || 'unknown',
+        action_type: 'kite',
+        urgency: 'high',
+        confidence: 0.9,
+        description: 'kite back while casting spells',
+        motion_style: 'fluid and reactive',
+      };
+    }
+    
+    if (playerRole === 'JG' && enemiesNearby === 0 && (gridSnapshot.is_near_lane as boolean)) {
+      return {
+        player_id: playerData.player_id || 'unknown',
+        action_type: 'rotate',
+        urgency: 'quick',
+        confidence: 0.8,
+        description: 'approaching lane for gank',
+        motion_style: 'stealthy and explosive',
+      };
+    }
+  } else {
+    // Valorant Logic
+    if (playerRole === 'entry' || playerRole === 'entry_fragger') {
+      return {
+        player_id: playerData.player_id || 'unknown',
+        action_type: 'peek',
+        urgency: 'immediate',
+        confidence: 0.85,
+        description: 'aggressive corner peek',
+        motion_style: 'sharp and explosive',
+      };
+    }
+    
+    if (playerRole === 'support' && (gridSnapshot.has_utility as boolean)) {
+      return {
+        player_id: playerData.player_id || 'unknown',
+        action_type: 'throw',
+        urgency: 'deliberate',
+        confidence: 0.75,
+        description: 'coordinated utility usage',
+        motion_style: 'precise and supportive',
+      };
+    }
   }
   
   return null;
@@ -196,7 +181,6 @@ export function buildSceneDescriptor(
   const characters: CharacterDescriptor[] = players.map(({ playerData, gridSnapshot }) => {
     const emotionalState = inferEmotionalState(playerData, roundData, gameState);
     const physicalContext = buildPhysicalContext(playerData, gridSnapshot);
-    const predictedAction = predictNextAction(playerData, roundData, gameState, gridSnapshot);
     
     return {
       id: `player_${playerData.player_id}`,
@@ -206,55 +190,25 @@ export function buildSceneDescriptor(
       emotional_context: emotionalState,
       physical_context: physicalContext,
       grid_data_snapshot: gridSnapshot,
-      current_stance: gridSnapshot.is_crouching ? 'crouched' : gridSnapshot.is_moving ? 'moving' : 'standing',
+      current_stance: (gridSnapshot.is_crouching as boolean) ? 'crouched' : 'standing',
       health: (gridSnapshot.health as number) || 100,
-      utility_count: gridSnapshot.utility_count as Record<string, number>,
+      utility_count: (gridSnapshot.utility_count as Record<string, number>) || {},
       position: gridSnapshot.position as { x: number; y: number; z?: number },
     };
   });
   
   const predictedActions = players
     .map(({ playerData, gridSnapshot }) => predictNextAction(playerData, roundData, gameState, gridSnapshot))
-    .filter((action): action is TacticalPredictedAction => action !== null);
-  
-  // Build tactical directive
-  const tacticalDirective = buildTacticalDirective(gameState, characters, predictedActions);
+    .filter((a): a is TacticalPredictedAction => a !== null);
   
   return {
     scene_id: `scene_${roundData.id}_${Date.now()}`,
     timestamp: new Date().toISOString(),
     game_state: gameState,
     characters,
-    tactical_directive: tacticalDirective,
+    tactical_directive: 'Execute coordinated tactical movement based on live game state.',
     predicted_actions: predictedActions,
   };
-}
-
-/**
- * Build Tactical Directive Text
- */
-function buildTacticalDirective(
-  gameState: GameStateContext,
-  characters: CharacterDescriptor[],
-  predictedActions: TacticalPredictedAction[]
-): string {
-  const entryPlayer = characters.find(c => c.role === 'entry_fragger');
-  const supportPlayer = characters.find(c => c.role === 'support');
-  const anchorPlayer = characters.find(c => c.role === 'anchor');
-  
-  if (gameState.round_phase === 'mid_round' && entryPlayer) {
-    return `${entryPlayer.agent || 'Entry fragger'} must clear close angles, then jiggle-peek deep site corner. ${supportPlayer?.agent || 'Support'} provides flash assistance.`;
-  }
-  
-  if (gameState.round_phase === 'post_plant' && anchorPlayer) {
-    return `${anchorPlayer.agent || 'Anchor'} holds passive off-angle, listening for footsteps, likely to fall back to default plant spot.`;
-  }
-  
-  if (gameState.round_phase === 'retake') {
-    return `Team executing coordinated retake. Players rotating to site with utility coordination.`;
-  }
-  
-  return `Standard tactical execution. Players coordinating based on game state.`;
 }
 
 /**
@@ -266,138 +220,51 @@ export function generateMotionPrompt(
   config: TacticalPromptConfig = {}
 ): MotionPrompt {
   const character = sceneDescriptor.characters.find(c => c.id === characterId || c.player_id === characterId);
-  if (!character) {
-    throw new Error(`Character ${characterId} not found in scene descriptor`);
+  if (!character) throw new Error(`Character ${characterId} not found`);
+  
+  const motionStyle = CHARACTER_MOTION_STYLES[character.agent || ''] || 'professional and tactical';
+  const gameType = (character.grid_data_snapshot?.game as string) || 'valorant';
+  
+  // Select vocabulary based on role and game
+  let vocabKey = '';
+  if (gameType === 'lol') {
+    if (character.role === 'MID') vocabKey = 'mid_laner_kite';
+    else if (character.role === 'JG') vocabKey = 'jungler_gank';
+    else if (character.role === 'ADC') vocabKey = 'adc_positioning';
+  } else {
+    if (character.role === 'entry_fragger' || character.role === 'entry') vocabKey = 'entry_fragger_peek';
+    else if (character.role === 'support') vocabKey = 'support_throw';
   }
   
-  const predictedAction = sceneDescriptor.predicted_actions?.find(a => a.player_id === character.player_id);
-  const motionStyle = AGENT_MOTION_STYLES[character.agent || ''] || 'professional and tactical';
-  const vocabKey = `${character.role}_${predictedAction?.action_type || 'default'}` as keyof typeof MOTION_VOCABULARY;
-  const vocabulary = MOTION_VOCABULARY[vocabKey] || MOTION_VOCABULARY.entry_fragger_peek;
+  const vocab = vocabKey ? MOTION_VOCABULARY[vocabKey] : null;
+  const verbs = vocab ? vocab.verbs.join(', ') : 'reposition';
+  const modifiers = vocab ? vocab.modifiers.join(', ') : 'tactically';
   
-  // Build prompt text
-  let promptParts: string[] = [];
-  
-  // Base character description
-  promptParts.push(`A professional esports player${character.agent ? ` (${character.agent})` : ''}, moving in a ${motionStyle} manner.`);
-  
-  // Emotional context
-  if (config.include_emotional_context !== false) {
-    const emotionDesc = getEmotionDescription(character.emotional_context);
-    promptParts.push(`They appear ${emotionDesc}.`);
-  }
-  
-  // Physical context
-  if (config.include_physical_context !== false) {
-    const stanceDesc = getStanceDescription(character.current_stance, character.physical_context);
-    promptParts.push(`They are currently ${stanceDesc}.`);
-  }
-  
-  // Action description
-  if (predictedAction) {
-    const actionVerb = vocabulary.verbs[0] || 'move';
-    const modifier = vocabulary.modifiers[0] || 'with precision';
-    promptParts.push(`The player ${actionVerb}s ${predictedAction.description} ${modifier}, ${predictedAction.motion_style || 'with tactical precision'}.`);
-  } else if (sceneDescriptor.tactical_directive) {
-    promptParts.push(`The player ${sceneDescriptor.tactical_directive.toLowerCase()}.`);
-  }
-  
-  const promptText = promptParts.join(' ');
+  // Build tactical prompt for HY-Motion 1.0
+  const promptText = `
+    [ACTOR]: ${character.agent || 'Player'} (${character.role})
+    [GAME]: ${gameType}
+    [STYLE]: ${motionStyle}
+    [EMOTION]: ${character.emotional_context}
+    [ACTION]: ${verbs} ${modifiers}
+    [DIRECTIVE]: ${sceneDescriptor.tactical_directive}
+  `.trim();
   
   return {
     prompt_text: promptText,
     config: {
-      duration: predictedAction?.action_type === 'hold_angle' ? 10 : 5,
-      action_type: predictedAction?.action_type || 'peek',
+      duration: 5.0,
+      fps: 30,
+      action_type: vocabKey || 'reposition',
       player_role: character.role,
       agent: character.agent,
     },
-    scene_descriptor: sceneDescriptor,
     metadata: {
       generated_at: new Date().toISOString(),
       source: 'grid_data',
-      confidence_score: predictedAction?.confidence,
-    },
+      confidence_score: 0.85,
+      game_context: gameType,
+      tactical_layer: 'advanced_scouting'
+    }
   };
 }
-
-/**
- * Helper: Get Emotion Description
- */
-function getEmotionDescription(emotion: EmotionalState): string {
-  const descriptions: Record<EmotionalState, string> = {
-    aggressive_confident: 'aggressive and confident',
-    cautious_anticipatory: 'cautious and anticipatory',
-    focused_pressured: 'focused but pressured',
-    calm_collected: 'calm and collected',
-    frustrated: 'frustrated',
-    desperate: 'desperate',
-    dominant: 'dominant and in control',
-  };
-  return descriptions[emotion] || 'focused';
-}
-
-/**
- * Helper: Get Stance Description
- */
-function getStanceDescription(
-  stance?: CharacterDescriptor['current_stance'],
-  physical?: PhysicalContext
-): string {
-  if (stance === 'crouched') return 'crouched and stationary';
-  if (stance === 'moving') return 'moving with controlled steps';
-  if (physical?.movement_state === 'running') return 'running with urgency';
-  return 'standing in a tactical stance';
-}
-
-/**
- * Generate Prompt for Prosthetic Coach AI (Opponent Ghost)
- */
-export function generateOpponentGhostPrompt(
-  playerData: Partial<PlayerRoundStat>,
-  roundData: RoundData,
-  gameState: GameStateContext,
-  gridSnapshot: Record<string, unknown>
-): MotionPrompt {
-  const predictedAction = predictNextAction(playerData, roundData, gameState, gridSnapshot);
-  const agent = (gridSnapshot.agent as string) || 'Jett';
-  const motionStyle = AGENT_MOTION_STYLES[agent] || 'professional and tactical';
-  const emotionalState = inferEmotionalState(playerData, roundData, gameState);
-  const physicalContext = buildPhysicalContext(playerData, gridSnapshot);
-  
-  const vocabKey = predictedAction 
-    ? `${gridSnapshot.role || 'entry'}_${predictedAction.action_type}` as keyof typeof MOTION_VOCABULARY
-    : 'entry_fragger_peek';
-  const vocabulary = MOTION_VOCABULARY[vocabKey] || MOTION_VOCABULARY.entry_fragger_peek;
-  
-  const actionVerb = vocabulary.verbs[0] || 'move';
-  const modifier = vocabulary.modifiers[0] || 'with precision';
-  
-  const stance = gridSnapshot.is_crouching ? 'crouched' : gridSnapshot.is_moving ? 'moving' : 'standing';
-  
-  let promptText = `A professional esports player (${agent}), moving in a ${motionStyle} manner. `;
-  promptText += `They appear ${getEmotionDescription(emotionalState)}. `;
-  promptText += `They are currently ${getStanceDescription(stance, physicalContext)}. `;
-  
-  if (predictedAction) {
-    promptText += `The player ${actionVerb}s ${predictedAction.description} ${modifier} with ${predictedAction.urgency} urgency.`;
-  } else {
-    promptText += `The player maintains tactical positioning.`;
-  }
-  
-  return {
-    prompt_text: promptText,
-    config: {
-      duration: predictedAction?.action_type === 'hold_angle' ? 10 : 5,
-      action_type: predictedAction?.action_type || 'peek',
-      player_role: (gridSnapshot.role as string) || 'entry',
-      agent,
-    },
-    metadata: {
-      generated_at: new Date().toISOString(),
-      source: 'prediction',
-      confidence_score: predictedAction?.confidence,
-    },
-  };
-}
-
