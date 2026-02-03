@@ -2,18 +2,18 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
-import { fetchValorantMatches as fetchMockValorantMatches } from '@/services/mockApi';
+import { api } from '@/services/api';
 
-interface ValorantMatch {
+interface LolMatch {
   id: string;
-  tournament: string | null;
-  stage: string | null;
-  start_ts: string | null;
-  status: string | null;
+  title?: string | null;
+  region?: string | null;
+  patch?: string | null;
+  match_ts?: string | null;
 }
 
-export default function ValorantMatches() {
-  const [matches, setMatches] = useState<ValorantMatch[]>([]);
+export default function LolMatches() {
+  const [matches, setMatches] = useState<LolMatch[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,9 +21,9 @@ export default function ValorantMatches() {
     async function fetchMatches() {
       try {
         const { data, error: fetchError } = await supabase
-          .from('val_matches')
-          .select('id, tournament, stage, start_ts, status')
-          .order('start_ts', { ascending: false })
+          .from('lol_matches' as any)
+          .select('id, region, patch, match_ts')
+          .order('match_ts', { ascending: false })
           .limit(20);
 
         if (fetchError) throw fetchError;
@@ -31,40 +31,36 @@ export default function ValorantMatches() {
         if (data && data.length > 0) {
           setMatches(data);
         } else {
-          // Fallback to mock API if no data
-          const mock = await fetchMockValorantMatches().catch(() => [] as any[]);
-          if (mock && mock.length > 0) {
-            const mapped = mock.map((m: any) => ({
-              id: m.id,
-              tournament: m.title ?? 'Mock Tournament',
-              stage: m.map ?? 'Mock',
-              start_ts: m.startedAt ? new Date(m.startedAt).toISOString() : null,
-              status: 'mock'
-            }));
-            setMatches(mapped);
-          } else {
-            setMatches([]);
-          }
-        }
-      } catch (e: any) {
-        // On error, try mock fallback
-        try {
-          const mock = await fetchMockValorantMatches();
+          // Fallback to mock API service
+          const mock = await api.fetchLoLMatches();
           const mapped = mock.map((m: any) => ({
             id: m.id,
-            tournament: m.title ?? 'Mock Tournament',
-            stage: m.map ?? 'Mock',
-            start_ts: m.startedAt ? new Date(m.startedAt).toISOString() : null,
-            status: 'mock'
+            title: m.title ?? 'Mock LoL Match',
+            region: (m.region as string) ?? 'mock',
+            patch: (m.patch as string) ?? null,
+            match_ts: m.startTime ? new Date(m.startTime).toISOString() : null,
+          }));
+          setMatches(mapped);
+        }
+      } catch (e: any) {
+        try {
+          const mock = await api.fetchLoLMatches();
+          const mapped = mock.map((m: any) => ({
+            id: m.id,
+            title: m.title ?? 'Mock LoL Match',
+            region: (m.region as string) ?? 'mock',
+            patch: (m.patch as string) ?? null,
+            match_ts: m.startTime ? new Date(m.startTime).toISOString() : null,
           }));
           setMatches(mapped);
         } catch (mockErr: any) {
-          setError(e?.message || 'Failed to load Valorant matches');
+          setError(e?.message || 'Failed to load LoL matches');
         }
       } finally {
         setLoading(false);
       }
     }
+
     fetchMatches();
   }, []);
 
@@ -86,28 +82,28 @@ export default function ValorantMatches() {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Valorant Matches</h1>
-      
+      <h1 className="text-2xl font-bold">League of Legends Matches</h1>
+
       {matches.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center">
-            <p className="text-muted-foreground">No Valorant matches found in database</p>
+            <p className="text-muted-foreground">No LoL matches found</p>
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-2">
           {matches.map((m) => (
             <Card key={m.id} className="hover:bg-accent/50 transition-colors">
-              <Link to={`/match/valorant/${m.id}`}>
+              <Link to={`/match/lol/${m.id}`}>
                 <CardContent className="py-4">
                   <div className="flex justify-between items-center">
                     <div>
-                      <p className="font-medium">{m.tournament || 'Unknown Tournament'}</p>
+                      <p className="font-medium">{m.title || `${m.region || 'Region'} • Patch ${m.patch || 'N/A'}`}</p>
                       <p className="text-sm text-muted-foreground">
-                        {m.stage || 'Match'} • {m.start_ts ? new Date(m.start_ts).toLocaleString() : 'No date'}
+                        {m.match_ts ? new Date(m.match_ts).toLocaleString() : 'No date'}
                       </p>
                     </div>
-                    <span className="text-sm text-muted-foreground capitalize">{m.status || 'unknown'}</span>
+                    <span className="text-sm text-muted-foreground capitalize">{m.region || 'mock'}</span>
                   </div>
                 </CardContent>
               </Link>

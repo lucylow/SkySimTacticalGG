@@ -20,6 +20,8 @@ import { HumanReview } from "./pages/HumanReview";
 import { GridDashboard } from "./pages/GridDashboard";
 import { Predictions } from "./pages/Predictions";
 import { CoachingInsights } from "./pages/CoachingInsights";
+import ValorantMatches from "./pages/ValorantMatches";
+import LolMatches from "./pages/LolMatches";
 
 import ResponsiveLayout from './components/ResponsiveLayout';
 import LoadingOverlay from './components/LoadingOverlay';
@@ -66,6 +68,8 @@ const App = () => (
           <Route path="/app/grid" element={<MainLayout><GridDashboard /></MainLayout>} />
           <Route path="/app/predictions" element={<MainLayout><Predictions /></MainLayout>} />
           <Route path="/app/coaching-insights" element={<MainLayout><CoachingInsights /></MainLayout>} />
+          <Route path="/app/valorant" element={<MainLayout><ValorantMatches /></MainLayout>} />
+          <Route path="/app/lol" element={<MainLayout><LolMatches /></MainLayout>} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
