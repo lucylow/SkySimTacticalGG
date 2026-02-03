@@ -10,10 +10,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Helper for async routes
+const asyncHandler = fn => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+
 /* ===== Matches ===== */
 app.get("/api/lol/match", (req,res)=>{
-  const match = generateLoLMatch();
-  res.json(match);
+  try {
+    const match = generateLoLMatch();
+    res.json(match);
+  } catch (error) {
+    console.error("Error generating LoL match:", error);
+    res.status(500).json({ error: "Failed to generate LoL match" });
+  }
 });
 
 app.get("/api/lol/matches", (req,res)=>{
@@ -35,6 +45,9 @@ app.get("/api/valorant/matches", (req,res)=>{
 });
 
 app.get("/api/valorant/match/:id", (req,res)=>{
+  if (!req.params.id) {
+    return res.status(400).json({ error: "Match ID is required" });
+  }
   res.json({
     id: req.params.id,
     title: "Sample Valorant Match",
@@ -46,7 +59,14 @@ app.get("/api/valorant/match/:id", (req,res)=>{
 
 /* ===== Frames (SSE-like) ===== */
 app.get("/api/lol/frames", (req,res)=>{
-  const match = generateLoLMatch();
+  let match;
+  try {
+    match = generateLoLMatch();
+  } catch (err) {
+    console.error("Error starting frames simulation:", err);
+    return res.status(500).end();
+  }
+  
   const frames = simulateFrames(match);
 
   res.writeHead(200,{
@@ -57,20 +77,42 @@ app.get("/api/lol/frames", (req,res)=>{
 
   let i=0;
   const iv = setInterval(()=>{
-    if(i>=frames.length){clearInterval(iv);res.end();return;}
-    res.write(`data:${JSON.stringify(frames[i++])}\n\n`);
+    try {
+      if(i>=frames.length){
+        clearInterval(iv);
+        res.end();
+        return;
+      }
+      res.write(`data:${JSON.stringify(frames[i++])}\n\n`);
+    } catch (err) {
+      console.error("Error sending frame:", err);
+      clearInterval(iv);
+      res.end();
+    }
   },100);
+
+  req.on('close', () => {
+    clearInterval(iv);
+  });
 });
 
 /* ===== Dataset ===== */
 app.get("/api/lol/dataset", (req,res)=>{
-  const match = generateLoLMatch();
-  res.json(computeFeatures(match));
+  try {
+    const match = generateLoLMatch();
+    res.json(computeFeatures(match));
+  } catch (error) {
+    console.error("Error generating LoL dataset:", error);
+    res.status(500).json({ error: "Failed to generate LoL dataset" });
+  }
 });
 
 /* ===== GRID LoL Strategy Translation Simulator ===== */
-app.post('/api/grid-strategy/:matchId', (req, res) => {
-  const matchId = req.params.matchId || 'grid_lol_sim';
+app.post('/api/grid-strategy/:matchId', asyncHandler(async (req, res) => {
+  const matchId = req.params.matchId;
+  if (!matchId) {
+    return res.status(400).json({ error: "Match ID is required" });
+  }
 
   // Sample GRID data (Layers 1-3)
   const GRID_Sample_DATA = {
@@ -160,6 +202,15 @@ app.post('/api/grid-strategy/:matchId', (req, res) => {
     build: strategy.build,
     coachCall: strategy.comms.primary,
     confidence: strategy.winCondition.confidence
+  });
+}));
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  res.status(500).json({
+    error: "Internal Server Error",
+    message: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
 });
 
