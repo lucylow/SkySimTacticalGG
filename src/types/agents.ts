@@ -24,7 +24,28 @@ export type AgentRole =
   | 'macro_strategy_analyst'
   | 'opponent_scouting'
   | 'predictive_playbook'
-  | 'prosthetic_coach';
+  | 'prosthetic_coach'
+  | 'lol_opponent_analysis'
+  | 'lol_queue_analyst'
+  | 'worst_case_simulator'
+  | 'mechanical_skill_analyst';
+
+/**
+ * Mechanical Skill Tiers and Profiles
+ */
+export type MechanicalSkillTier = 'tier_1' | 'tier_2' | 'tier_3';
+
+export interface MechanicalProfile {
+  game: 'valorant' | 'lol';
+  tier: MechanicalSkillTier;
+  aim_consistency?: number; // 0-1 (Valorant)
+  movement_quality?: number; // 0-1 (Valorant)
+  input_speed?: number; // 0-1 (LoL)
+  camera_control?: number; // 0-1 (LoL)
+  input_latency_tolerance?: number; // ms
+  champion_difficulty_coefficient?: Record<string, number>;
+  stress_decay?: number; // how much performance drops under pressure
+}
 
 /**
  * Input structure for agents
@@ -37,6 +58,7 @@ export interface AgentInput {
   opponent_data?: OpponentDataInput;
   previous_analysis?: any;
   live_feed?: boolean;
+  mechanical_profile?: MechanicalProfile;
 }
 
 export interface RoundDataInput {

@@ -1,0 +1,19 @@
+{
+  "opponent_team": "Zed",
+  "match_id": "lol-match-001",
+  "map": "Summoner's Rift",
+  "team_composition": ["Ahri", "Lee Sin", "Malphite", "Kai'Sa", "Leona"],
+  "opponent_data": {
+    "team_name": "Zed",
+    "historical_matches": [],
+    "preferred_compositions": ["Zed", "Jarvan IV", "Ornn", "Jinx", "Lulu"],
+    "map_tendencies": [],
+    "clutch_performance": {
+      "one_v_one": 0.8,
+      "one_v_two": 0.4,
+      "one_v_three": 0.2,
+      "one_v_four": 0.1,
+      "one_v_five": 0.05
+    }
+  }
+}

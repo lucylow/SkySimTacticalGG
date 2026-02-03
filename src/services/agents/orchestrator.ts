@@ -14,6 +14,10 @@ import { MacroStrategyAnalystAgent } from './macroStrategyAnalyst';
 import { OpponentScoutingAgent } from './opponentScouting';
 import { PredictivePlaybookAgent } from './predictivePlaybook';
 import { ProstheticCoachAgent } from './prostheticCoach';
+import { LoLOpponentAnalysisAgent } from './lolOpponentAnalysis';
+import { LoLGatherStrategyAgent } from './lolGatherStrategy';
+import { MechanicalSkillAnalystAgent } from './mechanicalSkillAnalyst';
+import { LoLQueueAnalystAgent } from './lolQueueAnalyst';
 
 /**
  * Agent registry - maps roles to agent instances
@@ -24,6 +28,10 @@ const agentRegistry = new Map<AgentRole, any>([
   ['opponent_scouting', new OpponentScoutingAgent()],
   ['predictive_playbook', new PredictivePlaybookAgent()],
   ['prosthetic_coach', new ProstheticCoachAgent()],
+  ['lol_opponent_analysis' as any, new LoLOpponentAnalysisAgent()],
+  ['lol_queue_analyst' as any, new LoLQueueAnalystAgent()],
+  ['lol_strategy' as any, new LoLGatherStrategyAgent()],
+  ['mechanical_skill_analyst' as any, new MechanicalSkillAnalystAgent()],
 ]);
 
 /**

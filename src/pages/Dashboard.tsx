@@ -20,6 +20,7 @@ import { InteractivePlaybook } from '@/components/dashboard/InteractivePlaybook'
 import { EsportsDataDisplay } from '@/components/dashboard/EsportsDataDisplay';
 import { EsportsPerformanceChart } from '@/components/dashboard/EsportsPerformanceChart';
 import { TacticalScoutingReport } from '@/components/dashboard/TacticalScoutingReport';
+import { UtilityDashboard } from '@/components/dashboard/UtilityDashboard';
 import { DashboardSkeleton } from '@/components/ui/shimmer-skeleton';
 import { useDashboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { api } from '@/services/api';
@@ -204,13 +205,18 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      <Tabs defaultValue="insights" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+      <Tabs defaultValue="utility" className="w-full">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="utility">Utility Analytics</TabsTrigger>
           <TabsTrigger value="insights">AI Insights</TabsTrigger>
           <TabsTrigger value="tactical">Tactical Overlay</TabsTrigger>
           <TabsTrigger value="simulator">Strategy Simulator</TabsTrigger>
           <TabsTrigger value="playbook">Playbook</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="utility" className="mt-4">
+          <UtilityDashboard />
+        </TabsContent>
 
         <TabsContent value="insights" className="mt-4">
           <Card className="glass-card">

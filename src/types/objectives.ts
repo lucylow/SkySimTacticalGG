@@ -1,8 +1,10 @@
 export type ObjectiveType = 'DRAGON' | 'BARON' | 'HERALD' | 'TOWER';
 export type RecommendationType = 'SECURE' | 'CONTEST' | 'AVOID' | 'TRADE';
+export type QueueType = 'SOLO' | 'FLEX';
 
 export interface ObjectiveState {
   objective: ObjectiveType;
+  queueType?: QueueType;
   timeToSpawn: number; // seconds
   matchTime: number; // total game time
   teamGoldDiff: number;

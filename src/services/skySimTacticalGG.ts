@@ -8,6 +8,8 @@ import { patternRecognition, type PatternAnalysisResult } from './patternRecogni
 import { predictiveAnalytics, type PredictiveAnalysisResult } from './predictiveAnalytics';
 import { insightEngine, type InsightGenerationResult } from './insightEngine';
 import type { Insight } from '@/types';
+import { TacticalUtilityEngine } from './TacticalUtilityEngine';
+import type { UtilityDecision, TacticalUtilityState } from '@/types/utility';
 
 export interface SkySimTacticalGGAnalysis {
   ingestion_result: GridIngestionResult;
@@ -16,6 +18,7 @@ export interface SkySimTacticalGGAnalysis {
   predictive_analysis: PredictiveAnalysisResult;
   insights: InsightGenerationResult;
   summary: AnalysisSummary;
+  utility_recommendations?: UtilityDecision;
 }
 
 export interface AnalysisSummary {
@@ -27,6 +30,8 @@ export interface AnalysisSummary {
 }
 
 class SkySimTacticalGGService {
+  private utilityEngine = new TacticalUtilityEngine();
+
   async analyzeMatch(gridPackets: GridDataPacket[]): Promise<SkySimTacticalGGAnalysis> {
     const ingestionResult = gridIngestion.processGridData(gridPackets);
 
@@ -67,6 +72,7 @@ class SkySimTacticalGGService {
       predictive_analysis: predictiveAnalysis,
       insights,
       summary,
+      utility_recommendations: gridPackets.length > 0 ? this.getUtilityRecommendationsFromPackets(gridPackets) : undefined,
     };
   }
 
@@ -76,6 +82,7 @@ class SkySimTacticalGGService {
   ): Promise<{
     alerts: Insight[];
     recommendations: string[];
+    utility_recommendations?: UtilityDecision;
     tactical_overlay: TacticalOverlay;
   }> {
     const ingestionResult = gridIngestion.processGridData(recentPackets);
@@ -108,6 +115,10 @@ class SkySimTacticalGGService {
       recommendations.push('Focus on trade kills in next round');
     }
 
+    const utilityRecommendations = recentPackets.length > 0 
+      ? this.getUtilityRecommendationsFromPackets(recentPackets)
+      : undefined;
+
     const tacticalOverlay: TacticalOverlay = {
       current_phase: ingestionResult.round_summary.economy_state,
       team_coordination: 0.65,
@@ -118,8 +129,45 @@ class SkySimTacticalGGService {
     return {
       alerts,
       recommendations,
+      utility_recommendations: utilityRecommendations,
       tactical_overlay: tacticalOverlay,
     };
+  }
+
+  private getUtilityRecommendationsFromPackets(packets: GridDataPacket[]): UtilityDecision {
+    const latest = packets[packets.length - 1];
+    const isValorant = latest.game === 'VALORANT';
+    
+    let matchTime = 0;
+    let role = 'Unknown';
+    let economy = 0;
+
+    if (isValorant) {
+      const context = latest.match_context as any;
+      const player = latest.player as any;
+      const inv = latest.inventory as any;
+      matchTime = 100 - (context.round_time_remaining || 0); // Approx
+      role = player.role || 'Duelist'; // Default if not found
+      economy = inv?.credits || 0;
+    } else {
+      const context = latest.match_context as any;
+      const player = latest.player as any;
+      const inv = latest.inventory as any;
+      matchTime = (context.game_time || 0) / 60; // in minutes
+      role = player.role || 'Mid'; // Default
+      economy = inv?.gold || 0;
+    }
+
+    const state: TacticalUtilityState = {
+      game: isValorant ? 'VALORANT' : 'LOL',
+      matchTime,
+      phase: isValorant ? (latest.match_context as any).round_phase : 'mid-game',
+      role,
+      economy,
+      agent: isValorant ? (latest.player as any).agent : (latest.player as any).champion
+    };
+
+    return this.utilityEngine.getRecommendations(state);
   }
 
   private generateSummary(

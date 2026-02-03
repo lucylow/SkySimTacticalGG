@@ -40,5 +40,100 @@ app.get("/api/lol/dataset", (req,res)=>{
   res.json(computeFeatures(match));
 });
 
+/* ===== GRID LoL Strategy Translation Simulator ===== */
+app.post('/api/grid-strategy/:matchId', (req, res) => {
+  const matchId = req.params.matchId || 'grid_lol_sim';
+
+  // Mock GRID data (Layers 1-3)
+  const GRID_MOCK_DATA = {
+    layer1: {
+      myChamp: "Aatrox",
+      enemyChamp: "Renekton",
+      teamComp: "front2back",
+      enemyComp: "engage",
+      playerTendencies: {
+        Aatrox: { winrate: 0.67, aggression: 0.82 },
+        Renekton: { winrate: 0.59, aggression: 0.91 }
+      },
+      patchMeta: { earlyPressure: 0.72, scalingMeta: false }
+    },
+    layer2: {
+      matchTime: 1482,
+      lanePriority: { top: 0.41, mid: -0.23, bot: 0.67 },
+      junglePathing: ["bot_gank", "drake_setup"],
+      visionScore: 18,
+      objectiveTimers: { baron: 138, drake: 312, herald: "taken" },
+      goldDiff: 1240,
+      itemSpikes: [
+        { player: "aatrox", item: "divine_sunderer", complete: true },
+        { player: "renekton", item: "goredrinker", complete: true }
+      ]
+    },
+    layer3: {
+      lastFightResult: "WIN",
+      objectivesGained: ["herald", "tower_top1"],
+      deaths: [{ player: "aatrox", timer: 4.2 }],
+      adaptationSignals: ["group_mid", "avoid_river"]
+    }
+  };
+
+  // Engines (inline lightweight logic to avoid TS imports)
+  const detectWinCondition = (state) => {
+    const primary = state.layer1.teamComp;
+    let confidence = 0.75;
+    if (state.layer2.goldDiff > 2000) confidence += 0.1;
+    if (state.layer1.teamComp === 'front2back' && state.layer1.enemyComp === 'engage') confidence += 0.02;
+    return { primary, confidence: Math.min(confidence, 0.99) };
+  };
+
+  const recommendRunes = (state) => {
+    if (state.layer1.myChamp === 'Aatrox' && state.layer1.enemyChamp === 'Renekton') {
+      return { primary: 'conqueror (sustained duels vs Renekton)', secondary: 'resolve (survive ganks)', shards: 'AS/Adaptive/Health' };
+    }
+    return { primary: 'conqueror', secondary: 'resolve', shards: 'Adaptive/Adaptive/Health' };
+  };
+
+  const recommendBuild = (state) => {
+    if (state.layer1.myChamp === 'Aatrox' && state.layer1.enemyChamp === 'Renekton') {
+      return { mythic: 'Divine Sunderer (vs tanky Renekton)', core1: 'Steraks', core2: 'Deadmans (teamfight setup)', situational: 'Force of Nature (enemy AP threats)' };
+    }
+    return { mythic: 'Goredrinker', core1: 'Black Cleaver', core2: 'Steraks Gage', situational: 'Guardian Angel' };
+  };
+
+  const generateStrategy = (state) => {
+    const winCondition = detectWinCondition(state);
+    const runes = recommendRunes(state);
+    const build = recommendBuild(state);
+
+    let currentPriority = 'OBJECTIVE_CONTROL';
+    let mapPlan = ['Vision', 'Group', 'Objective'];
+    let commsPrimary = 'Play for objectives';
+    const signals = [];
+
+    if (typeof state.layer2.objectiveTimers.baron === 'number' && state.layer2.objectiveTimers.baron < 180) {
+      currentPriority = 'BARON_SETUP';
+      mapPlan = ['Vision baron pit', 'Group mid', 'Baron secure', 'Bot T2'];
+      commsPrimary = 'Baron vision';
+      signals.push('Mid group', 'Peel carries');
+    }
+    if (state.layer3.lastFightResult === 'WIN') signals.push('PRESS_ADVANTAGE');
+    if (state.layer3.objectivesGained.includes('herald')) signals.push('TOP_PRESSURE');
+    if (state.layer2.visionScore < 20) signals.push('VISION_FIRST');
+
+    return { winCondition, runes, build, currentPriority, mapPlan, comms: { primary: commsPrimary, signals } };
+  };
+
+  const strategy = generateStrategy(GRID_MOCK_DATA);
+
+  res.send({
+    winCondition: strategy.winCondition,
+    immediateAction: strategy.currentPriority,
+    runes: strategy.runes,
+    build: strategy.build,
+    coachCall: strategy.comms.primary,
+    confidence: strategy.winCondition.confidence
+  });
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT,()=>console.log(`Mock server on :${PORT}`));

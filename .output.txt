@@ -1,0 +1,439 @@
+
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        2026-02-03   3:36 AM                agents
+d-----        2026-02-03   3:36 AM                components
+d-----        2026-02-03   3:36 AM                context
+d-----        2026-02-03   3:36 AM                data
+d-----        2026-02-03   3:36 AM                grid
+d-----        2026-02-03   3:36 AM                hooks
+d-----        2026-02-03   3:36 AM                integrations
+d-----        2026-02-03   3:36 AM                lib
+d-----        2026-02-03   3:36 AM                mocks
+d-----        2026-02-03   3:36 AM                pages
+d-----        2026-02-03   3:36 AM                services
+d-----        2026-02-03   3:36 AM                store
+d-----        2026-02-03   3:36 AM                test
+d-----        2026-02-03   3:36 AM                theme
+d-----        2026-02-03   3:36 AM                types
+d-----        2026-02-03   3:36 AM                workflows
+-a----        2026-02-03   3:36 AM            648 App.css
+-a----        2026-02-03   3:36 AM           4945 App.tsx
+-a----        2026-02-03   3:36 AM          12841 index.css
+-a----        2026-02-03   3:36 AM            589 main.tsx
+-a----        2026-02-03   3:36 AM             39 vite-env.d.ts
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           2134 BaseAgent.ts
+-a----        2026-02-03   3:36 AM           4065 communication.ts
+-a----        2026-02-03   3:36 AM           2596 config.ts
+-a----        2026-02-03   3:36 AM           3921 DataFetcherAgent.ts
+-a----        2026-02-03   3:36 AM           7134 FormatterAgent.ts
+-a----        2026-02-03   3:36 AM            413 index.ts
+-a----        2026-02-03   3:36 AM           9707 MicroPatternDetectorAgent.ts
+-a----        2026-02-03   3:36 AM           5378 monitoring.ts
+-a----        2026-02-03   3:36 AM          13285 OrchestratorAgent.ts
+-a----        2026-02-03   3:36 AM          10917 SimulationAgent.ts
+-a----        2026-02-03   3:36 AM           9407 StrategicAnalyzerAgent.ts
+-a----        2026-02-03   3:36 AM           3493 types.ts
+-a----        2026-02-03   3:36 AM           6251 ValidatorAgent.ts
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        2026-02-03   3:36 AM                agent
+d-----        2026-02-03   3:36 AM                agents
+d-----        2026-02-03   3:36 AM                dashboard
+d-----        2026-02-03   3:36 AM                grid
+d-----        2026-02-03   3:36 AM                insights
+d-----        2026-02-03   3:36 AM                landing
+d-----        2026-02-03   3:36 AM                layout
+d-----        2026-02-03   3:36 AM                motion
+d-----        2026-02-03   3:36 AM                predictions
+d-----        2026-02-03   3:36 AM                reviews
+d-----        2026-02-03   3:36 AM                ui
+-a----        2026-02-03   3:36 AM           1154 EnhancedErrorBoundary.tsx
+-a----        2026-02-03   3:36 AM          10642 HumanReviewPanel.tsx
+-a----        2026-02-03   3:36 AM            254 LoadingOverlay.tsx
+-a----        2026-02-03   3:36 AM            779 NavLink.tsx
+-a----        2026-02-03   3:36 AM            406 NotificationSystem.tsx
+-a----        2026-02-03   3:36 AM           2352 ObjectiveDecisionCard.tsx
+-a----        2026-02-03   3:36 AM           1153 ReplayPlayer.tsx
+-a----        2026-02-03   3:36 AM           2010 ResponsiveLayout.tsx
+-a----        2026-02-03   3:36 AM            635 Timeline.tsx
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\agent
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           4256 AgentConsole.tsx
+-a----        2026-02-03   3:36 AM           2281 EventsLog.tsx
+-a----        2026-02-03   3:36 AM           2765 MemoryPanel.tsx
+-a----        2026-02-03   3:36 AM          13363 MultiAgentDashboard.tsx
+-a----        2026-02-03   3:36 AM           2814 PromptEditor.tsx
+-a----        2026-02-03   3:36 AM           1783 Timeline.tsx
+-a----        2026-02-03   3:36 AM           1542 Toolbox.tsx
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\agents
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           9697 AgentDashboard.tsx
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\compon
+    ents\dashboard
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           6821 EsportsDataDisplay.tsx
+-a----        2026-02-03   3:36 AM           2570 EsportsPerformanceChart.tsx
+-a----        2026-02-03   3:36 AM           3243 InsightCard.tsx
+-a----        2026-02-03   3:36 AM          16792 InteractivePlaybook.tsx
+-a----        2026-02-03   3:36 AM           2217 PerformanceChart.tsx
+-a----        2026-02-03   3:36 AM           4110 PlayerCard.tsx
+-a----        2026-02-03   3:36 AM           2471 StatsCard.tsx
+-a----        2026-02-03   3:36 AM          12128 StrategySimulator.tsx
+-a----        2026-02-03   3:36 AM          11919 TacticalOverlay.tsx
+-a----        2026-02-03   3:36 AM           4669 TacticalScoutingReport.tsx
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\grid
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           3580 AgentInsights.tsx
+-a----        2026-02-03   3:36 AM           3420 EventTimeline.tsx
+-a----        2026-02-03   3:36 AM           3265 MatchStateDisplay.tsx
+-a----        2026-02-03   3:36 AM           4283 ReviewQueue.tsx
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\compon
+    ents\insights
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           7513 PersonalizedInsightCard.tsx
+-a----        2026-02-03   3:36 AM           9582 PlayerInsightCard.tsx
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\compon
+    ents\landing
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           4495 CTASection.tsx
+-a----        2026-02-03   3:36 AM           8916 DemoSection.tsx
+-a----        2026-02-03   3:36 AM           4812 FeaturesSection.tsx
+-a----        2026-02-03   3:36 AM           3520 Footer.tsx
+-a----        2026-02-03   3:36 AM          12391 HeroSection.tsx
+-a----        2026-02-03   3:36 AM           9173 Navbar.tsx
+-a----        2026-02-03   3:36 AM           2957 TechStackSection.tsx
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\layout
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM          14194 MainLayout.tsx
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\motion
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM          11196 MotionPanel.tsx
+-a----        2026-02-03   3:36 AM           7545 MotionViewer.tsx
+-a----        2026-02-03   3:36 AM          12327 TacticalMotionViewer.tsx
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\compon
+    ents\predictions
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           3236 Leaderboard.tsx
+-a----        2026-02-03   3:36 AM           5193 MarketList.tsx
+-a----        2026-02-03   3:36 AM           4648 PredictionForm.tsx
+-a----        2026-02-03   3:36 AM           4000 PredictionHistory.tsx
+-a----        2026-02-03   3:36 AM           3259 StatsCard.tsx
+-a----        2026-02-03   3:36 AM           5110 WalletCard.tsx
+-a----        2026-02-03   3:36 AM          29134 WhatIfQuery.tsx
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\compon
+    ents\reviews
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM          15116 MacroReviewAgenda.tsx
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           2028 accordion.tsx
+-a----        2026-02-03   3:36 AM           4417 alert-dialog.tsx
+-a----        2026-02-03   3:36 AM           1589 alert.tsx
+-a----        2026-02-03   3:36 AM            148 aspect-ratio.tsx
+-a----        2026-02-03   3:36 AM           1403 avatar.tsx
+-a----        2026-02-03   3:36 AM           1118 badge.tsx
+-a----        2026-02-03   3:36 AM           2777 breadcrumb.tsx
+-a----        2026-02-03   3:36 AM           1887 button.tsx
+-a----        2026-02-03   3:36 AM           2589 calendar.tsx
+-a----        2026-02-03   3:36 AM           1828 card.tsx
+-a----        2026-02-03   3:36 AM           6473 carousel.tsx
+-a----        2026-02-03   3:36 AM          10364 chart.tsx
+-a----        2026-02-03   3:36 AM           1079 checkbox.tsx
+-a----        2026-02-03   3:36 AM            329 collapsible.tsx
+-a----        2026-02-03   3:36 AM           4953 command.tsx
+-a----        2026-02-03   3:36 AM           7369 context-menu.tsx
+-a----        2026-02-03   3:36 AM           3856 dialog.tsx
+-a----        2026-02-03   3:36 AM           3028 drawer.tsx
+-a----        2026-02-03   3:36 AM           7439 dropdown-menu.tsx
+-a----        2026-02-03   3:36 AM           4143 form.tsx
+-a----        2026-02-03   3:36 AM           1220 hover-card.tsx
+-a----        2026-02-03   3:36 AM           2305 input-otp.tsx
+-a----        2026-02-03   3:36 AM            821 input.tsx
+-a----        2026-02-03   3:36 AM            713 label.tsx
+-a----        2026-02-03   3:36 AM           1520 lazy-image.tsx
+-a----        2026-02-03   3:36 AM           8070 menubar.tsx
+-a----        2026-02-03   3:36 AM           5150 navigation-menu.tsx
+-a----        2026-02-03   3:36 AM           8483 onboarding-tour.tsx
+-a----        2026-02-03   3:36 AM           2764 pagination.tsx
+-a----        2026-02-03   3:36 AM           1268 popover.tsx
+-a----        2026-02-03   3:36 AM            788 progress.tsx
+-a----        2026-02-03   3:36 AM           1483 radio-group.tsx
+-a----        2026-02-03   3:36 AM           1733 resizable.tsx
+-a----        2026-02-03   3:36 AM           1646 scroll-area.tsx
+-a----        2026-02-03   3:36 AM           5718 select.tsx
+-a----        2026-02-03   3:36 AM            718 separator.tsx
+-a----        2026-02-03   3:36 AM           4304 sheet.tsx
+-a----        2026-02-03   3:36 AM           5616 shimmer-skeleton.tsx
+-a----        2026-02-03   3:36 AM          23474 sidebar.tsx
+-a----        2026-02-03   3:36 AM            241 skeleton.tsx
+-a----        2026-02-03   3:36 AM           1088 slider.tsx
+-a----        2026-02-03   3:36 AM            904 sonner.tsx
+-a----        2026-02-03   3:36 AM           1174 switch.tsx
+-a----        2026-02-03   3:36 AM           2766 table.tsx
+-a----        2026-02-03   3:36 AM           1950 tabs.tsx
+-a----        2026-02-03   3:36 AM            772 textarea.tsx
+-a----        2026-02-03   3:36 AM           4909 toast.tsx
+-a----        2026-02-03   3:36 AM            754 toaster.tsx
+-a----        2026-02-03   3:36 AM           1763 toggle-group.tsx
+-a----        2026-02-03   3:36 AM           1453 toggle.tsx
+-a----        2026-02-03   3:36 AM           1183 tooltip.tsx
+-a----        2026-02-03   3:36 AM            921 undo-toast.tsx
+-a----        2026-02-03   3:36 AM             85 use-toast.ts
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\context
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           5405 AgentContext.tsx
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\data
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           7267 mockData.ts
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\grid
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        2026-02-03   3:36 AM                jobs
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\grid\jobs
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           2642 computePlayerMatchSummaries.t
+                                                  s
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\hooks
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM            595 use-mobile.tsx
+-a----        2026-02-03   3:36 AM           4121 use-toast.ts
+-a----        2026-02-03   3:36 AM           1273 useAgentSignals.ts
+-a----        2026-02-03   3:36 AM           1830 useAgentStream.ts
+-a----        2026-02-03   3:36 AM           1119 useGridEvents.ts
+-a----        2026-02-03   3:36 AM           2080 useInsightsSocket.ts
+-a----        2026-02-03   3:36 AM           3279 useKeyboardShortcuts.ts
+-a----        2026-02-03   3:36 AM            857 useMatchState.ts
+-a----        2026-02-03   3:36 AM           2445 useReplayStream.ts
+-a----        2026-02-03   3:36 AM           1071 useReviewQueue.ts
+-a----        2026-02-03   3:36 AM           5431 useWebSocket.ts
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\integrations
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        2026-02-03   3:36 AM                supabase
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\integr
+    ations\supabase
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           1146 client.ts
+-a----        2026-02-03   3:36 AM          32497 types.ts
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\lib
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        2026-02-03   3:36 AM                __tests__
+-a----        2026-02-03   3:36 AM           9192 apiClient.ts
+-a----        2026-02-03   3:36 AM           2132 config.ts
+-a----        2026-02-03   3:36 AM            175 utils.ts
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\lib\__tests__
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           1101 config.test.ts
+-a----        2026-02-03   3:36 AM            923 utils.test.ts
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\mocks
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           4329 analyticsFixtures.ts
+-a----        2026-02-03   3:36 AM          26131 backendMocks.ts
+-a----        2026-02-03   3:36 AM           2180 demoSessions.ts
+-a----        2026-02-03   3:36 AM           7392 generator.ts
+-a----        2026-02-03   3:36 AM           2023 index.ts
+-a----        2026-02-03   3:36 AM           2557 README.md
+-a----        2026-02-03   3:36 AM           4687 replaySessionPlayer.ts
+-a----        2026-02-03   3:36 AM           3695 samplePrompts.ts
+-a----        2026-02-03   3:36 AM           4431 sseReplayEvents.ts
+-a----        2026-02-03   3:36 AM           3951 toolResponses.ts
+-a----        2026-02-03   3:36 AM           3721 uiFixtures.ts
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        2026-02-03   3:36 AM                new
+-a----        2026-02-03   3:36 AM           3864 AIPlayground.tsx
+-a----        2026-02-03   3:36 AM          33557 CoachingInsights.tsx
+-a----        2026-02-03   3:36 AM           8960 Dashboard.tsx
+-a----        2026-02-03   3:36 AM           7668 GridDashboard.tsx
+-a----        2026-02-03   3:36 AM            948 HumanReview.tsx
+-a----        2026-02-03   3:36 AM            994 Index.tsx
+-a----        2026-02-03   3:36 AM          15987 Insights.tsx
+-a----        2026-02-03   3:36 AM           9369 LiveCoach.tsx
+-a----        2026-02-03   3:36 AM          22335 MacroReview.tsx
+-a----        2026-02-03   3:36 AM          13101 MatchAnalysis.tsx
+-a----        2026-02-03   3:36 AM          13153 MotionStudio.tsx
+-a----        2026-02-03   3:36 AM            751 NotFound.tsx
+-a----        2026-02-03   3:36 AM          30353 PlayerDevelopment.tsx
+-a----        2026-02-03   3:36 AM           5356 Predictions.tsx
+-a----        2026-02-03   3:36 AM          37658 SkySimTacticalGG.tsx
+-a----        2026-02-03   3:36 AM           1032 ValorantMatches.tsx
+-a----        2026-02-03   3:36 AM           1364 ValorantReplay.tsx
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\new
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           1711 AgentConsole.tsx
+-a----        2026-02-03   3:36 AM           1364 Dashboard.tsx
+-a----        2026-02-03   3:36 AM            888 MatchAnalysis.tsx
+-a----        2026-02-03   3:36 AM            660 PlayerDevelopment.tsx
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        2026-02-03   3:36 AM                agents
+d-----        2026-02-03   3:36 AM                grid
+d-----        2026-02-03   3:36 AM                opensource
+d-----        2026-02-03   3:36 AM                valorant
+-a----        2026-02-03   3:36 AM           9841 actionPredictor.ts
+-a----        2026-02-03   3:36 AM          12567 agendaGenerator.ts
+-a----        2026-02-03   3:36 AM           3205 agentApi.ts
+-a----        2026-02-03   3:36 AM           5320 api.ts
+-a----        2026-02-03   3:36 AM            814 api_new.ts
+-a----        2026-02-03   3:36 AM          29232 backendApi.ts
+-a----        2026-02-03   3:36 AM            521 counterStrategy.ts
+-a----        2026-02-03   3:36 AM           1227 decisionEngine.ts
+-a----        2026-02-03   3:36 AM           1634 esportsApi.ts
+-a----        2026-02-03   3:36 AM           6396 gameStateExtractor.ts
+-a----        2026-02-03   3:36 AM          22952 gridIngestion.ts
+-a----        2026-02-03   3:36 AM          11478 heuristicEngine.ts
+-a----        2026-02-03   3:36 AM          10952 insightEngine.ts
+-a----        2026-02-03   3:36 AM           3595 lolIngestion.ts
+-a----        2026-02-03   3:36 AM           3271 LolObjectiveEngine.ts
+-a----        2026-02-03   3:36 AM           5577 mockAgentStream.ts
+-a----        2026-02-03   3:36 AM           1368 mockApi.ts
+-a----        2026-02-03   3:36 AM          12787 patternRecognition.ts
+-a----        2026-02-03   3:36 AM          21908 personalizedInsightEngine.ts
+-a----        2026-02-03   3:36 AM           4018 playerScoring.ts
+-a----        2026-02-03   3:36 AM          14964 predictionAgent.ts
+-a----        2026-02-03   3:36 AM          18782 predictionEngine.ts
+-a----        2026-02-03   3:36 AM           2706 predictionsApi.ts
+-a----        2026-02-03   3:36 AM           7436 predictionValidator.ts
+-a----        2026-02-03   3:36 AM          15006 predictiveAnalytics.ts
+-a----        2026-02-03   3:36 AM           2941 rosterManagement.ts
+-a----        2026-02-03   3:36 AM           2255 scoutingReport.ts
+-a----        2026-02-03   3:36 AM           6894 skySimTacticalGG.ts
+-a----        2026-02-03   3:36 AM          12028 tacticalOverlayService.ts
+-a----        2026-02-03   3:36 AM           9814 tacticalPromptEngine.ts
+-a----        2026-02-03   3:36 AM           9988 unifiedApi.ts
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           4650 baseAgent.ts
+-a----        2026-02-03   3:36 AM            730 index.ts
+-a----        2026-02-03   3:36 AM          12408 macroStrategyAnalyst.ts
+-a----        2026-02-03   3:36 AM           9500 microMistakeDetector.ts
+-a----        2026-02-03   3:36 AM          11751 opponentScouting.ts
+-a----        2026-02-03   3:36 AM           9548 orchestrator.ts
+-a----        2026-02-03   3:36 AM          11392 predictivePlaybook.ts
+-a----        2026-02-03   3:36 AM          12390 prostheticCoach.ts
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----        2026-02-03   3:36 AM                strategy
+d-----        2026-02-03   3:36 AM                __tests__
+-a----        2026-02-03   3:36 AM          10952 agentService.ts
+-a----        2026-02-03   3:36 AM           1730 auditService.ts
+-a----        2026-02-03   3:36 AM           4995 eventBus.ts
+-a----        2026-02-03   3:36 AM          11068 eventNormalizer.ts
+-a----        2026-02-03   3:36 AM           4318 gridClient.ts
+-a----        2026-02-03   3:36 AM            825 index.ts
+-a----        2026-02-03   3:36 AM           8559 ingestionService.ts
+-a----        2026-02-03   3:36 AM           4629 lolObjectiveEngine.ts
+-a----        2026-02-03   3:36 AM          12934 matchState.ts
+-a----        2026-02-03   3:36 AM           1953 reviewService.ts
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\servic
+    es\grid\strategy
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           2064 gridLolProcessor.ts
+-a----        2026-02-03   3:36 AM            665 itemEngine.ts
+-a----        2026-02-03   3:36 AM            626 runeEngine.ts
+-a----        2026-02-03   3:36 AM           4172 simulation.ts
+-a----        2026-02-03   3:36 AM           1688 strategyEngine.ts
+-a----        2026-02-03   3:36 AM           1543 types.ts
+-a----        2026-02-03   3:36 AM            675 winConditionEngine.ts
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\servic
+    es\grid\__tests__
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           2721 auditService.test.ts
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\servic
+    es\opensource
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           8547 opensourceEsportsClient.ts
+-a----        2026-02-03   3:36 AM           3249 unifiedIngestionService.ts
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\valorant
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM          13111 retakeAnalyzer.ts
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\store
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           2037 useAppStore.ts
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\test
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM            307 setup.ts
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\theme
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM            675 enhancedEsportsTheme.ts
+    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           1061 agent.ts
+-a----        2026-02-03   3:36 AM           8624 agents.ts
+-a----        2026-02-03   3:36 AM            797 api.ts
+-a----        2026-02-03   3:36 AM          10618 backend.ts
+-a----        2026-02-03   3:36 AM           1728 esports.ts
+-a----        2026-02-03   3:36 AM          19978 grid.ts
+-a----        2026-02-03   3:36 AM           2591 index.ts
+-a----        2026-02-03   3:36 AM           3361 insights.ts
+-a----        2026-02-03   3:36 AM           1044 insightSystem.ts
+-a----        2026-02-03   3:36 AM           1545 mock.ts
+-a----        2026-02-03   3:36 AM            936 objectives.ts
+-a----        2026-02-03   3:36 AM           2692 predictions.ts
+-a----        2026-02-03   3:36 AM           1312 scouting.ts
+-a----        2026-02-03   3:36 AM            111 seedrandom.d.ts
+-a----        2026-02-03   3:36 AM           6103 tactical.ts
+    Directory:
+    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\workflows
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----        2026-02-03   3:36 AM           3418 HypotheticalPredictionsWorkfl
+                                                  ow.ts
+-a----        2026-02-03   3:36 AM            337 index.ts
+-a----        2026-02-03   3:36 AM           5040 MacroReviewWorkflow.ts
+-a----        2026-02-03   3:36 AM           3546 PersonalizedInsightsWorkflow.
+                                                  ts

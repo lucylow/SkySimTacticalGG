@@ -1,4 +1,5 @@
 import type { DashboardData, Match, Player, MotionData, Insight } from '@/types';
+import type { UtilityDecision } from '@/types/utility';
 import type { LoLPlayer, ValorantPlayer, EsportsTeam, EsportsMatch } from '@/types/esports';
 import { 
   mockDashboardData, 
@@ -169,7 +170,12 @@ class ApiService {
   }
 
   // SkySim Tactical GG - Live Insights
-  async getLiveInsights(_matchId: string) {
+  async getLiveInsights(_matchId: string): Promise<{
+    alerts: any[];
+    recommendations: string[];
+    utility_recommendations?: UtilityDecision;
+    tactical_overlay: any;
+  }> {
     await delay(300);
     return {
       alerts: [],
@@ -177,6 +183,14 @@ class ApiService {
         'Review utility timing and coordination',
         'Focus on trade kills in next round',
       ],
+      utility_recommendations: {
+        recommendations: [
+          { type: 'Smoke', purpose: 'Entry smokes (0:30)', timing: '0:30', winRateImpact: '+31%', priority: 1 }
+        ],
+        decisionTreePath: ['0:25-0:40 → ENTRY PACKAGE'],
+        counterplay: ['ENEMY SMOKES → Delay 5s → Entry'],
+        proBenchmarks: ['Attack Execute: 0:38 avg']
+      },
       tactical_overlay: {
         current_phase: 'mid_round',
         team_coordination: 0.72,

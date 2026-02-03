@@ -7,6 +7,9 @@ export { MacroStrategyAnalystAgent } from './macroStrategyAnalyst';
 export { OpponentScoutingAgent } from './opponentScouting';
 export { PredictivePlaybookAgent } from './predictivePlaybook';
 export { ProstheticCoachAgent } from './prostheticCoach';
+export { LoLOpponentAnalysisAgent } from './lolOpponentAnalysis';
+export { WorstCaseSimulatorAgent } from './worstCaseSimulator';
+export { LoLQueueAnalystAgent } from './lolQueueAnalyst';
 export { agentOrchestrator, AgentOrchestrator } from './orchestrator';
 
 // Re-export types

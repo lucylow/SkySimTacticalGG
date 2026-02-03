@@ -18,7 +18,10 @@ import {
   CheckCircle2,
   XCircle,
   Info,
+  ShieldAlert,
 } from 'lucide-react';
+import { LoLOpponentAnalysisView } from '@/components/lol/LoLOpponentAnalysisView';
+import { LoLQueueComparisonView } from '@/components/lol/LoLQueueComparisonView';
 import { backendApi } from '@/services/backendApi';
 import type {
   AgentOrchestrationResponse,
@@ -42,6 +45,9 @@ const agentIcons: Record<AgentRole, React.ReactNode> = {
   opponent_scouting: <Eye className="w-5 h-5" />,
   predictive_playbook: <BookOpen className="w-5 h-5" />,
   prosthetic_coach: <Radio className="w-5 h-5" />,
+  lol_opponent_analysis: <Eye className="w-5 h-5" />,
+  lol_queue_analyst: <Users className="w-5 h-5" />,
+  worst_case_simulator: <ShieldAlert className="w-5 h-5" />,
 };
 
 const agentNames: Record<AgentRole, string> = {
@@ -50,6 +56,9 @@ const agentNames: Record<AgentRole, string> = {
   opponent_scouting: 'Opponent Scouting',
   predictive_playbook: 'Predictive Playbook',
   prosthetic_coach: 'Prosthetic Coach',
+  lol_opponent_analysis: 'LoL Opponent Analysis',
+  lol_queue_analyst: 'LoL Queue Strategy Analyst',
+  worst_case_simulator: 'Worst-Case Simulator',
 };
 
 const agentColors: Record<AgentRole, string> = {
@@ -58,6 +67,9 @@ const agentColors: Record<AgentRole, string> = {
   opponent_scouting: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
   predictive_playbook: 'bg-green-500/10 text-green-500 border-green-500/20',
   prosthetic_coach: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
+  lol_opponent_analysis: 'bg-violet-500/10 text-violet-500 border-violet-500/20',
+  lol_queue_analyst: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20',
+  worst_case_simulator: 'bg-pink-500/10 text-pink-500 border-pink-500/20',
 };
 
 export const MultiAgentDashboard: React.FC<MultiAgentDashboardProps> = ({
@@ -71,6 +83,7 @@ export const MultiAgentDashboard: React.FC<MultiAgentDashboardProps> = ({
   );
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('overview');
+  const [selectedLolAnalysis, setSelectedLolAnalysis] = useState<any>(null);
 
   const runOrchestration = useCallback(async () => {
     setLoading(true);
@@ -82,6 +95,9 @@ export const MultiAgentDashboard: React.FC<MultiAgentDashboardProps> = ({
           'opponent_scouting',
           'predictive_playbook',
           'prosthetic_coach',
+          'lol_opponent_analysis' as any,
+                    'lol_queue_analyst' as any,
+          'worst_case_simulator',
         ],
         input: {
           grid_data: gridData,
@@ -179,10 +195,11 @@ export const MultiAgentDashboard: React.FC<MultiAgentDashboardProps> = ({
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="agents">Agents</TabsTrigger>
               <TabsTrigger value="insights">Combined Insights</TabsTrigger>
+              <TabsTrigger value="lol_analysis">LoL Analysis</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-4">
@@ -304,8 +321,8 @@ export const MultiAgentDashboard: React.FC<MultiAgentDashboardProps> = ({
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="text-xs text-muted-foreground">Sources:</span>
                               {insight.source_agents.map((role) => (
-                                <Badge key={role} variant="outline" className={agentColors[role]}>
-                                  {agentNames[role]}
+                                <Badge key={role} variant="outline" className={agentColors[role] || 'bg-slate-500/10'}>
+                                  {agentNames[role] || role}
                                 </Badge>
                               ))}
                               <Badge variant="secondary" className="ml-auto">
@@ -317,6 +334,32 @@ export const MultiAgentDashboard: React.FC<MultiAgentDashboardProps> = ({
                       </CardContent>
                     </Card>
                   ))}
+                </div>
+              </ScrollArea>
+            </TabsContent>
+
+            <TabsContent value="lol_analysis" className="space-y-4">
+              <ScrollArea className="h-[600px]">
+                <div className="space-y-4">
+                  {orchestrationResult.agent_outputs.find(o => o.agent_name === 'LoL Opponent Analysis Agent') ? (
+                    <LoLOpponentAnalysisView 
+                      analysis={orchestrationResult.agent_outputs.find(o => o.agent_name === 'LoL Opponent Analysis Agent') as any} 
+                    />
+                  ) : (
+                    <div className="text-center py-10 text-muted-foreground">
+                      LoL Opponent Analysis data not available in this run.
+                    </div>
+                  )}
+
+                  {orchestrationResult.agent_outputs.find(o => o.agent_name === 'LoL Queue Strategy Analyst') ? (
+                    <LoLQueueComparisonView
+                      analysis={orchestrationResult.agent_outputs.find(o => o.agent_name === 'LoL Queue Strategy Analyst') as any}
+                    />
+                  ) : (
+                    <div className="text-center py-10 text-muted-foreground">
+                      LoL Queue Comparison data not available in this run.
+                    </div>
+                  )}
                 </div>
               </ScrollArea>
             </TabsContent>
