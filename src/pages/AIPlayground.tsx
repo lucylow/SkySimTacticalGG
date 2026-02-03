@@ -142,7 +142,7 @@ const PlaygroundContent: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Valorant - Mock Opponent Analysis */}
+          {/* Valorant - Opponent Analysis */}
           <Card className="glass-card">
             <CardContent className="p-4">
               <div className="mb-3 text-sm font-semibold">1. VALORANT</div>
@@ -152,7 +152,7 @@ const PlaygroundContent: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* League of Legends - Mock Data */}
+          {/* League of Legends - Data */}
           <Card className="glass-card">
             <CardContent className="p-4 space-y-3">
               <div className="text-sm font-semibold">2. League of Legends</div>
@@ -182,7 +182,7 @@ const PlaygroundContent: React.FC = () => {
 
       {/* Footer Info */}
       <div className="text-center text-xs text-muted-foreground py-4">
-        <p>Mock AI Agent • Streaming SSE simulation • No backend required</p>
+        <p>AI Agent • Streaming SSE simulation • No backend required</p>
       </div>
 
       {/* Onboarding Tour */}
