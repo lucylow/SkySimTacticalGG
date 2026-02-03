@@ -1,46 +1,46 @@
-import React from 'react';
-import { AppBar, Toolbar, IconButton, Typography, Drawer, List, ListItem, ListItemIcon, ListItemText, Box } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import HomeIcon from '@mui/icons-material/Home';
-import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
-import PersonIcon from '@mui/icons-material/Person';
-import { Link as RouterLink } from 'react-router-dom';
+import { useState, ReactNode } from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Menu, Home, Gamepad2, User } from 'lucide-react';
 
-export default function ResponsiveLayout({ children }: { children: React.ReactNode }) {
-  const [open, setOpen] = React.useState(false);
+export default function ResponsiveLayout({ children }: { children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
-      <AppBar position="fixed" color="transparent" elevation={0}>
-        <Toolbar>
-          <IconButton color="inherit" edge="start" onClick={() => setOpen(true)} aria-label="open menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            SkySim Tactical GG
-          </Typography>
-        </Toolbar>
-      </AppBar>
+    <div className="flex min-h-screen bg-background">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur border-b">
+        <div className="flex items-center h-14 px-4">
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-64">
+              <nav className="flex flex-col gap-2 mt-6">
+                <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent">
+                  <Home className="h-4 w-4" />
+                  Dashboard
+                </Link>
+                <Link to="/agent" onClick={() => setOpen(false)} className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent">
+                  <Gamepad2 className="h-4 w-4" />
+                  Agent Console
+                </Link>
+                <Link to="/new/player/1" onClick={() => setOpen(false)} className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent">
+                  <User className="h-4 w-4" />
+                  Sample Player
+                </Link>
+              </nav>
+            </SheetContent>
+          </Sheet>
+          <h1 className="ml-3 font-semibold">SkySim Tactical GG</h1>
+        </div>
+      </header>
 
-      <Drawer open={open} onClose={() => setOpen(false)}>
-        <List sx={{ width: 260 }}>
-          <ListItem button component={RouterLink} to="/" onClick={() => setOpen(false)}>
-            <ListItemIcon><HomeIcon /></ListItemIcon>
-            <ListItemText primary="Dashboard" />
-          </ListItem>
-          <ListItem button component={RouterLink} to="/agent" onClick={() => setOpen(false)}>
-            <ListItemIcon><SportsEsportsIcon /></ListItemIcon>
-            <ListItemText primary="Agent Console" />
-          </ListItem>
-          <ListItem button component={RouterLink} to="/player/1" onClick={() => setOpen(false)}>
-            <ListItemIcon><PersonIcon /></ListItemIcon>
-            <ListItemText primary="Sample Player" />
-          </ListItem>
-        </List>
-      </Drawer>
-
-      <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
+      <main className="flex-1 pt-14 p-6">
         {children}
-      </Box>
-    </Box>
+      </main>
+    </div>
   );
 }

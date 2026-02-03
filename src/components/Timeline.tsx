@@ -1,19 +1,27 @@
-import React from 'react';
-import { Box, List, ListItem, ListItemText } from '@mui/material';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
-export default function Timeline({ matchId }: { matchId: string }) {
-  // stubbed sample events — replace with API call in real use
-  const events = Array.from({ length: 60 }).map((_, i) => ({ id: i, ts: i * 15, text: `Event ${i}` }));
+interface TimelineProps {
+  matchId: string;
+}
+
+export default function Timeline(_props: TimelineProps) {
+  // Stubbed sample events — replace with API call in real use
+  const events = Array.from({ length: 60 }).map((_, i) => ({ 
+    id: i, 
+    ts: i * 15, 
+    text: `Event ${i}` 
+  }));
 
   return (
-    <Box>
-      <List dense sx={{ maxHeight: 600, overflow: 'auto' }}>
+    <ScrollArea className="h-[600px]">
+      <ul className="space-y-1">
         {events.map(ev => (
-          <ListItem key={ev.id}>
-            <ListItemText primary={ev.text} secondary={`t=${ev.ts}s`} />
-          </ListItem>
+          <li key={ev.id} className="flex justify-between py-1 px-2 hover:bg-accent rounded text-sm">
+            <span>{ev.text}</span>
+            <span className="text-muted-foreground">t={ev.ts}s</span>
+          </li>
         ))}
-      </List>
-    </Box>
+      </ul>
+    </ScrollArea>
   );
 }

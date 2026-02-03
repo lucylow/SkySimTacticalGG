@@ -1,38 +1,52 @@
-import React from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Component, ReactNode } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
-declare global {
-  interface Window {
-    reportError?: (error: any, info: any) => void;
-  }
+interface Props {
+  children: ReactNode;
+  fallback?: ReactNode;
 }
 
-class ErrorBoundary extends React.Component<{ children: React.ReactNode, fallback?: React.ReactNode }, { hasError: boolean }> {
-  constructor(props: any) {
+interface State {
+  hasError: boolean;
+}
+
+class EnhancedErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = { hasError: false };
   }
-  static getDerivedStateFromError() {
+
+  static getDerivedStateFromError(): State {
     return { hasError: true };
   }
-  componentDidCatch(error: any, info: any) {
-    console.error('Uncaught error:', error, info);
-    // Here you could send error to a service like Sentry
-    if (window.reportError) {
-      window.reportError(error, info);
-    }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
+    console.error('Uncaught error:', error, errorInfo);
   }
-  render() {
+
+  render(): ReactNode {
     if (this.state.hasError) {
       return (
-        <Box sx={{ textAlign: 'center', py: 8 }}>
-          {this.props.fallback || <Typography>Something went wrong.</Typography>}
-          <Button sx={{ mt: 2 }} onClick={() => this.setState({ hasError: false })} variant="contained">Try again</Button>
-        </Box>
+        <div className="flex items-center justify-center min-h-screen p-4">
+          <Card className="max-w-md">
+            <CardContent className="pt-6 text-center">
+              {this.props.fallback || (
+                <p className="text-muted-foreground">Something went wrong.</p>
+              )}
+              <Button 
+                className="mt-4" 
+                onClick={() => this.setState({ hasError: false })}
+              >
+                Try again
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       );
     }
     return this.props.children;
   }
 }
 
-export default ErrorBoundary;
+export default EnhancedErrorBoundary;

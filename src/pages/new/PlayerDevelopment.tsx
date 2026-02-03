@@ -1,21 +1,24 @@
-import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Typography, Card, CardContent } from '@mui/material';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function PlayerDevelopment() {
   const { playerId } = useParams();
 
   return (
-    <Box>
-      <Typography variant="h4">Player Development: {playerId}</Typography>
-      <Card sx={{ mt: 2 }}>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Player Development: {playerId || 'Unknown'}</h1>
+      <Card>
+        <CardHeader>
+          <CardTitle>Performance Overview</CardTitle>
+        </CardHeader>
         <CardContent>
-          <Typography variant="h6">Performance Overview</Typography>
-          <Typography variant="body1">
+          <p className="text-muted-foreground">
             Detailed player statistics and development tracking would be displayed here.
-          </Typography>
+          </p>
         </CardContent>
       </Card>
-    </Box>
+    </div>
   );
 }
+
+export default PlayerDevelopment;

@@ -1,39 +1,54 @@
-import React from 'react';
-import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
-import useSWR from 'swr';
-import api from '../../services/api_new';
-
-const fetcher = (url: string) => api.get(url).then(r => r.data);
+import { useEffect, useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { supabase } from '@/integrations/supabase/client';
 
 export function Dashboard() {
-  const { data: products } = useSWR('/products', fetcher);
-  const { data: sessions } = useSWR('/sessions', fetcher);
+  const [matches, setMatches] = useState<{ id: string; map_name: string | null; match_ts: string | null }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      const { data, error } = await supabase
+        .from('grid_matches')
+        .select('id, map_name, match_ts')
+        .order('match_ts', { ascending: false })
+        .limit(5);
+      
+      if (!error && data) {
+        setMatches(data);
+      }
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
 
   return (
-    <Box>
-      <Typography variant="h4" gutterBottom>Dashboard</Typography>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={8}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Recent Sessions</Typography>
-              {sessions ? (
-                sessions.slice(0, 5).map((s: any) => <Typography key={s.id}>{s.title}</Typography>)
-              ) : (<Typography>Loading...</Typography>)}
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Products (sample)</Typography>
-              {products ? (
-                products.slice(0, 5).map((p: any) => <Typography key={p.id}>{p.name}</Typography>)
-              ) : (<Typography>Loading...</Typography>)}
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </Box>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Dashboard</h1>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Matches (GRID)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <p className="text-muted-foreground">Loading...</p>
+            ) : matches.length > 0 ? (
+              <ul className="space-y-2">
+                {matches.map((m) => (
+                  <li key={m.id} className="text-sm">
+                    {m.map_name || 'Unknown Map'} - {m.match_ts ? new Date(m.match_ts).toLocaleDateString() : 'No date'}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-muted-foreground">No matches found</p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }
+
+export default Dashboard;

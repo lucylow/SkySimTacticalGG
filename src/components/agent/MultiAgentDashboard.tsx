@@ -41,7 +41,7 @@ interface MultiAgentDashboardProps {
   onInsightClick?: (insight: CombinedInsight) => void;
 }
 
-const agentIcons: Record<AgentRole, React.ReactNode> = {
+const agentIcons: Partial<Record<AgentRole, React.ReactNode>> = {
   micro_mistake_detector: <Target className="w-5 h-5" />,
   macro_strategy_analyst: <Users className="w-5 h-5" />,
   opponent_scouting: <Eye className="w-5 h-5" />,
@@ -51,9 +51,10 @@ const agentIcons: Record<AgentRole, React.ReactNode> = {
   lol_queue_analyst: <Users className="w-5 h-5" />,
   worst_case_simulator: <ShieldAlert className="w-5 h-5" />,
   valorant_opponent_analysis: <Eye className="w-5 h-5" />,
+  mechanical_skill_analyst: <Target className="w-5 h-5" />,
 };
 
-const agentNames: Record<AgentRole, string> = {
+const agentNames: Partial<Record<AgentRole, string>> = {
   micro_mistake_detector: 'Micro-Mistake Detector',
   macro_strategy_analyst: 'Macro-Strategy Analyst',
   opponent_scouting: 'Opponent Scouting',
@@ -63,9 +64,10 @@ const agentNames: Record<AgentRole, string> = {
   lol_queue_analyst: 'LoL Queue Strategy Analyst',
   worst_case_simulator: 'Worst-Case Simulator',
   valorant_opponent_analysis: 'Valorant Opponent Analysis',
+  mechanical_skill_analyst: 'Mechanical Skill Analyst',
 };
 
-const agentColors: Record<AgentRole, string> = {
+const agentColors: Partial<Record<AgentRole, string>> = {
   micro_mistake_detector: 'bg-red-500/10 text-red-500 border-red-500/20',
   macro_strategy_analyst: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   opponent_scouting: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
@@ -75,6 +77,7 @@ const agentColors: Record<AgentRole, string> = {
   lol_queue_analyst: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20',
   worst_case_simulator: 'bg-pink-500/10 text-pink-500 border-pink-500/20',
   valorant_opponent_analysis: 'bg-rose-500/10 text-rose-500 border-rose-500/20',
+  mechanical_skill_analyst: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
 };
 
 const multiAgentTourSteps: TourStep[] = [
@@ -112,7 +115,7 @@ export const MultiAgentDashboard: React.FC<MultiAgentDashboardProps> = ({
   );
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<string>('overview');
-  const [selectedLolAnalysis, setSelectedLolAnalysis] = useState<any>(null);
+  const [, _setSelectedLolAnalysis] = useState<unknown>(null);
 
   const runOrchestration = useCallback(async () => {
     setLoading(true);
