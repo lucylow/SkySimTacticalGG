@@ -89,7 +89,7 @@ class ValidatorAgent extends BaseAgent {
 
       const processingTime = this.getProcessingTime();
 
-      return {
+      return await Promise.resolve({
         success: true,
         result: {
           confidence: avgValidationScore,
@@ -101,7 +101,7 @@ class ValidatorAgent extends BaseAgent {
         processing_time_ms: processingTime,
         task_type: 'validation',
         accuracy: avgValidationScore,
-      };
+      });
     } catch (error) {
       const processingTime = this.getProcessingTime();
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';

@@ -1,11 +1,9 @@
 // Macro Review Workflow
-import { orchestratorAgent } from '@/agents/OrchestratorAgent';
 import { agentMonitor } from '@/agents/monitoring';
 import type { AgentRequest, WorkflowExecution, WorkflowStage } from '@/agents/types';
-import { WorkflowType, RequestType } from '@/agents/types';
+import { WorkflowType } from '@/agents/types';
 import { agendaGenerator } from '@/services/agendaGenerator';
 import { backendApi } from '@/services/backendApi';
-import type { MatchMetadata, RoundData } from '@/types/backend';
 
 export class MacroReviewWorkflow {
   async execute(request: AgentRequest): Promise<WorkflowExecution> {
@@ -21,8 +19,8 @@ export class MacroReviewWorkflow {
         throw new Error('Match ID required for macro review');
       }
 
-      const match = await backendApi.getMatch(matchId) as MatchMetadata;
-      const rounds = await backendApi.getRounds(matchId) as RoundData[];
+      const match = await backendApi.getMatch(matchId);
+      const rounds = await backendApi.getRounds(matchId);
       
       stages.push({
         stage: 'data_collection',
@@ -55,7 +53,7 @@ export class MacroReviewWorkflow {
       stages.push({
         stage: 'agenda_generation',
         duration_ms: Date.now() - stage4Start,
-        insights_generated: agenda.sections.length,
+        insights_generated: (agenda as { sections: unknown[] }).sections.length,
       });
 
       // Stage 5: Priority Ranking

@@ -1,4 +1,4 @@
-import { AgentOutput, AgentRole } from './agents';
+import { AgentOutput } from './agents';
 
 export type GameTitle = 'LoL' | 'Valorant';
 

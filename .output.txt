@@ -1,12 +1,6 @@
 
 > vite_react_shadcn_ts@0.0.0 lint
 > eslint src --ext .ts,.tsx --max-warnings=0
-C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\FormatterAgent.ts
-  42:3  error  Async method 'processTask' has no 'await' expression  @typescript-eslint/require-await
-C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\StrategicAnalyzerAgent.ts
-  53:3  error  Async method 'processTask' has no 'await' expression  @typescript-eslint/require-await
-C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\ValidatorAgent.ts
-  35:3  error  Async method 'processTask' has no 'await' expression  @typescript-eslint/require-await
 C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\agent\MultiAgentDashboard.tsx
   124:9    warning  Unsafe assignment of type `any[]` to a variable of type `AgentRole[]`  @typescript-eslint/no-unsafe-assignment
   130:38   warning  Unexpected any. Specify a different type                               @typescript-eslint/no-explicit-any
@@ -1398,13 +1392,9 @@ C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\sample.ts
   65:10  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
   76:13  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
   77:18  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\worstCase.ts
-  1:23  warning  'AgentRole' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
 C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\workflows\MacroReviewWorkflow.ts
-   2:10  warning  'orchestratorAgent' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
-   5:24  warning  'RequestType' is defined but never used. Allowed unused vars must match /^_/u        @typescript-eslint/no-unused-vars
-  25:22  error    This assertion is unnecessary since it does not change the type of the expression    @typescript-eslint/no-unnecessary-type-assertion
-  58:9   warning  Unsafe assignment of an error typed value                                            @typescript-eslint/no-unsafe-assignment
-  58:45  warning  Unsafe member access .length on an `error` typed value                               @typescript-eslint/no-unsafe-member-access
-✖ 1264 problems (302 errors, 962 warnings)
-  43 errors and 0 warnings potentially fixable with the `--fix` option.
+   7:15  warning  'MatchMetadata' is defined but never used. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+  57:9   warning  Unsafe assignment of an error typed value                                        @typescript-eslint/no-unsafe-assignment
+  57:45  warning  Unsafe member access .length on an `error` typed value                           @typescript-eslint/no-unsafe-member-access
+✖ 1258 problems (298 errors, 960 warnings)
+  42 errors and 0 warnings potentially fixable with the `--fix` option.
