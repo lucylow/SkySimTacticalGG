@@ -130,7 +130,6 @@ See `README.md` for:
 - Model architecture
 - Legal/ethical considerations
 - Production deployment guide
-- [Market Comparison: Tracker.gg vs Lolalytics](TRACKER_VS_LOLALYTICS.md)
 
 ---
 

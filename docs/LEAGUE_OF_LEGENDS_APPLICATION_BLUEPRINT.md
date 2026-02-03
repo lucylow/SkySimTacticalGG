@@ -178,8 +178,7 @@ Your pattern recognition engine, already proven on tactical FPS games, adapts na
 
 #### Third-Party Analytic Feeds
 
-- **Tracker websites**: [U.GG](docs/UGG_IMPROVEMENT_GUIDE.md), op.gg, porofessor.gg (public match data enrichment)
-- **Market Comparison**: [Tracker.gg vs Lolalytics](docs/TRACKER_VS_LOLALYTICS.md)
+- **Tracker websites**: op.gg, u.gg, porofessor.gg (public match data enrichment)
 - **Community parsers**: Additional context on meta trends, champion performance
 - **Usage**: Enrichment layer for context (patch meta, champion win rates, item builds)
 - **Integration**: Optional enrichment service that fetches and merges third-party data
@@ -264,6 +263,7 @@ Break signals into player, position, ability, vision, economy, and team categori
 
 - **Extra distance**: Compare actual path length vs shortest path for intended objective (jungle pathing, rotation efficiency)
 - **Back timing**: Detect suboptimal back timing (backing before wave crash, backing during objective windows)
+- **Boots timing**: Detect 5-7 minute boots rush performance (optimal: Tier 1 by 5:00, Tier 2 by 7:15)
 
 #### Lane Positioning
 
@@ -376,6 +376,7 @@ Your platform's feature engineering layer (`features.py`) already handles aggreg
 - `reaction_latency_series`: Sequence of reaction times per fight/scenario (feed to LSTM/Transformer for pattern detection)
 - `ability_cooldown_utilization_series`: Time series of cooldown utilization by game phase
 - `cs_trend`: Slope of CS/min over time (detect improving/declining performance)
+- `boots_timing_offset`: Difference between actual boots purchase time and 5-7 minute optimal window
 - `gold_curve`: Gold over time, compared to role baseline (detect item timing issues)
 
 ### Context-Aware Features
@@ -404,6 +405,7 @@ Your platform uses a multi-model approach (rule engines, gradient boosting, sequ
 
 - **Use cases**: Simple heuristics that don't require ML
   - Late TP detection: `tp_delay > 10s` → flag as mistake
+  - Suboptimal Boots Rush: `boots_t1_time > 5:30` and `lane_state == 'shoved'` → flag
   - Missing CS under pressure: `missed_cs_rate_when_enemy_nearby > 0.3` → flag
   - Low ward coverage: `wards_per_min < role_baseline - 0.5` → flag
 - **Implementation**: Adapt your existing rule-based mistake detection to LoL signals
@@ -1211,7 +1213,7 @@ Your AI Assistant Coach platform is uniquely positioned to transform LoL perform
 **Key Advantages**:
 
 1. **Proven architecture**: Your existing platform (FastAPI, React, ML pipeline, explainability) adapts directly to LoL
-2. **Strong market fit**: LoL's coach/analyst culture, event-rich data, and high ROI per marginal improvement create strong demand ([Market Comparison: Tracker.gg vs Lolalytics](TRACKER_VS_LOLALYTICS.md))
+2. **Strong market fit**: LoL's coach/analyst culture, event-rich data, and high ROI per marginal improvement create strong demand
 3. **Differentiated value**: Explainable AI, evidence-backed insights, and drill-to-measurement loops differentiate from generic analytics tools
 
 **Next Steps**:

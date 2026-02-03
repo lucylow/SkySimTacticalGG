@@ -126,9 +126,12 @@ HY-Motion-1.0 works best with:
 - **Language**: English
 - **Style**: Action descriptions, specific movements
 - **Format**: Natural language descriptions
+- **Game-Specific Context**: Inclusion of agent/champion names and tactical roles (e.g., "[ACTOR]: Jett", "[GAME]: valorant") improves character-specific motion fidelity.
 
 Example prompts:
 
+- "[ACTOR]: Jett (entry_fragger) [GAME]: valorant [STYLE]: light, acrobatic, and fluid with wind-like movements [EMOTION]: aggressive_confident [ACTION]: sidestep, crouch, snap_aim, clear_angle, jiggle_peek with explosive urgency"
+- "[ACTOR]: Jinx (ADC) [GAME]: lol [STYLE]: manic, unpredictable, and jittery explosive chaos [EMOTION]: focused_pressured [ACTION]: stay_back, flick_target, reposition, maintain_range behind the front line"
 - "A person peeks around a corner, moving cautiously"
 - "A professional esports player moves forward with purpose, torso leading"
 - "A person crouches down, lowering center of gravity"
