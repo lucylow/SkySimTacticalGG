@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = (import.meta as any).env.VITE_API_URL ?? 'http://localhost:4000/api';
+const API_BASE = (import.meta as any).env.VITE_API_URL ?? '/api';
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -26,6 +26,9 @@ export const fetchSessions = async () => {
   return r.data;
 };
 
-export const startAgentStreamUrl = (prompt = '') => `${API_BASE.replace('/api', '')}/agent/stream?prompt=${encodeURIComponent(prompt)}`;
+export const startAgentStreamUrl = (prompt = '') => {
+  const base = API_BASE.endsWith('/api') ? API_BASE.slice(0, -4) : API_BASE;
+  return `${base}/agent/stream?prompt=${encodeURIComponent(prompt)}`;
+};
 
 export default api;

@@ -41,9 +41,17 @@ function getWsBaseUrl(): string {
     return wsUrl;
   }
 
-  // Derive from API URL
-  const apiUrl = getApiBaseUrl();
-  return apiUrl.replace(/^http/, 'ws');
+  // Derive from API URL but normalize to origin (no path)
+  try {
+    const apiUrl = new URL(getApiBaseUrl());
+    const isSecure = apiUrl.protocol === 'https:';
+    return `${isSecure ? 'wss:' : 'ws:'}//${apiUrl.host}`;
+  } catch (_e) {
+    // Fallback to window location
+    const isSecure = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    const host = typeof window !== 'undefined' ? window.location.host : 'localhost';
+    return `${isSecure ? 'wss:' : 'ws:'}//${host}`;
+  }
 }
 
 /**
@@ -52,7 +60,12 @@ function getWsBaseUrl(): string {
 export const config: AppConfig = {
   apiBaseUrl: getApiBaseUrl(),
   wsBaseUrl: getWsBaseUrl(),
-  enableMockData: import.meta.env.VITE_ENABLE_MOCK_DATA === 'true',
+  // Default to mock mode when critical envs are missing (e.g., no Supabase URL),
+  // unless explicitly disabled with VITE_ENABLE_MOCK_DATA="false"
+  enableMockData: (
+    import.meta.env.VITE_ENABLE_MOCK_DATA === 'true' ||
+    (!import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_ENABLE_MOCK_DATA !== 'false')
+  ),
   enableDevTools: import.meta.env.DEV || import.meta.env.VITE_ENABLE_DEV_TOOLS === 'true',
   logLevel: (import.meta.env.VITE_LOG_LEVEL as AppConfig['logLevel']) || 'info',
 };

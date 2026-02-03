@@ -207,7 +207,10 @@ class ApiService {
 
     try {
       // Call improved grid-ingest Edge Function
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID as string | undefined;
+      const envUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+      const supabaseUrl = envUrl || (projectId ? `https://${projectId}.supabase.co` : undefined);
+      if (!supabaseUrl) throw new Error('Supabase URL not configured. Set VITE_SUPABASE_URL or VITE_SUPABASE_PROJECT_ID.');
       const response = await fetch(`${supabaseUrl}/functions/v1/grid-ingest`, {
         method: 'POST',
         headers: {
@@ -276,7 +279,10 @@ class ApiService {
     }
 
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID as string | undefined;
+      const envUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+      const supabaseUrl = envUrl || (projectId ? `https://${projectId}.supabase.co` : undefined);
+      if (!supabaseUrl) throw new Error('Supabase URL not configured. Set VITE_SUPABASE_URL or VITE_SUPABASE_PROJECT_ID.');
       const response = await fetch(`${supabaseUrl}/functions/v1/grid-ingest`, {
         method: 'POST',
         headers: {

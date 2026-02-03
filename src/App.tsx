@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { Suspense, lazy } from 'react';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -35,12 +35,14 @@ const AgentConsole = lazy(() => import('./pages/new/AgentConsole').then(m => ({ 
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const App = () => {
+  const location = useLocation();
+  return (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <EnhancedErrorBoundary fallback={<div>Something went wrong. Try reload.</div>}>
+      <EnhancedErrorBoundary key={location.pathname} fallback={<div>Something went wrong. Try reload.</div>}>
         <Routes>
           <Route path="/" element={<Index />} />
           
@@ -79,5 +81,6 @@ const App = () => (
     </TooltipProvider>
   </QueryClientProvider>
 );
+}
 
 export default App;

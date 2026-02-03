@@ -3,11 +3,13 @@ import { useEffect, useState, useCallback } from 'react';
 import { useWebSocket } from './useWebSocket';
 import type { PersonalizedInsight } from '@/types/insights';
 
+import { config } from '@/lib/config';
+
 export function useInsightsSocket() {
   const [insights, setInsights] = useState<PersonalizedInsight[]>([]);
   
-  // Get WebSocket URL - adjust based on your config
-  const wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8000/ws/insights';
+  // Build WebSocket URL from config (origin only) and append path
+  const wsUrl = `${config.wsBaseUrl}/ws/insights`;
   
   const { isConnected } = useWebSocket(wsUrl, {
     onMessage: (message) => {

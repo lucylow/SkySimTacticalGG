@@ -32,13 +32,13 @@ class EnhancedErrorBoundary extends Component<Props, State> {
           <Card className="max-w-md">
             <CardContent className="pt-6 text-center">
               {this.props.fallback || (
-                <p className="text-muted-foreground">Something went wrong.</p>
+                <p className="text-muted-foreground">Something went wrong. Try reload.</p>
               )}
               <Button 
                 className="mt-4" 
-                onClick={() => this.setState({ hasError: false })}
+                onClick={() => window.location.reload()}
               >
-                Try again
+                Reload page
               </Button>
             </CardContent>
           </Card>
