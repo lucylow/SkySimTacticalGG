@@ -3,6 +3,8 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.0'
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS, GET',
+  'Access-Control-Max-Age': '86400',
 }
 
 interface GridMatch {
@@ -18,7 +20,7 @@ interface GridMatch {
 Deno.serve(async (req) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
+    return new Response(null, { status: 204, headers: corsHeaders })
   }
 
   try {
@@ -31,6 +33,33 @@ Deno.serve(async (req) => {
     }
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+
+    // Lightweight GET health-check for easier ops/debugging (no body required)
+    if (req.method === 'GET') {
+      try {
+        const { data, error } = await supabase.from('grid_matches').select('id').limit(1)
+        const dbStatus = error ? `error: ${error.message}` : 'connected'
+        return new Response(JSON.stringify({
+          status: 'ok',
+          database: dbStatus,
+          hasGridKey: !!GRID_API_KEY,
+          method: 'GET',
+          timestamp: new Date().toISOString(),
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      } catch (err) {
+        return new Response(JSON.stringify({
+          status: 'degraded',
+          error: String(err),
+          method: 'GET',
+          timestamp: new Date().toISOString(),
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
+    }
 
     let body: any = {}
     try {
