@@ -230,7 +230,6 @@ const ProLineupsViewer: React.FC = () => {
             </Card>
           </div>
         </div>
-      </div>
       </Tabs>
     </div>
   );

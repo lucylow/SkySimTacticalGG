@@ -1,213 +1,304 @@
-
-    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
-d-----        2026-02-03   3:36 AM                app
-d-----        2026-02-03   3:36 AM                config
-d-----        2026-02-03   4:13 AM                lol_timesformer
-d-----        2026-02-03   3:36 AM                migrations
-d-----        2026-02-03   3:36 AM                notebooks
-d-----        2026-02-03   3:36 AM                scripts
--a----        2026-02-03   3:36 AM           6294 AGENT_DATA_README.md
--a----        2026-02-03   3:36 AM            695 celeryconfig.py
--a----        2026-02-03   3:36 AM           1492 docker-compose.observability.
-                                                  yml
--a----        2026-02-03   3:36 AM           2137 docker-compose.yml
--a----        2026-02-03   3:36 AM           1009 Dockerfile
--a----        2026-02-03   3:36 AM           1224 Dockerfile.gpu
--a----        2026-02-03   3:36 AM           8795 HY_MOTION_INTEGRATION.md
--a----        2026-02-03   3:36 AM           7669 INTEGRATION.md
--a----        2026-02-03   3:36 AM           6788 MICRO_ANALYSIS_README.md
--a----        2026-02-03   3:36 AM           6025 PLATFORM_EXPANSION.md
--a----        2026-02-03   3:36 AM           3890 QUICKSTART.md
--a----        2026-02-03   3:36 AM           4195 README-quick.md
--a----        2026-02-03   3:36 AM           5518 README.md
--a----        2026-02-03   3:36 AM           1469 requirements.txt
-    Directory:
-    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\app
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
-d-----        2026-02-03   3:36 AM                agents
-d-----        2026-02-03   3:36 AM                analytics
-d-----        2026-02-03   3:36 AM                insights
-d-----        2026-02-03   3:36 AM                ml
-d-----        2026-02-03   3:36 AM                utils
--a----        2026-02-03   3:36 AM           5091 api.py
--a----        2026-02-03   3:36 AM           4429 api_data.py
--a----        2026-02-03   3:36 AM           6939 api_hitl.py
--a----        2026-02-03   3:36 AM           6664 api_insights.py
--a----        2026-02-03   3:36 AM           8457 api_motion.py
--a----        2026-02-03   3:36 AM           5494 api_opensource.py
--a----        2026-02-03   3:36 AM          18563 api_predictions.py
--a----        2026-02-03   3:36 AM           2009 auth.py
--a----        2026-02-03   3:36 AM            547 celery_app.py
--a----        2026-02-03   3:36 AM           6780 celery_orchestrator.py
--a----        2026-02-03   3:36 AM           5681 celery_tasks_agents.py
--a----        2026-02-03   3:36 AM           3622 counterfactual.py
--a----        2026-02-03   3:36 AM           1685 dataset_builder.py
--a----        2026-02-03   3:36 AM           1064 db.py
--a----        2026-02-03   3:36 AM           6472 enricher.py
--a----        2026-02-03   3:36 AM           6460 features.py
--a----        2026-02-03   3:36 AM           9880 grid_client.py
--a----        2026-02-03   3:36 AM           3460 grid_normalizer.py
--a----        2026-02-03   3:36 AM           4981 grid_storage.py
--a----        2026-02-03   3:36 AM          14873 hy_motion_client.py
--a----        2026-02-03   3:36 AM           2605 ingest.py
--a----        2026-02-03   3:36 AM           3200 integration.py
--a----        2026-02-03   3:36 AM           2340 intent_model.py
--a----        2026-02-03   3:36 AM           5054 main.py
--a----        2026-02-03   3:36 AM           2433 metrics.py
--a----        2026-02-03   3:36 AM          10484 models.py
--a----        2026-02-03   3:36 AM           4436 models_analytics.py
--a----        2026-02-03   3:36 AM           2465 models_hitl.py
--a----        2026-02-03   3:36 AM           5494 narrative.py
--a----        2026-02-03   3:36 AM          11779 opensource_esports_client.py
--a----        2026-02-03   3:36 AM           3269 opensource_example.py
--a----        2026-02-03   3:36 AM           6893 orchestrator.py
--a----        2026-02-03   3:36 AM           6934 persistence.py
--a----        2026-02-03   3:36 AM           2572 persistence_hitl.py
--a----        2026-02-03   3:36 AM            477 postprocess.py
--a----        2026-02-03   3:36 AM           1039 provenance.py
--a----        2026-02-03   3:36 AM            851 retention.py
--a----        2026-02-03   3:36 AM           3524 router.py
--a----        2026-02-03   3:36 AM           2231 schemas.py
--a----        2026-02-03   3:36 AM            862 schemas_hitl.py
--a----        2026-02-03   3:36 AM           5488 schemas_predictions.py
--a----        2026-02-03   3:36 AM           2269 settings.py
--a----        2026-02-03   3:36 AM           2494 signal_gating.py
--a----        2026-02-03   3:36 AM           1039 storage.py
--a----        2026-02-03   3:36 AM           2812 tasks.py
--a----        2026-02-03   3:36 AM           3173 tasks_example.py
--a----        2026-02-03   3:36 AM           2922 unified_ingest.py
--a----        2026-02-03   3:36 AM            627 visualization_exporter.py
--a----        2026-02-03   3:36 AM           3695 ws_broadcast.py
--a----        2026-02-03   3:36 AM           5091 ws_insights.py
--a----        2026-02-03   3:36 AM           2634 ws_replay.py
--a----        2026-02-03   3:36 AM             35 __init__.py
-    Directory:
-    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\app\agents
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
-d-----        2026-02-03   3:36 AM                ml
--a----        2026-02-03   3:36 AM           1111 base.py
--a----        2026-02-03   3:36 AM           8751 micro_analysis.py
--a----        2026-02-03   3:36 AM           1132 micro_detector.py
--a----        2026-02-03   3:36 AM           4283 motion_generator.py
--a----        2026-02-03   3:36 AM           6106 orchestrator.py
--a----        2026-02-03   3:36 AM           5733 prompt_generator.py
--a----        2026-02-03   3:36 AM           1146 registry.py
--a----        2026-02-03   3:36 AM            802 validator.py
--a----        2026-02-03   3:36 AM             22 __init__.py
-    Directory:
-    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\app\agents\ml
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a----        2026-02-03   3:36 AM           3377 momentum_agent.py
-    Directory:
-    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\app\analytics
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a----        2026-02-03   3:36 AM           5370 aggregate.py
--a----        2026-02-03   3:36 AM           6291 api.py
--a----        2026-02-03   3:36 AM           8286 canonical_ingest.py
--a----        2026-02-03   3:36 AM           4761 causal.py
--a----        2026-02-03   3:36 AM           7023 jobs.py
--a----        2026-02-03   3:36 AM           4499 QUICKSTART.md
--a----        2026-02-03   3:36 AM           6293 README.md
--a----        2026-02-03   3:36 AM           1125 start_consumers.py
--a----        2026-02-03   3:36 AM           5070 stats.py
--a----        2026-02-03   3:36 AM           4387 stream_ingest.py
--a----        2026-02-03   3:36 AM             85 __init__.py
-    Directory:
-    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\app\insights
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a----        2026-02-03   3:36 AM           8320 generator.py
--a----        2026-02-03   3:36 AM            943 templates.py
--a----        2026-02-03   3:36 AM           3138 visualizer.py
--a----        2026-02-03   3:36 AM            356 __init__.py
-    Directory:
-    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\app\ml
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a----        2026-02-03   3:36 AM           7967 features.py
-    Directory:
-    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\app\utils
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a----        2026-02-03   3:36 AM           6475 hy_motion_client.py
--a----        2026-02-03   3:36 AM            969 message_bus.py
--a----        2026-02-03   3:36 AM            635 redis_client.py
--a----        2026-02-03   3:36 AM           4843 validator.py
--a----        2026-02-03   3:36 AM             25 __init__.py
-    Directory:
-    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\config
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
-d-----        2026-02-03   3:36 AM                grafana
--a----        2026-02-03   3:36 AM           1041 agents.yaml
--a----        2026-02-03   3:36 AM            492 prometheus.yml
-    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\co
-    nfig\grafana
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
-d-----        2026-02-03   3:36 AM                dashboards
-d-----        2026-02-03   3:36 AM                provisioning
-    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\co
-    nfig\grafana\dashboards
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a----        2026-02-03   3:36 AM           2126 ai-agent-trust.json
--a----        2026-02-03   3:36 AM           1783 live-match-overview.json
--a----        2026-02-03   3:36 AM           1484 replay-audit.json
-    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\co
-    nfig\grafana\provisioning
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
-d-----        2026-02-03   3:36 AM                dashboards
-d-----        2026-02-03   3:36 AM                datasources
-    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\co
-    nfig\grafana\provisioning\dashboards
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a----        2026-02-03   3:36 AM            240 default.yml
-    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\co
-    nfig\grafana\provisioning\datasources
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a----        2026-02-03   3:36 AM            172 prometheus.yml
-    Directory: C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\lo
-    l_timesformer
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a----        2026-02-03   4:13 AM           2469 intelligence.py
--a----        2026-02-03   4:12 AM           2342 live_reader.py
--a----        2026-02-03   4:13 AM           1565 main.py
--a----        2026-02-03   4:12 AM           3125 minimap_capture.py
--a----        2026-02-03   4:13 AM           2037 overlay.py
--a----        2026-02-03   4:13 AM           3030 predictor.py
--a----        2026-02-03   4:12 AM            164 requirements_lol.txt
--a----        2026-02-03   4:12 AM           1876 timesformer_lol.py
--a----        2026-02-03   4:13 AM              0 __init__.py
-    Directory:
-    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\migrations
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a----        2026-02-03   3:36 AM           2167 001_create_insights_tables.sq
-                                                  l
--a----        2026-02-03   3:36 AM           4292 create_analytics_tables.sql
-    Directory:
-    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\notebooks
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a----        2026-02-03   3:36 AM           1597 01_features.ipynb
--a----        2026-02-03   3:36 AM           2112 02_train.ipynb
--a----        2026-02-03   3:36 AM          17272 03_eval.ipynb
--a----        2026-02-03   3:36 AM          15975 03_eval.ipynb.backup
--a----        2026-02-03   3:36 AM          10803 team_impact_score.py
-    Directory:
-    C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\backend\scripts
-Mode                 LastWriteTime         Length Name
-----                 -------------         ------ ----
--a----        2026-02-03   3:36 AM            941 test_micro_analysis.py
--a----        2026-02-03   3:36 AM           3870 train_intent_model.py
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\App.css
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\App.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\index.css
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\main.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\vite-env.d.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\BaseAgent.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\communication.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\config.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\DataFetcherAgent.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\FormatterAgent.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\index.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\MicroPatternDetectorAgent.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\monitoring.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\OrchestratorAgent.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\SimulationAgent.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\StrategicAnalyzerAgent.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\types.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\agents\ValidatorAgent.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\EnhancedErrorBoundary.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\HumanReviewPanel.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\LoadingOverlay.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\NavLink.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\NotificationSystem.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ObjectiveDecisionCard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ReplayPlayer.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ResponsiveLayout.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\Timeline.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\agent\AgentConsole.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\agent\EventsLog.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\agent\MemoryPanel.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\agent\MultiAgentDashboard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\agent\PromptEditor.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\agent\Timeline.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\agent\Toolbox.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\agents\AgentDashboard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\dashboard\EsportsDataDisplay.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\dashboard\EsportsPerformanceChart.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\dashboard\InsightCard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\dashboard\InteractivePlaybook.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\dashboard\PerformanceChart.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\dashboard\PlayerCard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\dashboard\ProLineupsViewer.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\dashboard\StatsCard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\dashboard\StrategySimulator.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\dashboard\TacticalOverlay.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\dashboard\TacticalScoutingReport.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\dashboard\UtilityDashboard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\grid\AgentInsights.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\grid\EventTimeline.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\grid\MatchStateDisplay.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\grid\ReviewQueue.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\insights\PersonalizedInsightCard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\insights\PlayerInsightCard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\landing\CTASection.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\landing\DemoSection.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\landing\FeaturesSection.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\landing\Footer.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\landing\HeroSection.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\landing\Navbar.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\landing\TechStackSection.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\layout\MainLayout.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\live\LiveIntelOverlay.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\live\LiveIntelPanel.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\lol\LoLOpponentAnalysisView.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\lol\LoLQueueComparisonView.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\motion\MotionPanel.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\motion\MotionViewer.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\motion\TacticalMotionViewer.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\predictions\Leaderboard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\predictions\MarketList.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\predictions\PredictionForm.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\predictions\PredictionHistory.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\predictions\StatsCard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\predictions\WalletCard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\predictions\WhatIfQuery.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\reviews\MacroReviewAgenda.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\accordion.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\alert-dialog.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\alert.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\aspect-ratio.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\avatar.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\badge.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\breadcrumb.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\button.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\calendar.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\card.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\carousel.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\chart.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\checkbox.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\collapsible.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\command.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\context-menu.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\dialog.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\drawer.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\dropdown-menu.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\form.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\hover-card.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\input-otp.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\input.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\label.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\lazy-image.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\menubar.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\navigation-menu.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\onboarding-tour.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\pagination.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\popover.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\progress.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\radio-group.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\resizable.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\scroll-area.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\select.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\separator.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\sheet.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\shimmer-skeleton.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\sidebar.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\skeleton.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\slider.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\sonner.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\switch.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\table.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\tabs.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\textarea.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\toast.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\toaster.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\toggle-group.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\toggle.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\tooltip.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\undo-toast.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\ui\use-toast.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\components\valorant\ValorantOpponentAnalysisView.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\context\AgentContext.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\data\lolChampionPools.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\data\mockData.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\data\proLineups.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\grid\jobs\computePlayerMatchSummaries.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\hooks\use-mobile.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\hooks\use-toast.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\hooks\useAgentSignals.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\hooks\useAgentStream.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\hooks\useGridEvents.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\hooks\useInsightsSocket.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\hooks\useKeyboardShortcuts.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\hooks\useMatchState.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\hooks\useReplayStream.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\hooks\useReviewQueue.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\hooks\useWebSocket.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\integrations\supabase\client.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\integrations\supabase\types.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\lib\apiClient.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\lib\config.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\lib\utils.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\lib\__tests__\config.test.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\lib\__tests__\utils.test.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\mock-data\lolOpponentData.json
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\mocks\analyticsFixtures.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\mocks\backendMocks.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\mocks\demoSessions.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\mocks\generator.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\mocks\index.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\mocks\README.md
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\mocks\replaySessionPlayer.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\mocks\samplePrompts.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\mocks\sseReplayEvents.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\mocks\toolResponses.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\mocks\uiFixtures.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\AIPlayground.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\CoachingInsights.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\Dashboard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\GridDashboard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\HumanReview.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\Index.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\Insights.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\LiveCoach.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\MacroReview.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\MatchAnalysis.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\MotionStudio.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\NotFound.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\PlayerDevelopment.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\Predictions.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\SkySimTacticalGG.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\ValorantMatches.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\ValorantReplay.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\new\AgentConsole.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\new\Dashboard.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\new\MatchAnalysis.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\pages\new\PlayerDevelopment.tsx
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\actionPredictor.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agendaGenerator.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agentApi.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\api.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\api_new.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\backendApi.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\CounterattackEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\counterStrategy.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\decisionEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\esportsApi.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\gameStateExtractor.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\gridIngestion.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\heuristicEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\insightEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\IntegratedObjectiveEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\LiveFeatureExtractor.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\lolIngestion.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\LolObjectiveEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\LolStrategyEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\mockAgentStream.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\mockApi.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\ObjectiveCoachDashboard.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\ObjectivePriorityEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\patternRecognition.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\personalizedInsightEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\playerScoring.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\predictionAgent.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\predictionEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\predictionsApi.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\predictionValidator.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\predictiveAnalytics.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\rosterManagement.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\scoutingReport.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\skySimTacticalGG.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\tacticalOverlayService.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\tacticalPromptEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\TacticalUtilityEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\unifiedApi.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\XgboostWinProbModel.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents\baseAgent.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents\index.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents\lolGatherStrategy.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents\lolOpponentAnalysis.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents\lolQueueAnalyst.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents\macroStrategyAnalyst.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents\mechanicalSkillAnalyst.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents\microMistakeDetector.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents\opponentScouting.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents\orchestrator.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents\predictivePlaybook.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents\prostheticCoach.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents\valorantOpponentAnalysis.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\agents\worstCaseSimulator.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\agentService.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\auditService.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\eventBus.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\eventNormalizer.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\gridClient.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\index.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\ingestionService.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\lolObjectiveEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\matchState.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\reviewService.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\strategy\gridLolProcessor.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\strategy\itemEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\strategy\runeEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\strategy\simulation.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\strategy\strategyEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\strategy\types.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\strategy\winConditionEngine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\grid\__tests__\auditService.test.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\live\classifier.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\live\coach.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\live\engine.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\live\memoryReaders.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\live\utils.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\opensource\opensourceEsportsClient.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\opensource\unifiedIngestionService.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\playstyle\counterMatrix.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\playstyle\leagueAnalyzer.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\playstyle\liveTracker.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\playstyle\valorantAnalyzer.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\playstyle\worstCaseSimulator.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\valorant\retakeAnalyzer.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\services\__tests__\LolObjectiveEngine.test.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\store\useAppStore.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\test\setup.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\theme\enhancedEsportsTheme.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\agent.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\agents.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\api.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\backend.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\counterattack.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\esports.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\grid.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\index.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\insights.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\insightSystem.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\liveIntel.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\lolAgents.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\lolQueueStats.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\lolStrategy.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\mock.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\objectives.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\opponentPatterns.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\playstyle.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\predictions.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\priority.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\scouting.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\seedrandom.d.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\tactical.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\utility.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\valorantAgents.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\types\worstCase.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\workflows\HypotheticalPredictionsWorkflow.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\workflows\index.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\workflows\MacroReviewWorkflow.ts
+C:\Users\lowlu\OneDrive\OTHER\Desktop\blank-canvas-05\src\workflows\PersonalizedInsightsWorkflow.ts

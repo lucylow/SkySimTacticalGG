@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Shield, Zap, Target, Coins, TrendingUp, Map as MapIcon, Users, AlertTriangle, CheckCircle2, XCircle, Clock, BarChart3, ChevronRight } from 'lucide-react';
 import type { UtilityDashboardData } from '@/types/utility';
+import ProLineupsViewer from '@/components/dashboard/ProLineupsViewer';
 
 const mockData: UtilityDashboardData = {
   valorant: {
@@ -361,6 +362,8 @@ export const UtilityDashboard: React.FC = () => {
               </Card>
             ))}
           </div>
+
+          <ProLineupsViewer />
         </TabsContent>
 
         <TabsContent value="fixes" className="space-y-6 mt-4">

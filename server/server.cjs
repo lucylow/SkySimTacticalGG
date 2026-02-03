@@ -17,6 +17,46 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// WebSocket Support
+const http = require('http');
+const { Server } = require('socket.io');
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
+io.on('connection', (socket) => {
+  console.log('Client connected to WebSocket coach');
+  
+  socket.on('minimap_update', (frames) => {
+    // In production, we'd use the TimeSformerMinimap class here
+    // For this mock server, we simulate the analysis logic
+    const ambushRisk = Math.random();
+    const rotateProb = Math.random();
+    
+    if (ambushRisk > 0.8) {
+      socket.emit('worst_case_alert', {
+        message: "CRITICAL AMBUSH RISK: Sova lurking A Heaven",
+        panicLevel: 'HIGH',
+        recovery: 'Play off-angles NOW'
+      });
+    } else if (rotateProb > 0.8) {
+      socket.emit('worst_case_alert', {
+        message: "A DEFAULT ROTATE INCOMING (0:42)",
+        panicLevel: 'MEDIUM',
+        recovery: 'Rotate to B Link'
+      });
+    }
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
+});
+
 // simple: return games list
 app.get('/api/games', (req, res) => {
   res.json([{ id: 'valorant', name: 'Valorant' }, { id: 'league', name: 'League of Legends' }]);
@@ -199,4 +239,4 @@ app.post('/api/objective-decision', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Mock server listening on http://localhost:${PORT}`));
+server.listen(PORT, () => console.log(`Mock server listening on http://localhost:${PORT}`));

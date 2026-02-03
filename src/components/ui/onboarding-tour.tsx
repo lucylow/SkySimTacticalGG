@@ -248,4 +248,32 @@ export const aiPlaygroundTourSteps: TourStep[] = [
     target: '[data-tour="console"]',
     position: 'left',
   },
+  {
+    id: 'events-log',
+    title: 'Events Log',
+    content: 'A detailed log of all system events and token streams.',
+    target: '[data-tour="events-log"]',
+    position: 'top',
+  },
+  {
+    id: 'agent-toolbox',
+    title: 'Agent Toolbox',
+    content: 'View the tools the agent can use to perform tasks.',
+    target: '[data-tour="agent-toolbox"]',
+    position: 'left',
+  },
+  {
+    id: 'agent-timeline',
+    title: 'Strategic Timeline',
+    content: 'Key milestones identified by the agent during analysis.',
+    target: '[data-tour="agent-timeline"]',
+    position: 'left',
+  },
+  {
+    id: 'agent-memory',
+    title: 'Memory Panel',
+    content: 'Long-term context that persists across different agent runs.',
+    target: '[data-tour="agent-memory"]',
+    position: 'left',
+  },
 ];

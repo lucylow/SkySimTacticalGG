@@ -78,6 +78,11 @@ async def root():
 async def health():
     return {"status": "healthy"}
 
+# Compatibility health endpoint under /api/v1 for frontend baseUrl that includes /api/v1
+@app.get("/api/v1/health")
+async def health_v1():
+    return {"status": "healthy"}
+
 @app.post("/webhook/grid")
 async def grid_webhook(req: Request):
     """

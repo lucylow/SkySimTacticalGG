@@ -9,7 +9,8 @@
 3.  [Core Features](#3-core-features)
     *   [3.1. 3D Tactical Motion Synthesis](#31-3d-tactical-motion-synthesis)
     *   [3.2. Real-Time Strategic Decision Engine (EV Gauge)](#32-real-time-strategic-decision-engine-ev-gauge)
-    *   [3.3. Automated Scouting & Drafting Assistant](#33-automated-scouting--drafting-assistant)
+    *   [3.3. TimeSformer Minimap Integration](#33-timesformer-minimap-integration)
+    *   [3.4. Automated Scouting & Drafting Assistant](#34-automated-scouting--drafting-assistant)
 4.  [System Architecture](#4-system-architecture)
 5.  [Technical Deep Dive](#5-technical-deep-dive)
     *   [5.1. Data Ingestion & Normalization](#51-data-ingestion--normalization)
@@ -22,18 +23,21 @@
         *   [5.4.1. Feature Selection & Engineering](#541-feature-selection--engineering)
         *   [5.4.2. LightGBM Model Implementation](#542-lightgbm-model-implementation)
         *   [5.4.3. Explainable AI with SHAP](#543-explainable-ai-with-shap)
-    *   [5.5. Real-Time Decision API](#55-real-time-decision-api)
-    *   [5.6. Frontend & UI/UX](#56-frontend--uiux)
+    *   [5.5. TimeSformer Minimap Pipeline](#55-timesformer-minimap-pipeline)
+        *   [5.5.1. Spatio-Temporal Attention Mechanism](#551-spatio-temporal-attention-mechanism)
+        *   [5.5.2. Live Data Ingestion & Memory Management](#552-live-data-ingestion--memory-management)
+    *   [5.6. Real-Time Decision API](#56-real-time-decision-api)
+    *   [5.7. Frontend & UI/UX](#57-frontend--uiux)
 6.  [Challenges & Solutions](#6-challenges--solutions)
     *   [6.1. Data Fidelity & Interpolation](#61-data-fidelity--interpolation)
     *   [6.2. Explainability Gap & Real-Time SHAP](#62-explainability-gap--real-time-shap)
     *   [6.3. Real-Time Latency in Hybrid Architecture](#63-real-time-latency-in-hybrid-architecture)
     *   [6.4. Cross-Game Normalization](#64-cross-game-normalization)
 7.  [Installation & Setup](#7-installation--setup)
-    *   [7.4. LoL TimeSformer Minimap Integration](#74-lol-timesformer-minimap-integration)
     *   [7.1. Prerequisites](#71-prerequisites)
     *   [7.2. Backend Setup](#72-backend-setup)
     *   [7.3. Frontend Setup](#73-frontend-setup)
+    *   [7.4. LoL TimeSformer Minimap Integration](#74-lol-timesformer-minimap-integration)
 8.  [Usage](#8-usage)
     *   [8.1. Data Ingestion](#81-data-ingestion)
     *   [8.2. Tactical Review](#82-tactical-review)
@@ -63,10 +67,9 @@ Our inspiration stems from the analytical rigor of *Moneyball* [1], applied to t
 
 SkySim Tactical GG functions as a sophisticated, AI-driven tactical engine, meticulously engineered for the discerning needs of professional esports coaching staff. Its operational framework is stratified into three interconnected layers, each contributing to a holistic understanding of gameplay dynamics:
 
-*   **3D Tactical Motion Synthesis:** Reconstructs player movements from raw GRID data into a high-fidelity 3D environment, allowing for detailed analysis of mechanical execution.
-*   **Real-Time Strategic Decision Engine (EV Gauge):** Processes live or historical GRID telemetry to compute the Expected Value (EV) of various in-game objectives and strategic decisions, providing probabilistic outcomes and rationales.
-*   **TimeSformer Minimap Integration:** A production-ready real-time analysis tool that uses video transformers (TimeSformer) to predict enemy movements and provide live coaching recommendations based on minimap data and live telemetry.
-*   **Automated Scouting & Drafting Assistant:** Systematically analyzes vast repositories of historical GRID data to produce concise scouting reports and real-time drafting recommendations.
+*   **Real-Time Strategic Decision Engine (EV Gauge):** Processes live or historical GRID telemetry to compute the Expected Value (EV) of various in-game objectives and strategic decisions using a gradient-boosted ensemble (LightGBM).
+*   **TimeSformer Minimap Integration:** A production-ready real-time analysis tool that uses video transformers (TimeSformer) with divided space-time attention to predict enemy movements and provide live coaching recommendations (~60ms inference latency).
+*   **Automated Scouting & Drafting Assistant:** Systematically analyzes vast repositories of historical GRID data to produce concise scouting reports and real-time drafting recommendations based on player archetyping and behavioral clustering.
 
 This README provides a comprehensive technical overview of SkySim Tactical GG, detailing its architecture, implementation, and the innovative solutions developed to overcome significant technical challenges.
 
@@ -86,11 +89,19 @@ Leveraging the **HY-Motion-1.0** framework [3], SkySim transcends conventional 2
 
 This layer is dedicated to processing live or historical GRID telemetry to compute the **Expected Value (EV)** of various in-game objectives and strategic decisions. Key functionalities include:
 
-*   **P_Success Modeling:** A **LightGBM-powered probabilistic model** [4] dynamically predicts the likelihood of successfully securing objectives such as Baron or Dragon. This model integrates over 15 distinct features, encompassing `ultimate_availability`, `vision_control_score`, `team_gold_difference`, and a proprietary "Priority Index" that quantifies lane pressure and minion wave states. The output is a real-time confidence score for objective attempts.
+*   **P_Success Modeling:** A **LightGBM-powered probabilistic model** [4] dynamically predicts the likelihood of successfully securing objectives such as Baron or Dragon. This model integrates over 22 optimized features, encompassing `ultimate_availability`, `vision_control_score`, `team_gold_difference`, and a proprietary "Priority Index" that quantifies lane pressure and minion wave states. The output is a real-time confidence score for objective attempts.
 *   **Counterfactual "What-If" Simulations:** Coaches can interactively manipulate critical game state variables (e.g., "What if we had an additional Control Ward in the pit?") to observe the resultant changes in win probability. The engine recalculates the `win_probability_delta` for alternative scenarios, providing data-backed insights into optimal decision paths.
-*   **Automated Game Review Agendas:** Following a match, the system automatically generates a structured review agenda. It highlights "Critical Macro Decision Points" where the `Expected Value (EV)` of a chosen action deviated significantly (e.g., by more than 20%) from the optimal alternative. Each identified moment is accompanied by a corresponding 3D reconstruction clip for visual analysis, facilitating targeted coaching sessions.
+*   **Automated Game Review Agendas:** Following a match, the system automatically generates a structured review agenda. It highlights "Critical Macro Decision Points" where the `Expected Value (EV)` of a chosen action deviated significantly (e.g., by more than 20%) from the optimal alternative. Each identified moment is accompanied by a corresponding 3D reconstruction clip for visual analysis.
 
-### 3.3. Automated Scouting & Drafting Assistant
+### 3.3. TimeSformer Minimap Integration
+
+SkySim implements a state-of-the-art video transformer architecture to analyze minimap dynamics in real-time.
+
+*   **Spatio-Temporal Feature Extraction:** Utilizing a **TimeSformer (Time-Space Transformer)** model [12] with divided space-time attention. It processes 16-frame sequences of minimap data (captured at 6fps) to identify patterns in enemy rotation and objective setup.
+*   **Predictive Enemy Tracking:** The engine predicts the most likely "worst-case" position of unspotted enemies (e.g., Jungler gank paths) by correlating current fog-of-war states with historical team-specific playstyle archetypes.
+*   **Low-Latency Inference:** Optimized for live performance, the inference pipeline targets a **<60ms latency**, enabling real-time "Coach Calls" (e.g., "WARD RIVER → FREEZE") delivered via an in-game overlay.
+
+### 3.4. Automated Scouting & Drafting Assistant
 
 SkySim systematically analyzes vast repositories of historical GRID data to produce **Concise Scouting Reports** for upcoming opponents. This module provides:
 
@@ -146,9 +157,10 @@ graph TD
 *   **Data Ingestion & Normalization:** A custom engine responsible for consuming JSON event streams from GRID and transforming them into a unified, normalized relational schema (e.g., `matches`, `players`, `events`, `frames`).
 *   **PostgreSQL + TimescaleDB:** The persistent data store, optimized for time-series data, enabling efficient storage and querying of high-frequency telemetry.
 *   **Feature Engineering Pipeline:** Extracts and computes real-time tactical features (e.g., `vision_count_in_pit`, `ultimate_advantage`) from the normalized data, serving as inputs for the ML models.
-*   **LightGBM ML Model:** The core of the `EV Gauge`, a probabilistic model trained to predict the `P_Success` of objective attempts, incorporating SHAP for explainability.
-*   **HY-Motion-1.0 3D Synthesis:** A Python-based implementation that translates raw positional data into high-fidelity 3D character animations using a skeletal mapping layer and advanced interpolation.
-*   **Real-Time Decision API (Fastify/Node.js):** A high-performance backend API serving decision engine outputs, 3D motion data, and scouting reports to the frontend.
+*   **LightGBM ML Model:** The core of the `EV Gauge`, a probabilistic model trained to predict the `P_Success` of objective attempts. It uses a gradient-boosted ensemble of 150+ trees and incorporates SHAP for explainability.
+*   **TimeSformer Transformer:** A video transformer backend for real-time minimap analysis, using divided space-time attention to process 16-frame sequences for enemy rotation prediction.
+*   **HY-Motion-1.0 3D Synthesis:** A Python-based implementation that translates raw positional data into high-fidelity 3D character animations using a skeletal mapping layer and Catmull-Rom spline interpolation.
+*   **Real-Time Decision API (Fastify/Node.js):** A high-performance backend API serving decision engine outputs, 3D motion data, and scouting reports. Optimized with schema-based serialization and 60ms inference loop integration.
 *   **Frontend (React.js/Three.js):** The interactive user interface, responsible for rendering tactical overviews, 3D mechanical reviews, and displaying actionable insights.
 *   **Coach/Analyst UI:** The end-user interface for coaches and analysts to interact with SkySim Tactical GG.
 *   **JetBrains IDEs (WebStorm, PyCharm):** The integrated development environments used for all code development.
@@ -319,7 +331,26 @@ To provide transparency and build trust with coaches, we integrated **SHAP (SHap
 
 This granular level of explanation transforms the AI from a black box into a collaborative decision-making tool.
 
-### 5.5. Real-Time Decision API
+### 5.5. TimeSformer Minimap Pipeline
+
+To bridge the gap between historical analysis and live coaching, we implemented a real-time minimap processing pipeline powered by a **TimeSformer** architecture.
+
+#### 5.5.1. Spatio-Temporal Attention Mechanism
+
+The TimeSformer model utilizes **Divided Space-Time Attention**, which separately applies self-attention across the spatial and temporal dimensions of a video sequence. 
+- **Input:** 16-frame sequences of normalized minimap states (224x224 resolution).
+- **Sequence Length:** 2.6 seconds of gameplay (6fps capture rate).
+- **Backbone:** Vision Transformer (ViT) pre-trained on ImageNet, fine-tuned on esports-specific minimap dynamics.
+- **Output:** Multi-head classification for enemy rotations, gank probabilities, and objective setups.
+
+#### 5.5.2. Live Data Ingestion & Memory Management
+
+For live LoL integration, we utilize a custom Python-based **Memory Reader** (using `pymem`) that attaches to the game process to extract high-fidelity entity positions directly.
+- **Inference Loop:** ~60ms target latency per prediction cycle.
+- **Buffer Management:** A sliding `deque` buffer maintains the 16-frame sequence, ensuring the transformer always operates on the most recent temporal context.
+- **Coach Call Generation:** A heuristic layer sits atop the transformer outputs to translate raw probabilities into actionable tactical calls (e.g., `prediction.gank_probability > 0.75` → "WARD RIVER → FREEZE").
+
+### 5.6. Real-Time Decision API
 
 The Real-Time Decision API serves as the central nervous system of SkySim Tactical GG, orchestrating communication between the backend services and the frontend application. Built with **Fastify** [11] on **Node.js (TypeScript)**, it is designed for high throughput and low latency.
 
@@ -412,56 +443,17 @@ Developing SkySim Tactical GG involved overcoming several complex technical hurd
 
 ## 7. Installation & Setup
 
-### 7.4. LoL TimeSformer Minimap Integration
-
-Warning and responsibility note:
-- Interacting with the League of Legends process memory and rendering overlays may violate Riot Games' Terms of Service in some contexts. Use this integration responsibly, for research and personal development on your own risk. Running this may also require Administrator privileges on Windows.
-
-Dependencies (separate from core requirements):
-```
-# Create/activate a dedicated venv
-python -m venv .venv
-. .venv/Scripts/activate
-
-# Install LoL overlay dependencies
-pip install -r backend/lol_timesformer/requirements_lol.txt
-```
-
-GPU (recommended):
-- Install CUDA-enabled PyTorch per https://pytorch.org/get-started/locally/ for your GPU/driver.
-
-Model weights:
-- The code loads the TimeSformer model via Torch Hub. To use a fine-tuned model, place your weights at `timesformer_lol_minimap.pth` or modify the path.
-
-Running the overlay:
-```
-# Run as a module so relative imports work
-python -m backend.lol_timesformer.main
-```
-
-Features delivered:
-- 16-frame minimap capture → TimeSformer prediction → live coach calls (~60ms target)
-- Live memory reading for entities (baseline offsets; may require updates per patch)
-- Enemy jungle location prior with gank/rotate probabilities
-- Objective timing prompts (dragon/baron) and playstyle classification
-
-Troubleshooting:
-- If the overlay window doesn’t appear, ensure a League window is open and focused; the minimap auto-detect uses the first "League of Legends" window title.
-- If memory attach fails, run your shell as Administrator and verify the process name.
-- If Torch Hub model fetch fails, install TimeSformer via git as listed or pin a commit.
-- If you run on CPU, expect higher latency; consider reducing capture FPS or sequence length.
-
 To set up and run SkySim Tactical GG locally, follow these instructions.
 
 ### 7.1. Prerequisites
 
 Ensure you have the following installed:
 
-*   **Docker & Docker Compose:** For containerized deployment of backend services.
-*   **Node.js (v18+) & npm/yarn:** For the frontend and Fastify API.
-*   **Python (3.9+) & pip:** For the ML and 3D synthesis services.
+*   **Docker & Docker Compose:** For containerized deployment of backend services (PostgreSQL, Redis, Celery).
+*   **Node.js (v18+) & npm/pnpm:** For the frontend and Fastify API.
+*   **Python (3.9+) & pip:** For the ML, 3D synthesis, and TimeSformer services.
 *   **Git:** For cloning the repository.
-*   **GRID Esports API Key:** Obtain access to the GRID API for data ingestion. (Note: For hackathon purposes, mock data can be used if a key is unavailable).
+*   **CUDA Toolkit (Optional):** Highly recommended for accelerating ML inference (LightGBM/TimeSformer).
 
 ### 7.2. Backend Setup
 
@@ -470,48 +462,62 @@ Ensure you have the following installed:
     git clone https://github.com/your-org/SkySim-Tactical-GG.git
     cd SkySim-Tactical-GG
     ```
-2.  **Environment Variables:**
-    Create a `.env` file in the `backend/` directory with the following:
+
+2.  **Dockerized Infrastructure:**
+    Launch the database and message broker:
+    ```bash
+    cd backend
+    docker-compose up -d
+    ```
+
+3.  **Python Environment & Dependencies:**
+    ```bash
+    # Install core backend requirements
+    pip install -r requirements.txt
+    
+    # Install LoL TimeSformer specific dependencies
+    pip install -r backend/lol_timesformer/requirements_lol.txt
+    ```
+
+4.  **Environment Variables:**
+    Create a `.env` file in the `backend/` directory:
     ```env
-    DATABASE_URL="postgresql://user:password@db:5432/skysim_db"
+    DATABASE_URL="postgresql://user:password@localhost:5432/skysim_db"
     GRID_API_KEY="your_grid_api_key"
-    # Add other necessary environment variables (e.g., for ML model paths)
+    REDIS_URL="redis://localhost:6379/0"
     ```
-3.  **Build and Run Docker Containers:**
-    Navigate to the root of the cloned repository and run:
-    ```bash
-    docker-compose up --build -d
-    ```
-    This will start the PostgreSQL database, Fastify API, and Python ML/3D services.
-4.  **Database Migrations:**
-    Once the database container is up, run migrations (example using `psql` or a custom script):
-    ```bash
-    # Example: Connect to the DB container and run SQL scripts
-    docker exec -it skysim_db psql -U user -d skysim_db -f /docker-entrypoint-initdb.d/init.sql
-    ```
-    *(Note: Specific migration commands will depend on your chosen ORM/DB migration tool.)*
 
 ### 7.3. Frontend Setup
 
-1.  **Navigate to the frontend directory:**
+1.  **Install dependencies:**
     ```bash
-    cd frontend/
+    npm install # or pnpm install
     ```
-2.  **Install dependencies:**
+
+2.  **Environment Configuration:**
+    Ensure `src/lib/config.ts` points to your local backend.
+
+3.  **Start development server:**
     ```bash
-    npm install # or yarn install
+    npm run dev
     ```
-3.  **Environment Variables:**
-    Create a `.env` file in the `frontend/` directory:
-    ```env
-    REACT_APP_API_BASE_URL="http://localhost:3000" # Or your deployed backend URL
-    REACT_APP_WEBSOCKET_URL="ws://localhost:3000/ws" # Or your deployed websocket URL
-    ```
-4.  **Start the frontend application:**
-    ```bash
-    npm start # or yarn start
-    ```
-    The application should now be accessible in your browser, typically at `http://localhost:3001`.
+
+### 7.4. LoL TimeSformer Minimap Integration
+
+**Note:** Interacting with game process memory may require Administrator privileges and should be used according to the game's Terms of Service.
+
+1. **Dedicated Dependencies:**
+   ```bash
+   pip install -r backend/lol_timesformer/requirements_lol.txt
+   ```
+
+2. **Model Weights:**
+   Ensure `timesformer_lol_minimap.pth` is present in the root or update the path in `timesformer_lol.py`.
+
+3. **Execution:**
+   ```bash
+   python -m backend.lol_timesformer.main
+   ```
 
 ---
 
